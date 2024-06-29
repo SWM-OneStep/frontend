@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "frontend",
-    "slug": "frontend",
+    "name": "onestep",
+    "slug": "onestep",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
