@@ -12,16 +12,25 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.safezone.onestep"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.safezone.onestep"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "63f6bbd9-1594-44b3-b161-0e0051413ef0"
+      }
+    },
+    "scheme": "onestep",
+    "owner": "byungchanko"
   }
 }
