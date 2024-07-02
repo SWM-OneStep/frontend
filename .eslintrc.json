@@ -2,7 +2,7 @@
   // https://docs.expo.dev/guides/using-eslint/
   "root": true,
   "extends": ["expo", "@react-native-community", "prettier"],
-  "plugins": ["import", "prettier"],
+  "plugins": ["import", "prettier", "react"],
   "rules": {
     "import/no-unresolved": "error",
     "prettier/prettier": "error",
