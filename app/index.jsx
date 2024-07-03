@@ -1,13 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import * as Google from 'expo-auth-session/providers/google';
-import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useCallback } from 'react';
+import { Link } from 'expo-router';
 
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
 
-const App = () => {
+const Login = () => {
   const config = {
     androidClientId,
   };
@@ -39,10 +39,13 @@ const App = () => {
           promptAsync();
         }}
       />
+      <Link replace href="/(tabs)">
+        Go to Main page
+      </Link>
     </View>
   );
 };
-export default App;
+export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
