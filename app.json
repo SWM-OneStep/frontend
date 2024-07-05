@@ -31,6 +31,7 @@
       }
     },
     "scheme": "onestep",
-    "owner": "byungchanko"
+    "owner": "byungchanko",
+    "plugins": ["expo-router"]
   }
 }
