@@ -5,8 +5,7 @@
   "plugins": ["import", "prettier", "react"],
   "rules": {
     "import/no-unresolved": "error",
-    "prettier/prettier": "error",
-    "react/react-in-jsx-scope": "off",
-    "react-native/no-inline-styles": "off"
+    "prettier/prettier": ["error", {"endOfLine": "auto"}],
+    "react/react-in-jsx-scope": "off"
   }
 }
