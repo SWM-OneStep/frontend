@@ -3,6 +3,10 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import * as Google from 'expo-auth-session/providers/google';
 import { useEffect, useCallback } from 'react';
 import { Link } from 'expo-router';
+import GoogleLoginButton from '../components/GoogleLoginButton';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
+import * as eva from '@eva-design/eva';
+import { AntDesignIconsPack } from '../antdesign-icons';
 
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
@@ -30,19 +34,19 @@ const Login = () => {
   }, [handleToken]);
 
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-      <Button
-        title="login"
-        onPress={() => {
-          promptAsync();
-        }}
-      />
-      <Link replace href="/(tabs)">
-        Go to Main page
-      </Link>
-    </View>
+    <>
+      <IconRegistry icons={AntDesignIconsPack} />
+      <ApplicationProvider {...eva} theme={eva.light}>
+        <View style={styles.container}>
+          <Text>Open up App.js to start working on your app!</Text>
+          <StatusBar style="auto" />
+          <GoogleLoginButton onPress={promptAsync} />
+          <Link replace href="/(tabs)">
+            Go to Main page
+          </Link>
+        </View>
+      </ApplicationProvider>
+    </>
   );
 };
 export default Login;
