@@ -11,7 +11,7 @@ import { useCallback, useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { AntDesignIconsPack } from '../antdesign-icons';
 import { IoniconsPack } from '../ionicons-icons';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { GoogleIcon } from './../components/GoogleIcon';
 
 const androidClientId =
@@ -30,6 +30,7 @@ const Login = () => {
         console.log('access token', token);
         // 여기서 토큰을 사용하여 추가 작업을 수행할 수 있습니다.
         // 예: 상태 업데이트, API 호출 등
+        router.replace('(tabs)');
       } else {
         console.log('Access token is undefined');
       }
