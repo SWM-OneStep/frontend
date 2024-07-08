@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "*": ["/*"]
+      "@/*": ["./*"]
     },
     "jsx": "react-native",
     "esModuleInterop": true,

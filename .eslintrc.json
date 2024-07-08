@@ -5,7 +5,12 @@
   "plugins": ["import", "prettier", "react"],
   "rules": {
     "import/no-unresolved": "error",
-    "prettier/prettier": ["error", {"endOfLine": "auto"}],
+    "prettier/prettier": ["error", { "endOfLine": "auto" }],
     "react/react-in-jsx-scope": "off"
+  },
+  "settings": {
+    "import/resolver": {
+      "babel-module": {}
+    }
   }
 }
