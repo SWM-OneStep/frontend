@@ -51,7 +51,7 @@ const Login = () => {
           </View>
           <View style={styles.buttonContainer}>
             <Text category="h2">OneStep</Text>
-            <Button accessoryLeft={GoogleIcon} onPress={() => promptAsync}>
+            <Button accessoryLeft={GoogleIcon} onPress={() => promptAsync()}>
               Sign in with Google
             </Button>
             <Link replace href="/(tabs)">
