@@ -1,13 +1,18 @@
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, IconRegistry, Text } from '@ui-kitten/components';
+import {
+  ApplicationProvider,
+  IconRegistry,
+  Text,
+  Button,
+} from '@ui-kitten/components';
 import * as Google from 'expo-auth-session/providers/google';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { AntDesignIconsPack } from '../antdesign-icons';
-import GoogleLoginButton from '../components/GoogleLoginButton';
 import { IoniconsPack } from '../ionicons-icons';
 import { Link } from 'expo-router';
+import { GoogleIcon } from './../components/GoogleIcon';
 
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
@@ -46,7 +51,9 @@ const Login = () => {
           </View>
           <View style={styles.buttonContainer}>
             <Text category="h2">OneStep</Text>
-            <GoogleLoginButton onPress={promptAsync} />
+            <Button accessoryLeft={GoogleIcon} onPress={() => promptAsync}>
+              Sign in with Google
+            </Button>
             <Link replace href="/(tabs)">
               <Text appearance="hint">Go to Main page</Text>
             </Link>
