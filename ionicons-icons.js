@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-export const AntDesignIconsPack = {
-  name: 'antDesign',
+export const IoniconsPack = {
+  name: 'ionicons',
   icons: createIconsMap(),
 };
 
@@ -19,14 +19,16 @@ function createIconsMap() {
 }
 
 const IconProvider = name => ({
-  toReactElement: props => AntDesignIcon({ name, ...props }),
+  toReactElement: props => IoniconsIcon({ name, ...props }),
 });
 
-function AntDesignIcon({ name, style }) {
-  if (!style) {
+function IoniconsIcon({ name, style }) {
+  if (!name) {
     return null;
   }
-
+  if (!style) {
+    return <Icon name={name} />;
+  }
   const { height, tintColor, ...iconStyle } = StyleSheet.flatten(style);
   return <Icon name={name} size={height} color={tintColor} style={iconStyle} />;
 }
