@@ -12,6 +12,7 @@
   "dependencies": {
     "@eva-design/eva": "^2.2.0",
     "@expo/metro-runtime": "~3.2.1",
+    "@ui-kitten/components": "^5.3.1",
     "@ui-kitten/eva-icons": "^5.3.1",
     "expo": "~51.0.14",
     "expo-auth-session": "~5.5.2",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@babel/plugin-proposal-decorators": "^7.24.7",
     "@eslint/js": "^9.6.0",
     "@react-native-community/eslint-config": "^3.2.0",
     "eslint": "^8.57.0",

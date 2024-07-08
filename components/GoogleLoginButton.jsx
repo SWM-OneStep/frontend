@@ -1,7 +1,7 @@
 import { Button, Icon } from '@ui-kitten/components';
 import React from 'react';
 
-const GoogleIcon = props => <Icon name="google" {...props} />;
+const GoogleIcon = props => <Icon name="google" {...props} pack="antDesign" />;
 
 const GoogleLoginButton = ({ onPress }) => {
   return (

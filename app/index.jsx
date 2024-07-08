@@ -1,12 +1,13 @@
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, IconRegistry, Text } from '@ui-kitten/components';
 import * as Google from 'expo-auth-session/providers/google';
-import { Link } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { AntDesignIconsPack } from '../antdesign-icons';
 import GoogleLoginButton from '../components/GoogleLoginButton';
+import { IoniconsPack } from '../ionicons-icons';
+import { Link } from 'expo-router';
 
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
@@ -16,6 +17,7 @@ const Login = () => {
     androidClientId,
   };
   const [request, response, promptAsync] = Google.useAuthRequest(config);
+  const imageSource = require('../assets/todo_logo.png');
   const handleToken = useCallback(() => {
     if (response?.type === 'success') {
       const token = response.authentication?.accessToken;
@@ -35,20 +37,26 @@ const Login = () => {
 
   return (
     <>
-      <IconRegistry icons={AntDesignIconsPack} />
+      <IconRegistry icons={[AntDesignIconsPack, IoniconsPack]} />
       <ApplicationProvider {...eva} theme={eva.light}>
         <View style={styles.container}>
           <StatusBar style="auto" />
-          <GoogleLoginButton onPress={promptAsync} />
-          <Link replace href="/(tabs)">
-            <Text appearance="hint">Go to Main page</Text>
-          </Link>
+          <View style={styles.iconContainer}>
+            <Image source={imageSource} style={styles.icon} />
+          </View>
+          <View style={styles.buttonContainer}>
+            <Text category="h2">OneStep</Text>
+            <GoogleLoginButton onPress={promptAsync} />
+            <Link replace href="/(tabs)">
+              <Text appearance="hint">Go to Main page</Text>
+            </Link>
+          </View>
         </View>
       </ApplicationProvider>
     </>
   );
 };
-export default Login;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -56,4 +64,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  iconContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  icon: {
+    height: '100%',
+    width: '100%',
+    alignItems: 'center',
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  buttonContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+  },
+  text: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  button: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
+
+export default Login;
