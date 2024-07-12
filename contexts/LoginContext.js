@@ -2,7 +2,7 @@ import { createContext, useState } from 'react';
 
 export const LoginContext = createContext();
 
-const LoginProviderComponent = ({ children }) => {
+const LoginProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [jwtAccessToken, setJwtAccessToken] = useState(null);
   const [jwtRefreshToken, setJwtRefreshToken] = useState(null);
@@ -23,4 +23,4 @@ const LoginProviderComponent = ({ children }) => {
   );
 };
 
-export default LoginProviderComponent;
+export default LoginProvider;
