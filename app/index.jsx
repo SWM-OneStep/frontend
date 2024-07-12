@@ -1,18 +1,10 @@
-import * as eva from '@eva-design/eva';
-import {
-  ApplicationProvider,
-  IconRegistry,
-  Text,
-  Button,
-} from '@ui-kitten/components';
 import * as Google from 'expo-auth-session/providers/google';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
-import { AntDesignIconsPack } from '../antdesign-icons';
-import { IoniconsPack } from '../ionicons-icons';
+import GoogleLoginButton from '../components/GoogleLoginButton';
+import { Text } from '@ui-kitten/components';
 import { Link, router } from 'expo-router';
-import { GoogleIcon } from './../components/GoogleIcon';
 
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
@@ -42,26 +34,19 @@ const Login = () => {
   }, [handleToken]);
 
   return (
-    <>
-      <IconRegistry icons={[AntDesignIconsPack, IoniconsPack]} />
-      <ApplicationProvider {...eva} theme={eva.light}>
-        <View style={styles.container}>
-          <StatusBar style="auto" />
-          <View style={styles.iconContainer}>
-            <Image source={imageSource} style={styles.icon} />
-          </View>
-          <View style={styles.buttonContainer}>
-            <Text category="h2">OneStep</Text>
-            <Button accessoryLeft={GoogleIcon} onPress={() => promptAsync()}>
-              Sign in with Google
-            </Button>
-            <Link replace href="/(tabs)">
-              <Text appearance="hint">Go to Main page</Text>
-            </Link>
-          </View>
-        </View>
-      </ApplicationProvider>
-    </>
+    <View style={styles.container}>
+      <StatusBar style="auto" />
+      <View style={styles.iconContainer}>
+        <Image source={imageSource} style={styles.icon} />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Text category="h2">OneStep</Text>
+        <GoogleLoginButton onPress={promptAsync} />
+        <Link replace href="/(tabs)">
+          <Text appearance="hint">Go to Main page</Text>
+        </Link>
+      </View>
+    </View>
   );
 };
 
