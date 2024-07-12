@@ -3,8 +3,9 @@ import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import GoogleLoginButton from '../components/GoogleLoginButton';
-import { Link } from 'expo-router';
 import { Text } from '@ui-kitten/components';
+import { Link, router } from 'expo-router';
+
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
 
@@ -21,6 +22,7 @@ const Login = () => {
         console.log('access token', token);
         // 여기서 토큰을 사용하여 추가 작업을 수행할 수 있습니다.
         // 예: 상태 업데이트, API 호출 등
+        router.replace('(tabs)');
       } else {
         console.log('Access token is undefined');
       }
