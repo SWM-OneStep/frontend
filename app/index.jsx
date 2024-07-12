@@ -7,17 +7,26 @@ import {
 } from '@ui-kitten/components';
 import * as Google from 'expo-auth-session/providers/google';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { AntDesignIconsPack } from '../antdesign-icons';
 import { IoniconsPack } from '../ionicons-icons';
 import { Link, router } from 'expo-router';
 import { GoogleIcon } from './../components/GoogleIcon';
+import { LoginContext } from '../contexts/LoginContext';
 
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
 
 const Login = () => {
+  const {
+    isLoggedIn,
+    setIsLoggedIn,
+    jwtAccessToken,
+    setJwtAccessToken,
+    jwtRefreshToken,
+    setJwtRefreshToken,
+  } = useContext(LoginContext);
   const config = {
     androidClientId,
   };
@@ -30,12 +39,15 @@ const Login = () => {
         console.log('access token', token);
         // 여기서 토큰을 사용하여 추가 작업을 수행할 수 있습니다.
         // 예: 상태 업데이트, API 호출 등
+        setJwtAccessToken(token);
+        setJwtRefreshToken(response.authentication?.refreshToken);
+        setIsLoggedIn(true);
         router.replace('(tabs)');
       } else {
         console.log('Access token is undefined');
       }
     }
-  }, [response]);
+  }, [response, setJwtAccessToken, setJwtRefreshToken, setIsLoggedIn]);
 
   useEffect(() => {
     handleToken();
@@ -45,21 +57,23 @@ const Login = () => {
     <>
       <IconRegistry icons={[AntDesignIconsPack, IoniconsPack]} />
       <ApplicationProvider {...eva} theme={eva.light}>
-        <View style={styles.container}>
-          <StatusBar style="auto" />
-          <View style={styles.iconContainer}>
-            <Image source={imageSource} style={styles.icon} />
+        <LoginContext>
+          <View style={styles.container}>
+            <StatusBar style="auto" />
+            <View style={styles.iconContainer}>
+              <Image source={imageSource} style={styles.icon} />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Text category="h2">OneStep</Text>
+              <Button accessoryLeft={GoogleIcon} onPress={() => promptAsync()}>
+                Sign in with Google
+              </Button>
+              <Link replace href="/(tabs)">
+                <Text appearance="hint">Go to Main page</Text>
+              </Link>
+            </View>
           </View>
-          <View style={styles.buttonContainer}>
-            <Text category="h2">OneStep</Text>
-            <Button accessoryLeft={GoogleIcon} onPress={() => promptAsync()}>
-              Sign in with Google
-            </Button>
-            <Link replace href="/(tabs)">
-              <Text appearance="hint">Go to Main page</Text>
-            </Link>
-          </View>
-        </View>
+        </LoginContext>
       </ApplicationProvider>
     </>
   );
