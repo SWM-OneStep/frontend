@@ -1,16 +1,9 @@
-import * as eva from '@eva-design/eva';
-import {
-  ApplicationProvider,
-  IconRegistry,
-  Text,
-  Button,
-} from '@ui-kitten/components';
 import * as Google from 'expo-auth-session/providers/google';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useContext, useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
-import { AntDesignIconsPack } from '../antdesign-icons';
-import { IoniconsPack } from '../ionicons-icons';
+import GoogleLoginButton from '../components/GoogleLoginButton';
+import { Text } from '@ui-kitten/components';
 import { Link, router } from 'expo-router';
 import { GoogleIcon } from './../components/GoogleIcon';
 import { LoginContext } from '../contexts/LoginContext';
