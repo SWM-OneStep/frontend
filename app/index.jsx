@@ -10,6 +10,8 @@ import { LoginContext } from '@/contexts/LoginContext';
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
 
+const loginApi = 'http://10.0.2.2:8000/auth/login/google/';
+
 const Login = () => {
   const {
     isLoggedIn,
@@ -25,15 +27,37 @@ const Login = () => {
   const [request, response, promptAsync] = Google.useAuthRequest(config);
   const imageSource = require('../assets/todo_logo.png');
   const handleToken = useCallback(() => {
+    const getToken = async ({ token }) => {
+      const tokenData = {
+        token: token,
+      };
+      const localResponse = await fetch(loginApi, {
+        method: 'POST', // HTTP 메서드 지정
+        headers: {
+          'Content-Type': 'application/json', // 요청 헤더 설정
+        },
+        body: JSON.stringify(tokenData), // 전송할 데이터를 JSON 문자열로 변환
+      });
+      if (localResponse.ok) {
+        const localJwtData = await localResponse.json();
+        return localJwtData;
+      } else {
+        return null;
+      }
+    };
+
     if (response?.type === 'success') {
-      const token = response.authentication?.accessToken;
+      const token = response.authentication?.idToken;
       if (token) {
-        console.log('access token', token);
+        console.log('access token', response.authentication);
         // 여기서 토큰을 사용하여 추가 작업을 수행할 수 있습니다.
         // 예: 상태 업데이트, API 호출 등
-        setJwtAccessToken(token);
-        setJwtRefreshToken(response.authentication?.refreshToken);
-        setIsLoggedIn(true);
+        const getTokenData = getToken({ token });
+        if (getTokenData !== null) {
+          setJwtAccessToken(token.accessToken);
+          setJwtRefreshToken(token.refreshToken);
+          setIsLoggedIn(true);
+        }
         router.replace('(tabs)');
       } else {
         console.log('Access token is undefined');
