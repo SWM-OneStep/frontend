@@ -10,7 +10,8 @@ import { LoginContext } from '@/contexts/LoginContext';
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
 
-const loginApi = 'http://10.0.2.2:8000/auth/login/google/';
+const loginApi =
+  'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/login/google/';
 
 const Login = () => {
   const {
