@@ -7,6 +7,23 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 const DailyTodo = ({item, index}) => {
     const [completed, setCompleted] = useState(item.isCompleted);
     const theme = useTheme();
+    const reverseCheck = async () => {
+        const userId = await AsyncStorage.getItem('userId');
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        const response = await fetch(`${todos}?user_id=${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
+            },
+        })
+        if(response.error) {
+            return
+        } else {
+            const responseData = await response.json();
+            setTodos(responseData);
+        }
+    }
 
     const checkIcon = (props) => {
         return (
@@ -54,7 +71,6 @@ const DailyTodo = ({item, index}) => {
     //     setTodos(responseData);
     
 }
-
 const styles = StyleSheet.create({
     icon_checked: {
         color: 'green',

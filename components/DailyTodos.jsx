@@ -1,6 +1,7 @@
 import { DateContext } from "@/contexts/DateContext";
-import { List, Input, Layout, Button, Icon } from "@ui-kitten/components";
-import { useContext, useState, useEffect } from "react";
+import { Input, Layout, List } from "@ui-kitten/components";
+import { useContext, useEffect, useState } from "react";
+import { KeyboardAvoidingView } from "react-native";
 import DailyTodo from "./DailyTodo";
 
 
@@ -60,12 +61,16 @@ const DailyTodos = () => {
 
     return (
         <Layout>
-            <List data={todos} renderItem={renderTodo} />
+            <List
+                data={todos}
+                renderItem={renderTodo}
+                contentContainerStyle={{paddingBottom: 100}}
+            />
             <Input
-                placeholder='Place your Text'
-                value={input}
-                onChangeText={nextInput => setInput(nextInput)}
-                onSubmitEditing={handleSubmit}
+                    placeholder='Place your Text'
+                    value={input}
+                    onChangeText={nextInput => setInput(nextInput)}
+                    onSubmitEditing={handleSubmit}
                 />
         </Layout>
     )

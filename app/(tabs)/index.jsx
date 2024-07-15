@@ -1,15 +1,17 @@
 import DailyTodos from '@/components/DailyTodos';
 import WeeklyCalendar from '@/components/WeeklyCalendar';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, SafeAreaView, StyleSheet } from 'react-native';
 
 const TodayView = () => {
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView>
       <WeeklyCalendar />
       <DailyTodos />
-    </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 
   
