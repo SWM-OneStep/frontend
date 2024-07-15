@@ -1,15 +1,18 @@
-import { View, StyleSheet } from 'react-native';
-import React from 'react';
+import DailyTodos from '@/components/DailyTodos';
 import WeeklyCalendar from '@/components/WeeklyCalendar';
-import DailyTodo from '@/components/DailyTodo';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
 const TodayView = () => {
+
   return (
     <View style={styles.container}>
       <WeeklyCalendar />
-      <DailyTodo />
+      <DailyTodos />
     </View>
   );
+
+  
 };
 
 export default TodayView;
