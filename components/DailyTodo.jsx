@@ -19,6 +19,14 @@ const DailyTodo = ({item, index}) => {
         </TouchableOpacity>
         );
     };
+
+    const settingIcon = (props) => {
+        return (
+            <TouchableOpacity>
+                <Icon name="star" />
+            </TouchableOpacity>
+        )
+    }
     
     const handleCheck = () => {
         setCompleted(!completed);
@@ -26,7 +34,7 @@ const DailyTodo = ({item, index}) => {
     }
 
     return (
-        <ListItem title={item.title} key={index} accessoryLeft={(props) => checkIcon(props)} />
+        <ListItem title={item.content} key={index} accessoryLeft={(props) => checkIcon(props)} accessoryRight={(props) => settingIcon(props)} />
     )
 
     // const fetchTodos = async () => {
