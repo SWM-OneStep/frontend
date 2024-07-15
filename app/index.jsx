@@ -17,20 +17,15 @@ const loginApi =
 // const loginApi =
 //   'http://10.0.2.2:8000/auth/login/google/';
 
-
 const imageSource = require('../assets/todo_logo.png');
 
 const Login = () => {
-
-  const {
-    isLoggedIn,
-    setIsLoggedIn,
-  } = useContext(LoginContext);
+  const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
   const config = {
     androidClientId,
   };
   const [request, response, promptAsync] = Google.useAuthRequest(config);
-  
+
   const handleToken = useCallback(() => {
     const getToken = async ({ token }) => {
       const tokenData = {
