@@ -22,8 +22,8 @@ const DailyTodo = ({item, index}) => {
 
     const settingIcon = (props) => {
         return (
-            <TouchableOpacity>
-                <Icon name="star" />
+            <TouchableOpacity onPress={()=>{}}>
+                <Icon {...props} name="more-horizontal-outline" pack="eva" fill={theme['text-basic-color']} />
             </TouchableOpacity>
         )
     }

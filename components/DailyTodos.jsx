@@ -4,16 +4,15 @@ import { useContext, useState, useEffect } from "react";
 import DailyTodo from "./DailyTodo";
 
 
-// const todosApi = 'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
+const todosApi = 'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
-const todosApi = 'http://10.0.2.2:8000/todos/';
+// const todosApi = 'http://10.0.2.2:8000/todos/';
 
 const exampleData = []
 
 const DailyTodos = () => {
 
     useEffect(() => {
-        console.log("fetchTodos called");
         const fetchTodos = async () => {
             const response = await fetch(`${todosApi}?user_id=1`, {
                 method: 'GET',
@@ -35,7 +34,7 @@ const DailyTodos = () => {
     }
     const handleSubmit = async () => {
         const newTodoId = await todoUpdate(input);
-        setTodos([...todos, {id: newTodoId, title: input, isCompleted: false}])
+        setTodos([...todos, {id: newTodoId, content: input}])
         setInput('');
     }
 
