@@ -26,10 +26,6 @@ useEffect(() => {
     })
     if (!response.ok) {
       const responseData = await response.json();
-      if(!responseData) {
-        console.log('error');
-      }
-  }
 }
   testApi();
 });

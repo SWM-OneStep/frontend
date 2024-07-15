@@ -57,13 +57,10 @@ const Login = () => {
     if (response?.type === 'success') {
       const token = response.authentication?.idToken;
       if (token) {
-        console.log('access token', response.authentication);
         // 여기서 토큰을 사용하여 추가 작업을 수행할 수 있습니다.
         // 예: 상태 업데이트, API 호출 등
         getToken({ token });
         router.replace('(tabs)');
-      } else {
-        console.log('Access token is undefined');
       }
     }
   }, [response, setIsLoggedIn]);
