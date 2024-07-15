@@ -11,13 +11,13 @@ const RootLayout = () => {
     <>
       <LoginProvider>
         <DateProvider>
-        <IconRegistry icons={[EvaIconsPack]} />
-        <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
-          <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          </Stack>
-        </ApplicationProvider>
+          <IconRegistry icons={[EvaIconsPack]} />
+          <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
+            <Stack>
+              <Stack.Screen name="index" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            </Stack>
+          </ApplicationProvider>
         </DateProvider>
       </LoginProvider>
     </>

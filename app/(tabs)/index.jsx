@@ -4,17 +4,14 @@ import React from 'react';
 import { KeyboardAvoidingView, SafeAreaView, StyleSheet } from 'react-native';
 
 const TodayView = () => {
-
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView>
-      <WeeklyCalendar />
-      <DailyTodos />
+        <WeeklyCalendar />
+        <DailyTodos />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
-
-  
 };
 
 export default TodayView;
