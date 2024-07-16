@@ -1,17 +1,18 @@
-import { Card, Text, Button, Modal } from '@ui-kitten/components';
-import { StyleSheet } from 'react-native';
+import { Card, Modal, Text } from '@ui-kitten/components';
+import { StyleSheet, View } from 'react-native';
 
-const TodoModal = ({ item, index, visible, setVisible }) => {
+const TodoModal = ({ item, visible, setVisible }) => {
   return (
     <Modal
       visible={visible}
       backdropStyle={styles.backdrop}
+      onBackdropPress={() => {
+        setVisible(false);
+      }}
       style={styles.modal}
     >
       <Card disabled={true} style={styles.card}>
         <Text>{item.content}</Text>
-        <Text>{index}</Text>
-        <Button onPress={() => setVisible(false)}>DISMISS</Button>
       </Card>
     </Modal>
   );
@@ -19,16 +20,18 @@ const TodoModal = ({ item, index, visible, setVisible }) => {
 
 const styles = StyleSheet.create({
   modal: {
-    margin: 0,
+    bottom: 0,
+    top: '50%',
     width: '100%',
-    height: '100%',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-end', // Align the modal at the bottom
   },
   card: {
     width: '100%',
+    height: '100%',
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    padding: 16,
   },
   backdrop: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',

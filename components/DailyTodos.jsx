@@ -25,7 +25,6 @@ const DailyTodos = () => {
     };
     fetchTodos();
   }, []);
-
   const { date, setDate } = useContext(DateContext);
   const [todos, setTodos] = useState(exampleData);
   const [input, setInput] = useState('');
@@ -34,7 +33,7 @@ const DailyTodos = () => {
   };
   const handleSubmit = async () => {
     const newTodoId = await todoUpdate(input);
-    setTodos([...todos, { id: newTodoId, content: input }]);
+    setTodos(prevTodos => [...prevTodos, { id: newTodoId, content: input }]);
     setInput('');
   };
 
@@ -56,18 +55,6 @@ const DailyTodos = () => {
     });
     const responseData = await response.json();
     return responseData.id;
-  };
-
-  const inputFooter = () => {
-    return (
-      <Input
-        multiline={true}
-        placeholder="Place your Text"
-        value={input}
-        onChangeText={nextInput => setInput(nextInput)}
-        onSubmitEditing={handleSubmit}
-      />
-    );
   };
 
   return (
@@ -95,10 +82,6 @@ const DailyTodos = () => {
 const styles = StyleSheet.create({
   listContainer: {
     paddingBottom: 20,
-  },
-  inputFooter: {
-    margin: 10,
-    padding: 10,
   },
 });
 
