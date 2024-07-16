@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Layout, Text, Icon, useTheme } from '@ui-kitten/components';
 import { addDays, subDays, startOfWeek, format } from 'date-fns';
+import { useTodos } from '@/contexts/TodoContext';
 
-const WeeklyCalendar = ({ onSelectDate, todos }) => {
+const WeeklyCalendar = ({ onSelectDate }) => {
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(currentWeek);
   const theme = useTheme();
-
+  const todos = useTodos();
   const getWeekDates = date => {
     const start = startOfWeek(date, { weekStartsOn: 1 });
     return Array.from({ length: 7 }, (_, i) => addDays(start, i));
@@ -101,7 +102,13 @@ const WeeklyCalendar = ({ onSelectDate, todos }) => {
               }}
             >
               <Text category="c1" style={{ color: theme['color-basic-800'] }}>
-                0
+                {
+                  todos.filter(
+                    t =>
+                      format(t.date, 'yyyy-MM-dd') ===
+                      format(date, 'yyyy-MM-dd'),
+                  ).length
+                }
               </Text>
             </Layout>
           </TouchableOpacity>
