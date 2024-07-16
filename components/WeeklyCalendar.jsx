@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Layout, Text, Icon, useTheme } from '@ui-kitten/components';
-import { addDays, subDays, startOfWeek, format } from 'date-fns';
 import { useTodos } from '@/contexts/TodoContext';
-
+import moment from 'moment-timezone';
 const WeeklyCalendar = ({ onSelectDate }) => {
-  const [currentWeek, setCurrentWeek] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(currentWeek);
+  const [currentDate, setcurrentDate] = useState(moment());
+  const [selectedDate, setSelectedDate] = useState(currentDate);
   const theme = useTheme();
   const todos = useTodos();
-  const getWeekDates = date => {
-    const start = startOfWeek(date, { weekStartsOn: 1 });
-    return Array.from({ length: 7 }, (_, i) => addDays(start, i));
-  };
 
-  const weekDates = getWeekDates(currentWeek);
+  const getWeekDates = date => {
+    const start = date.clone().startOf('ISOWeek').startOf('day');
+    const r = Array.from({ length: 7 }, (_, i) => start.clone().add(i, 'days'));
+    return r;
+  };
+  const weekDates = getWeekDates(currentDate);
 
   const navigateWeek = direction => {
-    setCurrentWeek(prevWeek =>
-      direction === 'next' ? addDays(prevWeek, 7) : subDays(prevWeek, 7),
+    setcurrentDate(prevDate =>
+      direction === 'next'
+        ? prevDate.clone().add(7, 'd')
+        : prevDate.clone().subtract(7, 'd'),
     );
   };
 
@@ -44,7 +46,7 @@ const WeeklyCalendar = ({ onSelectDate }) => {
             style={{ width: 24, height: 24 }}
           />
         </TouchableOpacity>
-        <Text category="h6">{format(weekDates[0], 'yyyy년 MM월')}</Text>
+        <Text category="h6">{currentDate.format('yyyy년 MM월')}</Text>
         <TouchableOpacity onPress={() => navigateWeek('next')}>
           <Icon
             name="arrow-ios-forward-outline"
@@ -62,36 +64,30 @@ const WeeklyCalendar = ({ onSelectDate }) => {
               alignItems: 'center',
               padding: 8,
               borderRadius: 8,
-              backgroundColor:
-                format(date, 'yyyy-MM-dd') ===
-                format(selectedDate, 'yyyy-MM-dd')
-                  ? theme['color-primary-500']
-                  : 'transparent',
+              backgroundColor: date.isSame(selectedDate, 'day')
+                ? theme['color-primary-500']
+                : 'transparent',
             }}
           >
             <Text
               category="s1"
               style={{
-                color:
-                  format(date, 'yyyy-MM-dd') ===
-                  format(selectedDate, 'yyyy-MM-dd')
-                    ? 'white'
-                    : theme['text-basic-color'],
+                color: date.isSame(selectedDate, 'day')
+                  ? 'white'
+                  : theme['text-basic-color'],
               }}
             >
-              {format(date, 'E')}
+              {date.format('ddd')}
             </Text>
             <Text
               category="h6"
               style={{
-                color:
-                  format(date, 'yyyy-MM-dd') ===
-                  format(selectedDate, 'yyyy-MM-dd')
-                    ? 'white'
-                    : theme['text-basic-color'],
+                color: date.isSame(selectedDate, 'day')
+                  ? 'white'
+                  : theme['text-basic-color'],
               }}
             >
-              {format(date, 'd')}
+              {date.format('D')}
             </Text>
             <Layout
               style={{
@@ -102,13 +98,7 @@ const WeeklyCalendar = ({ onSelectDate }) => {
               }}
             >
               <Text category="c1" style={{ color: theme['color-basic-800'] }}>
-                {
-                  todos.filter(
-                    t =>
-                      format(t.date, 'yyyy-MM-dd') ===
-                      format(date, 'yyyy-MM-dd'),
-                  ).length
-                }
+                {todos.filter(t => date.isSame(t.date, 'day')).length}
               </Text>
             </Layout>
           </TouchableOpacity>

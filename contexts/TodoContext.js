@@ -1,17 +1,21 @@
-import { createContext, useContext, useReducer } from 'react';
-
+import { createContext, useContext, useReducer, useState } from 'react';
+import moment from 'moment';
+moment.locale('ko)');
 const TodosContext = createContext(null);
 const TodoIdContext = createContext(null);
 const TodosDispatchContext = createContext(null);
+export const TimeContext = createContext(null);
 
 export function TodosProvider({ children }) {
   const [todos, dispatch] = useReducer(todosReducer, initialTodos);
-
+  const [time, setTime] = useState(moment());
   return (
     <TodosContext.Provider value={todos}>
       <TodosDispatchContext.Provider value={dispatch}>
         <TodoIdContext.Provider value={todos.length}>
-          {children}
+          <TimeContext.Provider value={(time, setTime)}>
+            {children}
+          </TimeContext.Provider>
         </TodoIdContext.Provider>
       </TodosDispatchContext.Provider>
     </TodosContext.Provider>
