@@ -2,13 +2,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Icon, ListItem, useTheme } from '@ui-kitten/components';
 import { useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
+import TodoModal from './TodoModal';
 
-const todosApi =
-  'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
+// const todosApi =
+//   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
+
+const todosApi = 'http://localhost:8000/todos/';
 
 const DailyTodo = ({ item, index }) => {
   const [completed, setCompleted] = useState(item.isCompleted);
+  const [visible, setVisible] = useState(false);
   const theme = useTheme();
+
   const reverseCheck = async () => {
     const userId = await AsyncStorage.getItem('userId');
     const accessToken = await AsyncStorage.getItem('accessToken');
@@ -48,7 +53,11 @@ const DailyTodo = ({ item, index }) => {
 
   const settingIcon = props => {
     return (
-      <TouchableOpacity onPress={() => {}}>
+      <TouchableOpacity
+        onPress={() => {
+          setVisible(true);
+        }}
+      >
         <Icon
           {...props}
           name="more-horizontal-outline"
@@ -65,29 +74,21 @@ const DailyTodo = ({ item, index }) => {
   };
 
   return (
-    <ListItem
-      title={item.content}
-      key={index}
-      accessoryLeft={props => checkIcon(props)}
-      accessoryRight={props => settingIcon(props)}
-    />
+    <>
+      <ListItem
+        title={item.content}
+        key={index}
+        accessoryLeft={props => checkIcon(props)}
+        accessoryRight={props => settingIcon(props)}
+      />
+      <TodoModal
+        item={item}
+        index={index}
+        visible={visible}
+        setVisible={setVisible}
+      />
+    </>
   );
-
-  // const fetchTodos = async () => {
-  //     const userId = await AsyncStorage.getItem('userId');
-  //     const accessToken = await AsyncStorage.getItem('accessToken');
-  //     const response = await fetch(`${todos}?user_id=${userId}`, {
-  //         method: 'GET',
-  //         headers: {
-  //             'Content-Type': 'application/json',
-  //             'Authorization': `Bearer ${accessToken}`,
-  //         },
-  //     });
-  //     if(response.error) {
-  //         return
-  //     }
-  //     const responseData = await response.json();
-  //     setTodos(responseData);
 };
 const styles = StyleSheet.create({
   icon_checked: {
