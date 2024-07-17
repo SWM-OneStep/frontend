@@ -30,7 +30,6 @@ const useTodoStore = create(set => ({
     return responseData.id;
   },
   deleteTodo: async id => {
-    console.log('deleteTodo called with id', id);
     const bodyData = {
       user_id: 1,
       todo_id: id,
@@ -43,12 +42,25 @@ const useTodoStore = create(set => ({
       body: JSON.stringify(bodyData),
     });
     const responseData = await response.json();
-    console.log('responseData', responseData);
     set(state => ({
       todos: state.todos.filter(todo => todo.id !== id),
     }));
   },
-  editTodo: todo => {
+  editTodo: async todo => {
+    const editData = {
+      user_id: 1,
+      todo_id: todo.id,
+      content: todo.content,
+    };
+    const response = await fetch(todosApi, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        // Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(editData),
+    });
+    await response.json();
     set(state => ({
       todos: state.todos.map(t => (t.id === todo.id ? todo : t)),
     }));

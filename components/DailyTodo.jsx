@@ -1,7 +1,8 @@
-import { Icon, ListItem, useTheme } from '@ui-kitten/components';
+import { Icon, ListItem, useTheme, Input, Text } from '@ui-kitten/components';
 import { useCallback, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import TodoModal from './TodoModal';
+import useTodoStore from '@/contexts/TodoStore';
 
 const todosApi =
   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
@@ -11,7 +12,10 @@ const todosApi =
 const DailyTodo = ({ item, index }) => {
   const [completed, setCompleted] = useState(item.isCompleted);
   const [visible, setVisible] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [content, setContent] = useState(item.content);
   const theme = useTheme();
+  const editTodo = useTodoStore(state => state.editTodo);
 
   const openModal = useCallback(() => {
     setVisible(true);
@@ -52,13 +56,36 @@ const DailyTodo = ({ item, index }) => {
   return (
     <>
       <ListItem
-        title={item.content}
+        title={
+          isEditing ? (
+            <Input
+              value={content}
+              onChangeText={value => setContent(value)}
+              onSubmitEditing={() => {
+                editTodo({
+                  ...item,
+                  content,
+                });
+                setIsEditing(false);
+              }}
+              autoFocus={true}
+            />
+          ) : (
+            <Text>{item.content}</Text>
+          )
+        }
         key={index}
         accessoryLeft={props => checkIcon(props)}
         accessoryRight={props => settingIcon(props)}
         onPress={() => setVisible(true)}
       />
-      <TodoModal item={item} visible={visible} setVisible={setVisible} />
+      <TodoModal
+        item={item}
+        visible={visible}
+        isEditing={isEditing}
+        setVisible={setVisible}
+        setIsEditing={setIsEditing}
+      />
     </>
   );
 };
