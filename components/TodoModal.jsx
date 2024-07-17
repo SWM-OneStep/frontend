@@ -27,7 +27,6 @@ const TodoModal = ({ item, visible, setVisible }) => {
   };
 
   const handleDelete = async item_id => {
-    console.log('handleDelete called');
     // const token = AsyncStorage.getItem('accessToken');
     const response = await fetch(`${todoApi}$?user_id=1&item_id=${item_id}`, {
       method: 'DELETE',
