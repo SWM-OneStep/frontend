@@ -1,7 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Icon, ListItem, useTheme } from '@ui-kitten/components';
 import { useCallback, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import TodoModal from './TodoModal';
 
 const todosApi =

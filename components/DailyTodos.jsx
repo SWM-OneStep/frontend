@@ -1,7 +1,7 @@
 import { DateContext } from '@/contexts/DateContext';
 import { Input, Layout, List } from '@ui-kitten/components';
 import { useContext, useEffect, useState } from 'react';
-import { KeyboardAvoidingView, StyleSheet } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native';
 import DailyTodo from './DailyTodo';
 
 const todosApi =
@@ -78,11 +78,5 @@ const DailyTodos = () => {
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  listContainer: {
-    paddingBottom: 20,
-  },
-});
 
 export default DailyTodos;
