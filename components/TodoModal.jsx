@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import useTodoStore from '@/contexts/TodoStore';
 import { Button, Card, Icon, Modal, Text } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 
@@ -14,29 +14,25 @@ const todoApi =
   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
 const TodoModal = ({ item, visible, setVisible }) => {
+  const editTodo = useTodoStore(state => state.editTodo);
+  const deleteTodo = useTodoStore(state => state.deleteTodo);
   const handleEdit = async ({ item_id }) => {
     // const token = AsyncStorage.getItem('accessToken');
-    const response = await fetch(`${todoApi}$?user_id=1&item_id=${item_id}`, {
+    const response = await fetch(`${todoApi}$?user_id=1&todo_id=${item_id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         // Authorization: 'Bearer ' + token,
       },
     });
+    editTodo();
     return await response.json();
   };
 
   const handleDelete = async item_id => {
-    // const token = AsyncStorage.getItem('accessToken');
-    const response = await fetch(`${todoApi}$?user_id=1&item_id=${item_id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        // Authorization: 'Bearer ' + token,
-      },
-    });
+    console.log('handleDelete called');
     setVisible(false);
-    return await response.json();
+    deleteTodo(item_id);
   };
 
   return (
@@ -58,9 +54,7 @@ const TodoModal = ({ item, visible, setVisible }) => {
               accessoryLeft={editIcon}
               status="basic"
               style={styles.button}
-              onPress={item => {
-                handleEdit(item.id);
-              }}
+              onPress={handleEdit(item.id)}
             >
               <Text>수정하기</Text>
             </Button>
@@ -68,7 +62,7 @@ const TodoModal = ({ item, visible, setVisible }) => {
               accessoryLeft={deleteIcon}
               status="basic"
               style={styles.button}
-              onPress={item => handleDelete(item.id)}
+              onPress={() => handleDelete(item.id)}
             >
               <Text>삭제하기</Text>
             </Button>

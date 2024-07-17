@@ -1,6 +1,6 @@
-import { DateContext } from '@/contexts/DateContext';
+import useTodoStore from '@/contexts/TodoStore';
 import { Input, Layout, List } from '@ui-kitten/components';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView } from 'react-native';
 import DailyTodo from './DailyTodo';
 
@@ -9,35 +9,25 @@ const todosApi =
 
 // const todosApi = 'http://10.0.2.2:8000/todos/';
 
-const exampleData = [];
-
 const DailyTodos = () => {
+  const todos = useTodoStore(state => state.todos);
+  const addTodo = useTodoStore(state => state.addTodo);
+  const editTodo = useTodoStore(state => state.editTodo);
+  const fetchTodo = useTodoStore(state => state.fetchTodo);
+
   useEffect(() => {
-    const fetchTodos = async () => {
-      const response = await fetch(`${todosApi}?user_id=1`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const responseData = await response.json();
-      setTodos(responseData);
-    };
-    fetchTodos();
-  }, []);
-  const { date, setDate } = useContext(DateContext);
-  const [todos, setTodos] = useState(exampleData);
+    fetchTodo();
+  }, [fetchTodo]);
   const [input, setInput] = useState('');
   const renderTodo = ({ item, index }) => {
     return <DailyTodo item={item} index={index} />;
   };
   const handleSubmit = async () => {
-    const newTodoId = await todoUpdate(input);
-    setTodos(prevTodos => [...prevTodos, { id: newTodoId, content: input }]);
+    addTodo(input);
     setInput('');
   };
 
-  const todoUpdate = async content => {
+  const todoCreate = async content => {
     const date = new Date().toISOString().split('T')[0];
     const response = await fetch(todosApi, {
       method: 'POST',
