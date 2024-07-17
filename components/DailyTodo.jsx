@@ -10,12 +10,13 @@ const todosApi =
 // const todosApi = 'http://localhost:8000/todos/';
 
 const DailyTodo = ({ item, index }) => {
-  const [completed, setCompleted] = useState(item.isCompleted);
+  const [completed, setCompleted] = useState(item.is_completed);
   const [visible, setVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
   const editTodo = useTodoStore(state => state.editTodo);
+  const toggleTodo = useTodoStore(state => state.toggleTodo);
 
   const openModal = useCallback(() => {
     setVisible(true);
@@ -24,7 +25,8 @@ const DailyTodo = ({ item, index }) => {
   const handleCheck = useCallback(() => {
     setCompleted(!completed);
     // API 요청 보내서 todo 상태 변화시키기
-  }, [completed]);
+    toggleTodo({ ...item });
+  }, [completed, item, toggleTodo]);
 
   const checkIcon = props => {
     return (

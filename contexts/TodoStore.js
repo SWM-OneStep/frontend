@@ -75,6 +75,29 @@ const useTodoStore = create(set => ({
     const responseData = await response.json();
     set({ todos: responseData });
   },
+  toggleTodo: async todo => {
+    const changedTodoApiData = {
+      todo_id: todo.id,
+      user_id: '1',
+      is_completed: !todo.is_completed,
+    };
+    let changedTodoFrontData = todo;
+    changedTodoFrontData.is_completed = !todo.is_completed;
+
+    const response = await fetch(todosApi, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(changedTodoApiData),
+    });
+    await response.json();
+    set(state => ({
+      todos: state.todos.map(t =>
+        t.id === todo.id ? changedTodoFrontData : t,
+      ),
+    }));
+  },
 }));
 
 export default useTodoStore;
