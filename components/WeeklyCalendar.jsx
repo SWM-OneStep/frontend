@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Layout, Text, Icon, useTheme } from '@ui-kitten/components';
 import { useTodos } from '@/contexts/TodoContext';
-import moment from 'moment-timezone';
+import moment from 'moment';
+import 'moment/locale/ko';
 const WeeklyCalendar = ({ onSelectDate }) => {
   const [currentDate, setcurrentDate] = useState(moment());
   const [selectedDate, setSelectedDate] = useState(currentDate);
   const theme = useTheme();
   const todos = useTodos();
-
   const getWeekDates = date => {
-    const start = date.clone().startOf('ISOWeek').startOf('day');
+    const start = date.clone().startOf('ISOWeek');
     const r = Array.from({ length: 7 }, (_, i) => start.clone().add(i, 'days'));
     return r;
   };
-  const weekDates = getWeekDates(currentDate);
+  const [weekDates, setwWeekDates] = useState(getWeekDates(currentDate));
 
   const navigateWeek = direction => {
     setcurrentDate(prevDate =>
@@ -23,12 +23,22 @@ const WeeklyCalendar = ({ onSelectDate }) => {
         : prevDate.clone().subtract(7, 'd'),
     );
   };
+  useEffect(() => {
+    setwWeekDates(getWeekDates(currentDate));
+  }, [currentDate]);
+  useEffect(() => {
+    moment().isBetween(weekDates[0], weekDates[6])
+      ? setSelectedDate(currentDate)
+      : setSelectedDate(weekDates[0]);
+  }, [weekDates, setSelectedDate, currentDate]);
 
   const handleDateSelect = date => {
     setSelectedDate(date);
     // onSelectDate(date);
   };
-
+  console.log(currentDate);
+  console.log(selectedDate);
+  console.log(moment().isBetween(weekDates[0], weekDates[6]));
   return (
     <Layout style={{ padding: 16 }}>
       <Layout
@@ -46,7 +56,7 @@ const WeeklyCalendar = ({ onSelectDate }) => {
             style={{ width: 24, height: 24 }}
           />
         </TouchableOpacity>
-        <Text category="h6">{currentDate.format('yyyy년 MM월')}</Text>
+        <Text category="h6">{selectedDate.format('yyyy년 MM월')}</Text>
         <TouchableOpacity onPress={() => navigateWeek('next')}>
           <Icon
             name="arrow-ios-forward-outline"
