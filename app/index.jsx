@@ -7,6 +7,7 @@ import { Link, router } from 'expo-router';
 import { GoogleIcon } from './../components/GoogleIcon';
 import { LoginContext } from '@/contexts/LoginContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
 
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
@@ -14,8 +15,7 @@ const androidClientId =
 const loginApi =
   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/login/google/';
 
-// const loginApi =
-//   'http://10.0.2.2:8000/auth/login/google/';
+// const loginApi = 'http://10.0.2.2:8000/auth/login/google/';
 
 const imageSource = require('../assets/todo_logo.png');
 
@@ -26,10 +26,28 @@ const Login = () => {
   };
   const [request, response, promptAsync] = Google.useAuthRequest(config);
 
+  const getDeviceToken = useCallback(async () => {
+    try {
+      const token = await AsyncStorage.getItem('deviceToken');
+      if (token === null) {
+        const token2 = await messaging().getToken();
+        await AsyncStorage.setItem('deviceToken', token2);
+        return token2;
+      }
+      return token;
+    } catch (error) {
+      const token = await messaging().getToken();
+      await AsyncStorage.setItem('deviceToken', token);
+      return token;
+    }
+  }, []);
+
   const handleToken = useCallback(async () => {
     const getToken = async ({ token }) => {
+      const deviceToken = await getDeviceToken();
       const tokenData = {
         token: token,
+        deviceToken: deviceToken,
       };
       const localResponse = await fetch(loginApi, {
         method: 'POST', // HTTP 메서드 지정
@@ -61,8 +79,9 @@ const Login = () => {
   }, [response, setIsLoggedIn]);
 
   useEffect(() => {
+    getDeviceToken();
     handleToken();
-  }, [handleToken]);
+  }, [handleToken, getDeviceToken]);
 
   return (
     <View style={styles.container}>
