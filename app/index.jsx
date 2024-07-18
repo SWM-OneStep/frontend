@@ -26,7 +26,7 @@ const Login = () => {
   };
   const [request, response, promptAsync] = Google.useAuthRequest(config);
 
-  const handleToken = useCallback(() => {
+  const handleToken = useCallback(async () => {
     const getToken = async ({ token }) => {
       const tokenData = {
         token: token,
@@ -54,7 +54,7 @@ const Login = () => {
       if (token) {
         // 여기서 토큰을 사용하여 추가 작업을 수행할 수 있습니다.
         // 예: 상태 업데이트, API 호출 등
-        getToken({ token });
+        await getToken({ token });
         router.replace('(tabs)');
       }
     }
