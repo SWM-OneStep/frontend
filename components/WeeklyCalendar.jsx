@@ -4,9 +4,8 @@ import { Layout, Text, Icon, useTheme } from '@ui-kitten/components';
 import { useTodos } from '@/contexts/TodoContext';
 import moment from 'moment';
 import 'moment/locale/ko';
-const WeeklyCalendar = ({ onSelectDate }) => {
+const WeeklyCalendar = ({ selectedDate, onSelectedDate }) => {
   const [currentDate, setcurrentDate] = useState(moment());
-  const [selectedDate, setSelectedDate] = useState(currentDate);
   const theme = useTheme();
   const todos = useTodos();
   const getWeekDates = date => {
@@ -28,17 +27,14 @@ const WeeklyCalendar = ({ onSelectDate }) => {
   }, [currentDate]);
   useEffect(() => {
     moment().isBetween(weekDates[0], weekDates[6])
-      ? setSelectedDate(currentDate)
-      : setSelectedDate(weekDates[0]);
-  }, [weekDates, setSelectedDate, currentDate]);
+      ? onSelectedDate(currentDate)
+      : onSelectedDate(weekDates[0]);
+  }, [weekDates, onSelectedDate, currentDate]);
 
   const handleDateSelect = date => {
-    setSelectedDate(date);
-    // onSelectDate(date);
+    onSelectedDate(date);
   };
-  console.log(currentDate);
-  console.log(selectedDate);
-  console.log(moment().isBetween(weekDates[0], weekDates[6]));
+
   return (
     <Layout style={{ padding: 16 }}>
       <Layout
