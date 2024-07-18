@@ -26,6 +26,8 @@ const WeeklyCalendar = ({ onSelectDate, todos }) => {
     // onSelectDate(date);
   };
 
+  
+
   return (
     <Layout style={{ padding: 16 }}>
       <Layout
