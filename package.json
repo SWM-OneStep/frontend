@@ -25,6 +25,8 @@
     "expo-router": "~3.5.17",
     "expo-status-bar": "~1.12.1",
     "expo-web-browser": "~13.0.3",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.2",
