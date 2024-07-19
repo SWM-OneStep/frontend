@@ -41,9 +41,14 @@ const Login = () => {
       }
       return token;
     } catch (error) {
-      const token = await messaging().getToken();
-      await AsyncStorage.setItem('deviceToken', token);
-      return token;
+      try {
+        const token = await messaging().getToken();
+        await AsyncStorage.setItem('deviceToken', token);
+        return token;
+      } catch (e) {
+        router.replace('/index');
+        return null;
+      }
     }
   }, []);
 
