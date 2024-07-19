@@ -76,7 +76,7 @@ const Login = () => {
         router.replace('(tabs)');
       }
     }
-  }, [response, setIsLoggedIn]);
+  }, [response, setIsLoggedIn, getDeviceToken]);
 
   useEffect(() => {
     getDeviceToken();
