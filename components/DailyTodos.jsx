@@ -2,7 +2,7 @@ import useTodoStore from '@/contexts/TodoStore';
 import { Input, Layout, List } from '@ui-kitten/components';
 import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView } from 'react-native';
-import DailyTodo from './DailyTodo';
+import DailyTodo from '@/components/DailyTodo';
 
 const todosApi =
   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
@@ -12,7 +12,6 @@ const todosApi =
 const DailyTodos = () => {
   const todos = useTodoStore(state => state.todos);
   const addTodo = useTodoStore(state => state.addTodo);
-  const editTodo = useTodoStore(state => state.editTodo);
   const fetchTodo = useTodoStore(state => state.fetchTodo);
 
   useEffect(() => {
@@ -25,26 +24,6 @@ const DailyTodos = () => {
   const handleSubmit = async () => {
     addTodo(input);
     setInput('');
-  };
-
-  const todoCreate = async content => {
-    const date = new Date().toISOString().split('T')[0];
-    const response = await fetch(todosApi, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user_id: '1',
-        start_date: date,
-        deadline: null,
-        content: content,
-        category: '#FFFFFF',
-        parent_id: null,
-      }),
-    });
-    const responseData = await response.json();
-    return responseData.id;
   };
 
   return (

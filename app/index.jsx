@@ -1,12 +1,13 @@
+import { LoginContext } from '@/contexts/LoginContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
+import { Button, Text } from '@ui-kitten/components';
 import * as Google from 'expo-auth-session/providers/google';
+import { Link, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useContext, useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
-import { Text, Button } from '@ui-kitten/components';
-import { Link, router } from 'expo-router';
 import { GoogleIcon } from './../components/GoogleIcon';
-import { LoginContext } from '@/contexts/LoginContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
@@ -14,8 +15,12 @@ const androidClientId =
 const loginApi =
   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/login/google/';
 
-// const loginApi =
-//   'http://10.0.2.2:8000/auth/login/google/';
+const userApi =
+  'http://http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/user/';
+// 시점에 따라 aws ec2에 포함되지 않았을 수 있음 -> 빠른 시일 내에 자동배포로 이 문제 해결 예정
+
+// const loginApi = 'http://10.0.2.2:8000/auth/login/google/';
+// const userApi = 'http://10.0.2.2:8000/auth/user/';
 
 const imageSource = require('../assets/todo_logo.png');
 
@@ -26,10 +31,49 @@ const Login = () => {
   };
   const [request, response, promptAsync] = Google.useAuthRequest(config);
 
-  const handleToken = useCallback(() => {
+  const getDeviceToken = useCallback(async () => {
+    try {
+      const token = await AsyncStorage.getItem('deviceToken');
+      if (token === null) {
+        const token2 = await messaging().getToken();
+        await AsyncStorage.setItem('deviceToken', token2);
+        return token2;
+      }
+      return token;
+    } catch (error) {
+      try {
+        const token = await messaging().getToken();
+        await AsyncStorage.setItem('deviceToken', token);
+        return token;
+      } catch (e) {
+        router.replace('/index');
+        return null;
+      }
+    }
+  }, []);
+
+  const getUserInfo = useCallback(async () => {
+    const jwtAccessToken = await AsyncStorage.getItem('accessToken');
+    const localResponse = await fetch(userApi, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwtAccessToken}`,
+      },
+    });
+    if (!localResponse.ok || localResponse.error) {
+      return null;
+    }
+    const responseData = await localResponse.json();
+    return responseData;
+  }, []);
+
+  const handleToken = useCallback(async () => {
     const getToken = async ({ token }) => {
+      const deviceToken = await getDeviceToken();
       const tokenData = {
         token: token,
+        deviceToken: deviceToken,
       };
       const localResponse = await fetch(loginApi, {
         method: 'POST', // HTTP 메서드 지정
@@ -54,11 +98,12 @@ const Login = () => {
       if (token) {
         // 여기서 토큰을 사용하여 추가 작업을 수행할 수 있습니다.
         // 예: 상태 업데이트, API 호출 등
-        getToken({ token });
+        await getToken({ token });
+        const userInfoData = await getUserInfo();
         router.replace('(tabs)');
       }
     }
-  }, [response, setIsLoggedIn]);
+  }, [response, setIsLoggedIn, getDeviceToken, getUserInfo]);
 
   useEffect(() => {
     handleToken();
