@@ -70,13 +70,14 @@ const DailySubTodo = ({ item }) => {
               autoFocus={true}
             />
           ) : (
-            <Text style={{ marginLeft: 20 }}>{item.content}</Text>
+            <Text>{item.content}</Text>
           )
         }
         key={item.id}
         accessoryLeft={props => checkIcon(props)}
         accessoryRight={props => settingIcon(props)}
         onPress={() => setVisible(true)}
+        style={{ paddingLeft: 40 }}
       />
       <TodoModal
         item={item}
