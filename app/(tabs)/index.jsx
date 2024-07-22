@@ -1,3 +1,4 @@
+import CategoryScroll from '@/components/CategoryScroll';
 import DailyTodos from '@/components/DailyTodos';
 import WeeklyCalendar from '@/components/WeeklyCalendar';
 import moment from 'moment';
@@ -14,6 +15,7 @@ const TodayView = () => {
           selectedDate={selectedDate}
           onSelectedDate={setSelectedDate}
         />
+        <CategoryScroll />
         <DailyTodos />
       </KeyboardAvoidingView>
     </SafeAreaView>

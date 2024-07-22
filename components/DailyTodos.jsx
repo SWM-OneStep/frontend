@@ -80,7 +80,7 @@ const DailyTodos = () => {
   const handleSubmit = async () => {
     const startDate = new Date().toISOString().split('T')[0];
     const endDate = new Date().toISOString().split('T')[0];
-    const categoryId = '1';
+    const categoryId = 1;
     // addTodo(startDate, endDate, input, categoryId);
     setInput('');
   };
@@ -89,7 +89,8 @@ const DailyTodos = () => {
     <KeyboardAvoidingView>
       <Layout>
         <List
-          data={todos.filter(todo => todo.category_id === categoryId)}
+          // data={todos.filter(todo => todo.category_id === categoryId)}
+          data={todos}
           renderItem={renderTodo}
           contentContainerStyle={{ paddingBottom: 200 }}
           ListFooterComponent={

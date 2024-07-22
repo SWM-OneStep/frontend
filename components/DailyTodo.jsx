@@ -66,6 +66,8 @@ const DailyTodo = ({ item }) => {
     );
   };
 
+  console.log('DailyTodo item', item);
+
   return (
     // <>
     //   {item.map((subTodo, index) => {
