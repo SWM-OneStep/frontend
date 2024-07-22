@@ -2,10 +2,11 @@ import useTodoStore from '@/contexts/TodoStore';
 import { Icon, Input, ListItem, Text, useTheme } from '@ui-kitten/components';
 import { useCallback, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
-import DailyTodo from './DailyTodo';
 import TodoModal from './TodoModal';
 
 const DailySubTodo = ({ item }) => {
+  console.log('DailySubTodo item', item);
+
   const [completed, setCompleted] = useState(item.is_completed);
   const [visible, setVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -49,10 +50,6 @@ const DailySubTodo = ({ item }) => {
         />
       </TouchableOpacity>
     );
-  };
-
-  const renderSubTodo = ({ item }) => {
-    return <DailyTodo item={item} />;
   };
 
   return (

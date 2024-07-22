@@ -10,11 +10,19 @@ const exampleTodos = [
     todos: [
       {
         content: 'Item 1',
-        subTodos: [{ content: 'Sub Item 1.1' }, { content: 'Sub Item 1.2' }],
+        isCompleted: false,
+        subTodos: [
+          { content: 'Sub Item 1.1', isCompleted: false },
+          { content: 'Sub Item 1.2', isCompleted: false },
+        ],
       },
       {
         content: 'Item 2',
-        subTodos: [{ content: 'Sub Item 2.1' }, { content: 'Sub Item 2.2' }],
+        isCompleted: false,
+        subTodos: [
+          { content: 'Sub Item 2.1', isCompleted: false },
+          { content: 'Sub Item 2.2', isCompleted: false },
+        ],
       },
     ],
   },
@@ -36,9 +44,18 @@ const exampleTodos = [
   },
 ];
 
+const renderCategoryTodos = ({ item }) => {
+  console.log('CategoryTodos renderCategoryTodos item', item);
+  return <DailyTodos todos={item.todos} />;
+};
+
 const CategoryTodos = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const selectedTodos = exampleTodos[0];
+  const selectedTodos = exampleTodos.filter(
+    (todo, index) => todo.category_id === 1,
+  )[0];
+
+  console.log('CategoryTodos selectedTodos', selectedTodos);
 
   return <DailyTodos todos={selectedTodos} />;
 };

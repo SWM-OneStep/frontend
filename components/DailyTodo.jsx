@@ -18,7 +18,9 @@ import TodoModal from './TodoModal';
 const todosApi = 'http://10.0.2.2:8000/todos/';
 
 const DailyTodo = ({ item }) => {
-  const [completed, setCompleted] = useState(item.is_completed);
+  console.log('DailyTodo item', item);
+
+  const [completed, setCompleted] = useState(item.isCompleted);
   const [visible, setVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(item.content);
@@ -37,6 +39,7 @@ const DailyTodo = ({ item }) => {
   }, [completed, item, toggleTodo]);
 
   const renderSubTodo = ({ item }) => {
+    console.log('renderSubTodo item', item);
     return <DailySubTodo item={item} />;
   };
 

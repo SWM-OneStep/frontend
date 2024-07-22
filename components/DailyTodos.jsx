@@ -9,6 +9,7 @@ import DailyTodo from './DailyTodo';
 // const todosApi = 'http://10.0.2.2:8000/todos/';
 
 const DailyTodos = ({ todos }) => {
+  console.log('DailyTodos todos', todos);
   // const todos = useTodoStore(state => state.todos);
   // const addTodo = useTodoStore(state => state.addTodo);
   // const fetchTodo = useTodoStore(state => state.fetchTodo);
@@ -19,18 +20,15 @@ const DailyTodos = ({ todos }) => {
 
   const getFirstCategoryId = data => {
     let categoryIds = [];
-    console.log('getFirstCategoryId', data);
-    data.forEach(todo => {
-      categoryIds.push(todo.category_id);
-    });
-    return categoryIds[0];
+    console.log('getFirstCategoryId data', data);
+    return data.category_id;
   };
 
   const [input, setInput] = useState('');
-  console.log('DailyTodos todos', todos);
   const [categoryId, setCategoryId] = useState(getFirstCategoryId(todos));
 
   const renderTodo = ({ item, index }) => {
+    console.log('renderTodo item', item);
     return (
       <View>
         <DailyTodo item={item} />
@@ -49,7 +47,7 @@ const DailyTodos = ({ todos }) => {
     <KeyboardAvoidingView>
       <Layout>
         <List
-          data={todos}
+          data={todos.todos}
           renderItem={renderTodo}
           contentContainerStyle={{ paddingBottom: 200 }}
           ListFooterComponent={
