@@ -1,22 +1,11 @@
 import useTodoStore from '@/contexts/TodoStore';
-import {
-  Icon,
-  Input,
-  List,
-  ListItem,
-  Text,
-  useTheme,
-} from '@ui-kitten/components';
+import { Icon, Input, ListItem, Text, useTheme } from '@ui-kitten/components';
 import { useCallback, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
+import DailyTodo from './DailyTodo';
 import TodoModal from './TodoModal';
 
-// const todosApi =
-//   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
-
-const todosApi = 'http://10.0.2.2:8000/todos/';
-
-const DailyTodo = ({ item }) => {
+const DailySubTodo = ({ item }) => {
   const [completed, setCompleted] = useState(item.is_completed);
   const [visible, setVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -34,10 +23,6 @@ const DailyTodo = ({ item }) => {
     // API 요청 보내서 todo 상태 변화시키기
     toggleTodo({ ...item });
   }, [completed, item, toggleTodo]);
-
-  const renderSubTodo = ({ item }) => {
-    return <DailyTodo item={item} />;
-  };
 
   const checkIcon = props => {
     return (
@@ -66,12 +51,11 @@ const DailyTodo = ({ item }) => {
     );
   };
 
+  const renderSubTodo = ({ item }) => {
+    return <DailyTodo item={item} />;
+  };
+
   return (
-    // <>
-    //   {item.map((subTodo, index) => {
-    //     return <DailyTodo key={index} item={subTodo} />;
-    //   })}
-    // </>
     <>
       <ListItem
         title={
@@ -97,11 +81,6 @@ const DailyTodo = ({ item }) => {
         accessoryRight={props => settingIcon(props)}
         onPress={() => setVisible(true)}
       />
-      <List
-        data={item.subTodos}
-        renderItem={renderSubTodo}
-        contentContainerStyle={{ marginLeft: 10 }}
-      />
       <TodoModal
         item={item}
         visible={visible}
@@ -113,4 +92,4 @@ const DailyTodo = ({ item }) => {
   );
 };
 
-export default DailyTodo;
+export default DailySubTodo;

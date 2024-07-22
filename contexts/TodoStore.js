@@ -1,31 +1,35 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 
-const todosApi =
-  'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
+// const todosApi =
+//   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
+
+const todosApi = 'http://10.0.2.2:8000/todos/';
 
 const useTodoStore = create(set => ({
   todos: [],
-  addTodo: async content => {
-    const date = new Date().toISOString().split('T')[0];
+  selectedCategory: null,
+  setSelectedCategory: category => {
+    set({ selectedCategory: category });
+  },
+  addTodo: async (startDate, endDate, content, categoryId) => {
+    const apiData = {
+      start_date: startDate,
+      end_date: endDate,
+      content: content,
+      category_id: categoryId,
+    };
+    const accessToken = await AsyncStorage.getItem('accessToken');
     const response = await fetch(todosApi, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
       },
-      body: JSON.stringify({
-        user_id: '1',
-        start_date: date,
-        deadline: null,
-        content: content,
-        category: '#FFFFFF',
-        parent_id: null,
-      }),
+      body: JSON.stringify(apiData),
     });
     const responseData = await response.json();
-    const todo = {
-      id: responseData.id,
-      content: content,
-    };
+    const todo = responseData;
     set(state => ({ todos: [...state.todos, todo] }));
     return responseData.id;
   },

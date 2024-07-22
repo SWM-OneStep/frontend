@@ -10,8 +10,10 @@ const deleteIcon = props => {
   return <Icon {...props} name="trash-2-outline" fill="red" />;
 };
 
-const todoApi =
-  'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
+// const todoApi =
+//   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
+
+const todoApi = 'http://10.0.2.2:8000/todos/';
 
 const TodoModal = ({ item, visible, isEditing, setVisible, setIsEditing }) => {
   const deleteTodo = useTodoStore(state => state.deleteTodo);
