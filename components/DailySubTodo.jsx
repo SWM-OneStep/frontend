@@ -73,7 +73,7 @@ const DailySubTodo = ({ item }) => {
               autoFocus={true}
             />
           ) : (
-            <Text>{item.content}</Text>
+            <Text style={{ marginLeft: 20 }}>{item.content}</Text>
           )
         }
         key={item.id}

@@ -9,6 +9,7 @@ import {
 } from '@ui-kitten/components';
 import { useCallback, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
+import DailySubTodo from './DailySubTodo';
 import TodoModal from './TodoModal';
 
 // const todosApi =
@@ -36,7 +37,7 @@ const DailyTodo = ({ item }) => {
   }, [completed, item, toggleTodo]);
 
   const renderSubTodo = ({ item }) => {
-    return <DailyTodo item={item} />;
+    return <DailySubTodo item={item} />;
   };
 
   const checkIcon = props => {
@@ -66,14 +67,7 @@ const DailyTodo = ({ item }) => {
     );
   };
 
-  console.log('DailyTodo item', item);
-
   return (
-    // <>
-    //   {item.map((subTodo, index) => {
-    //     return <DailyTodo key={index} item={subTodo} />;
-    //   })}
-    // </>
     <>
       <ListItem
         title={
@@ -102,7 +96,7 @@ const DailyTodo = ({ item }) => {
       <List
         data={item.subTodos}
         renderItem={renderSubTodo}
-        contentContainerStyle={{ marginLeft: 10 }}
+        contentContainerStyle={{ marginLeft: 40, paddingLeft: 40 }}
       />
       <TodoModal
         item={item}

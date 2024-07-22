@@ -8,44 +8,7 @@ import DailyTodo from './DailyTodo';
 
 // const todosApi = 'http://10.0.2.2:8000/todos/';
 
-const exampleTodos = [
-  {
-    category_id: 1,
-    category_color: '#FFC0CB',
-    category_name: 'work',
-    user_id: 1,
-    todos: [
-      {
-        content: 'Item 1',
-        subTodos: [{ content: 'Sub Item 1.1' }, { content: 'Sub Item 1.2' }],
-      },
-      {
-        content: 'Item 2',
-        subTodos: [{ content: 'Sub Item 2.1' }, { content: 'Sub Item 2.2' }],
-      },
-    ],
-  },
-  {
-    category_id: 2,
-    category_color: '#FFC0CB',
-    category_name: 'exercise',
-    user_id: 1,
-    todos: [
-      {
-        content: 'Item 3',
-        subTodos: [{ content: 'Sub Item 3.1' }, { content: 'Sub Item 3.2' }],
-      },
-      {
-        content: 'Item 4',
-        subTodos: [{ content: 'Sub Item 4.1' }, { content: 'Sub Item 4.2' }],
-      },
-    ],
-  },
-];
-
-const DailyTodos = () => {
-  const todos = exampleTodos;
-
+const DailyTodos = ({ todos }) => {
   // const todos = useTodoStore(state => state.todos);
   // const addTodo = useTodoStore(state => state.addTodo);
   // const fetchTodo = useTodoStore(state => state.fetchTodo);
@@ -56,6 +19,7 @@ const DailyTodos = () => {
 
   const getFirstCategoryId = data => {
     let categoryIds = [];
+    console.log('getFirstCategoryId', data);
     data.forEach(todo => {
       categoryIds.push(todo.category_id);
     });
@@ -63,17 +27,13 @@ const DailyTodos = () => {
   };
 
   const [input, setInput] = useState('');
+  console.log('DailyTodos todos', todos);
   const [categoryId, setCategoryId] = useState(getFirstCategoryId(todos));
-
-  const renderSubTodo = ({ item }) => {
-    return <DailyTodo item={item} />;
-  };
 
   const renderTodo = ({ item, index }) => {
     return (
       <View>
         <DailyTodo item={item} />
-        <List data={item.subTodos} renderItem={renderSubTodo} />
       </View>
     );
   };
@@ -89,7 +49,6 @@ const DailyTodos = () => {
     <KeyboardAvoidingView>
       <Layout>
         <List
-          // data={todos.filter(todo => todo.category_id === categoryId)}
           data={todos}
           renderItem={renderTodo}
           contentContainerStyle={{ paddingBottom: 200 }}

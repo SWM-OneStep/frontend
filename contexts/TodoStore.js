@@ -8,7 +8,6 @@ const todosApi = 'http://10.0.2.2:8000/todos/';
 
 const useTodoStore = create(set => ({
   todos: [],
-  selectedCategory: null,
   setSelectedCategory: category => {
     set({ selectedCategory: category });
   },

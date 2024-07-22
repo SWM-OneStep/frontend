@@ -1,5 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Layout } from '@ui-kitten/components';
-import { useState } from 'react';
 import { ScrollView } from 'react-native';
 import CategoryButton from './CategoryButton';
 
@@ -11,8 +11,28 @@ const categories = [
   { id: 5, title: 'Item 5', description: 'Description 5', color: '#929292' },
 ];
 
+const categoriesApi = 'http://10.0.2.2:8000/todos/category/';
+
 const CategoryScroll = () => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  // useEffect(() => {
+  //   fetchCategories();
+  // });
+
+  const fetchCategories = async () => {
+    const accessToken = await AsyncStorage.getItem('accessToken');
+    const categoriesResponse = await fetch(categoriesApi, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const categoriesData = await categoriesResponse.json();
+    // setCategories(categoriesData);
+  };
+
+  // const { selectedCategory, setSelectedCategory, categories, setCategories } =
+  //   useContext(CategoryContext);
 
   return (
     <Layout>
