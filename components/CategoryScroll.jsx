@@ -11,7 +11,8 @@ const CategoryScroll = () => {
   // useEffect(() => {
   //   fetchCategories();
   // });
-  const { categories, setCategories } = useContext(CategoryContext);
+  const { selectedCategory, setSelectedCategory, categories, setCategories } =
+    useContext(CategoryContext);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -28,9 +29,10 @@ const CategoryScroll = () => {
       });
       const responseData = await response.json();
       setCategories(responseData);
+      setSelectedCategory(responseData[0].id);
     };
     getCategories();
-  });
+  }, [setCategories, setSelectedCategory]);
 
   // const { selectedCategory, setSelectedCategory, categories, setCategories } =
   //   useContext(CategoryContext);
@@ -38,9 +40,23 @@ const CategoryScroll = () => {
   return (
     <Layout>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        {categories.map((item, index) => (
-          <CategoryButton text={item.title} color={item.color} key={index} />
-        ))}
+        {categories.map((item, index) =>
+          selectedCategory === index ? (
+            <CategoryButton
+              text={item.title}
+              color={item.color}
+              key={index}
+              isSelected={true}
+            />
+          ) : (
+            <CategoryButton
+              text={item.title}
+              color={item.color}
+              key={index}
+              isSelected={false}
+            />
+          ),
+        )}
       </ScrollView>
     </Layout>
   );

@@ -1,3 +1,4 @@
+import useTodoStore from '@/contexts/TodoStore';
 import { Input, Layout, List } from '@ui-kitten/components';
 import { useState } from 'react';
 import { KeyboardAvoidingView, View } from 'react-native';
@@ -9,14 +10,8 @@ import DailyTodo from './DailyTodo';
 // const todosApi = 'http://10.0.2.2:8000/todos/';
 
 const DailyTodos = ({ todos }) => {
-  console.log('DailyTodos todos', todos);
-  // const todos = useTodoStore(state => state.todos);
-  // const addTodo = useTodoStore(state => state.addTodo);
-  // const fetchTodo = useTodoStore(state => state.fetchTodo);
-
-  // useEffect(() => {
-  //   fetchTodo();
-  // }, [fetchTodo]);
+  const addTodo = useTodoStore(state => state.addTodo);
+  const fetchTodo = useTodoStore(state => state.fetchTodo);
 
   const getFirstCategoryId = data => {
     let categoryIds = [];
@@ -38,7 +33,7 @@ const DailyTodos = ({ todos }) => {
   const handleSubmit = async () => {
     const startDate = new Date().toISOString().split('T')[0];
     const endDate = new Date().toISOString().split('T')[0];
-    const categoryId = 1;
+    const categoryId = 2;
     // addTodo(startDate, endDate, input, categoryId);
     setInput('');
   };
