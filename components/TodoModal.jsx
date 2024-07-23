@@ -13,14 +13,14 @@ const deleteIcon = props => {
 // const todoApi =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
-const todoApi = 'http://10.0.2.2:8000/todos/';
-
-const TodoModal = ({ item, visible, isEditing, setVisible, setIsEditing }) => {
+const TodoModal = ({ item, visible, setVisible }) => {
+  const editingTodo = useTodoStore(state => state.editingTodo);
+  const setEditingTodo = useTodoStore(state => state.setEditingTodo);
   const deleteTodo = useTodoStore(state => state.deleteTodo);
   const handleEdit = async () => {
     // const token = AsyncStorage.getItem('accessToken');
     setVisible(false);
-    setIsEditing(true);
+    setEditingTodo(item);
   };
 
   const handleDelete = async item_id => {

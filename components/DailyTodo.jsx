@@ -98,13 +98,7 @@ const DailyTodo = ({ item }) => {
         renderItem={renderSubTodo}
         contentContainerStyle={{ marginLeft: 40, paddingLeft: 40 }}
       />
-      <TodoModal
-        item={item}
-        visible={visible}
-        isEditing={isEditing}
-        setVisible={setVisible}
-        setIsEditing={setIsEditing}
-      />
+      <TodoModal item={item} visible={visible} setVisible={setVisible} />
     </>
   );
 };

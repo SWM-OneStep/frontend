@@ -77,13 +77,7 @@ const DailySubTodo = ({ item }) => {
         onPress={() => setVisible(true)}
         style={{ paddingLeft: 40 }}
       />
-      <TodoModal
-        item={item}
-        visible={visible}
-        isEditing={isEditing}
-        setVisible={setVisible}
-        setIsEditing={setIsEditing}
-      />
+      <TodoModal item={item} visible={visible} setVisible={setVisible} />
     </>
   );
 };

@@ -9,6 +9,10 @@ const todosApi = 'http://10.0.2.2:8000/todos/todo/';
 const useTodoStore = create((set, get) => ({
   todos: [],
   currentTodos: [],
+  editingTodo: null,
+  setEditingTodo: todo => {
+    set(state => ({ selectedTodo: todo }));
+  },
   addTodo: async (startDate, endDate, content, categoryId) => {
     const apiData = {
       start_date: startDate,
@@ -31,6 +35,7 @@ const useTodoStore = create((set, get) => ({
     const responseData = await response.json();
     console.log('addTodoResponse', responseData);
     const todo = responseData;
+    console.log('currentTodo get', get().currentTodos);
     set(state => ({ todos: [...state.todos, todo] }));
     set(state => ({ currentTodos: [...state.currentTodos, todo] }));
   },
