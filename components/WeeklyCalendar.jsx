@@ -35,8 +35,6 @@ const WeeklyCalendar = ({ selectedDate, onSelectedDate }) => {
     onSelectedDate(date);
   };
 
-  
-
   return (
     <Layout style={{ padding: 16 }}>
       <Layout
@@ -105,9 +103,7 @@ const WeeklyCalendar = ({ selectedDate, onSelectedDate }) => {
                 marginTop: 4,
               }}
             >
-              <Text category="c1" style={{ color: theme['color-basic-800'] }}>
-                {todos.filter(t => date.isSame(t.date, 'day')).length}
-              </Text>
+              <Text category="c1" style={{ color: theme['color-basic-800'] }} />
             </Layout>
           </TouchableOpacity>
         ))}
