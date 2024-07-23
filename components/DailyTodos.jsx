@@ -15,10 +15,9 @@ const DailyTodos = ({ todos }) => {
   const fetchTodo = useTodoStore(state => state.fetchTodo);
 
   const [input, setInput] = useState('');
-  const { categoryId, setCategoryId } = useContext(CategoryContext);
+  const { selectedCategory, setSelectedCategory } = useContext(CategoryContext);
 
   const renderTodo = ({ item, index }) => {
-    console.log('renderTodo item', item);
     return (
       <View>
         <DailyTodo item={item} />
@@ -28,8 +27,7 @@ const DailyTodos = ({ todos }) => {
   const handleSubmit = async () => {
     const startDate = new Date().toISOString().split('T')[0];
     const endDate = new Date().toISOString().split('T')[0];
-    const categoryId = 2;
-    // addTodo(startDate, endDate, input, categoryId);
+    addTodo(startDate, endDate, input, selectedCategory);
     setInput('');
   };
 
@@ -37,7 +35,7 @@ const DailyTodos = ({ todos }) => {
     <KeyboardAvoidingView>
       <Layout>
         <List
-          data={todos == [] ? [] : todos.todos}
+          data={todos == [] ? [] : todos}
           renderItem={renderTodo}
           contentContainerStyle={{ paddingBottom: 200 }}
           ListFooterComponent={

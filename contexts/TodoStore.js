@@ -1,10 +1,10 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 
 // const todosApi =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
-const todosApi = 'http://10.0.2.2:8000/todos/today/';
+const todosTodayApi = 'http://10.0.2.2:8000/todos/today/';
+const todosApi = 'http://10.0.2.2:8000/todos/todo/';
 
 const useTodoStore = create((set, get) => ({
   todos: [],
@@ -14,21 +14,25 @@ const useTodoStore = create((set, get) => ({
       start_date: startDate,
       end_date: endDate,
       content: content,
+      user_id: '1',
+      order: 'dshfgsfks',
       category_id: categoryId,
+      is_completed: false,
     };
-    const accessToken = await AsyncStorage.getItem('accessToken');
+    // const accessToken = await AsyncStorage.getItem('accessToken');
     const response = await fetch(todosApi, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
+        // Authorization: 'Bearer ' + accessToken,
       },
       body: JSON.stringify(apiData),
     });
     const responseData = await response.json();
+    console.log('addTodoResponse', responseData);
     const todo = responseData;
     set(state => ({ todos: [...state.todos, todo] }));
-    return responseData.id;
+    set(state => ({ currentTodos: [...state.currentTodos, todo] }));
   },
 
   deleteTodo: async id => {
@@ -44,14 +48,18 @@ const useTodoStore = create((set, get) => ({
       body: JSON.stringify(bodyData),
     });
     const responseData = await response.json();
+    console.log('deleteResponse', responseData);
     set(state => ({
       todos: state.todos.filter(todo => todo.id !== id),
+    }));
+    console.log('currentTodos', get().currentTodos);
+    set(state => ({
+      currentTodos: state.currentTodos.filter(todo => todo.id !== id),
     }));
   },
 
   editTodo: async todo => {
     const editData = {
-      user_id: 1,
       todo_id: todo.id,
       content: todo.content,
     };
@@ -63,21 +71,24 @@ const useTodoStore = create((set, get) => ({
       },
       body: JSON.stringify(editData),
     });
-    await response.json();
+    const responseData = await response.json();
+    console.log('responseData', responseData);
     set(state => ({
       todos: state.todos.map(t => (t.id === todo.id ? todo : t)),
+    }));
+    set(state => ({
+      currentTodos: state.currentTodos.map(t => (t.id === todo.id ? todo : t)),
     }));
   },
 
   fetchTodo: async () => {
-    const response = await fetch(`${todosApi}?user_id=1`, {
+    const response = await fetch(`${todosTodayApi}?user_id=1`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     });
     const responseData = await response.json();
-    console.log('fetchTodo todos', responseData);
     set({ todos: responseData });
   },
 
@@ -110,7 +121,7 @@ const useTodoStore = create((set, get) => ({
     if (Array.isArray(get().todos)) {
       get().todos.forEach(todo => {
         if (todo.id === categoryId) {
-          filteredTodos = todo;
+          filteredTodos = todo.todos;
         }
       });
     }
@@ -123,7 +134,6 @@ const useTodoStore = create((set, get) => ({
         currentTodos: [],
       }));
     }
-    console.log('get().todos', get().todos);
   },
 }));
 
