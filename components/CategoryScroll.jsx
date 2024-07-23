@@ -49,7 +49,7 @@ const CategoryScroll = () => {
               <Icon {...props} name="star" fill={item.color} />
             )}
             style={styles.button}
-            status={(selectedCategory === item.id && 'basic') || 'control'}
+            status={(selectedCategory === item.id && 'primary') || 'basic'}
             onPress={() => handlePress(item.id)}
             key={index}
           >

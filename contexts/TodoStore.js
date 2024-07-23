@@ -8,10 +8,7 @@ const todosApi = 'http://10.0.2.2:8000/todos/today/';
 
 const useTodoStore = create((set, get) => ({
   todos: [],
-  setSelectedCategory: category => {
-    set({ selectedCategory: category });
-  },
-
+  currentTodos: [],
   addTodo: async (startDate, endDate, content, categoryId) => {
     const apiData = {
       start_date: startDate,
@@ -110,19 +107,20 @@ const useTodoStore = create((set, get) => ({
 
   filterTodoByCategory: async categoryId => {
     let filteredTodos = null;
-
-    get().todos.forEach(todo => {
-      if (todo.id === categoryId) {
-        filteredTodos = todo;
-      }
-    });
+    if (Array.isArray(get().todos)) {
+      get().todos.forEach(todo => {
+        if (todo.id === categoryId) {
+          filteredTodos = todo;
+        }
+      });
+    }
     if (filteredTodos !== null) {
       set(state => ({
-        todos: filteredTodos,
+        currentTodos: filteredTodos,
       }));
     } else {
       set(state => ({
-        todos: [],
+        currentTodos: [],
       }));
     }
     console.log('get().todos', get().todos);

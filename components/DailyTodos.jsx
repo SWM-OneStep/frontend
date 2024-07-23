@@ -1,6 +1,7 @@
+import { CategoryContext } from '@/contexts/CategoryContext';
 import useTodoStore from '@/contexts/TodoStore';
 import { Input, Layout, List } from '@ui-kitten/components';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { KeyboardAvoidingView, View } from 'react-native';
 import DailyTodo from './DailyTodo';
 
@@ -13,14 +14,8 @@ const DailyTodos = ({ todos }) => {
   const addTodo = useTodoStore(state => state.addTodo);
   const fetchTodo = useTodoStore(state => state.fetchTodo);
 
-  const getFirstCategoryId = data => {
-    let categoryIds = [];
-    console.log('getFirstCategoryId data', data);
-    return data.category_id;
-  };
-
   const [input, setInput] = useState('');
-  const [categoryId, setCategoryId] = useState(getFirstCategoryId(todos));
+  const { categoryId, setCategoryId } = useContext(CategoryContext);
 
   const renderTodo = ({ item, index }) => {
     console.log('renderTodo item', item);
@@ -42,7 +37,7 @@ const DailyTodos = ({ todos }) => {
     <KeyboardAvoidingView>
       <Layout>
         <List
-          data={todos.todos}
+          data={todos == [] ? [] : todos.todos}
           renderItem={renderTodo}
           contentContainerStyle={{ paddingBottom: 200 }}
           ListFooterComponent={

@@ -6,6 +6,7 @@ import DailyTodos from './DailyTodos';
 
 const CategoryTodos = () => {
   const todos = useTodoStore(state => state.todos);
+  const currentTodos = useTodoStore(state => state.currentTodos);
   const fetchTodo = useTodoStore(state => state.fetchTodo);
   const filterTodoByCategory = useTodoStore(
     state => state.filterTodoByCategory,
@@ -17,19 +18,24 @@ const CategoryTodos = () => {
     const awaitForFetchTodo = async () => {
       setLoading(true);
       await fetchTodo();
-      filterTodoByCategory(selectedCategory);
       setLoading(false);
     };
 
     awaitForFetchTodo();
-  }, [fetchTodo, filterTodoByCategory, selectedCategory]);
+  }, [fetchTodo]);
+
+  useEffect(() => {
+    if (!loading) {
+      filterTodoByCategory(selectedCategory);
+    }
+  }, [filterTodoByCategory, selectedCategory, loading]);
 
   // return <DailyTodos todos={todos} />;
   if (loading) {
     return <Text>Loading...</Text>;
   }
 
-  return <DailyTodos todos={todos} />;
+  return <DailyTodos todos={currentTodos} />;
 };
 
 export default CategoryTodos;
