@@ -33,9 +33,7 @@ const useTodoStore = create((set, get) => ({
       body: JSON.stringify(apiData),
     });
     const responseData = await response.json();
-    console.log('addTodoResponse', responseData);
     const todo = responseData;
-    console.log('currentTodo get', get().currentTodos);
     set(state => ({ todos: [...state.todos, todo] }));
     set(state => ({ currentTodos: [...state.currentTodos, todo] }));
   },
@@ -52,12 +50,10 @@ const useTodoStore = create((set, get) => ({
       },
       body: JSON.stringify(bodyData),
     });
-    const responseData = await response.json();
-    console.log('deleteResponse', responseData);
+    await response.json();
     set(state => ({
       todos: state.todos.filter(todo => todo.id !== id),
     }));
-    console.log('currentTodos', get().currentTodos);
     set(state => ({
       currentTodos: state.currentTodos.filter(todo => todo.id !== id),
     }));
@@ -76,8 +72,7 @@ const useTodoStore = create((set, get) => ({
       },
       body: JSON.stringify(editData),
     });
-    const responseData = await response.json();
-    console.log('responseData', responseData);
+    await response.json();
     set(state => ({
       todos: state.todos.map(t => (t.id === todo.id ? todo : t)),
     }));
@@ -95,6 +90,7 @@ const useTodoStore = create((set, get) => ({
     });
     const responseData = await response.json();
     set({ todos: responseData });
+    console.log('fetchTodo', get().todos);
   },
 
   toggleTodo: async todo => {
@@ -139,6 +135,7 @@ const useTodoStore = create((set, get) => ({
         currentTodos: [],
       }));
     }
+    console.log('filterTodoByCategory', get().currentTodos);
   },
 }));
 

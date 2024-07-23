@@ -28,6 +28,10 @@ const TodoModal = ({ item, visible, setVisible }) => {
     deleteTodo(item_id);
   };
 
+  if (!item) {
+    return null;
+  }
+
   return (
     <Modal
       visible={visible}

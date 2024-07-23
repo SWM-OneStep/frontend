@@ -12,10 +12,9 @@ import DailyTodo from './DailyTodo';
 
 const DailyTodos = ({ todos }) => {
   const addTodo = useTodoStore(state => state.addTodo);
-  const fetchTodo = useTodoStore(state => state.fetchTodo);
 
   const [input, setInput] = useState('');
-  const { selectedCategory, setSelectedCategory } = useContext(CategoryContext);
+  const { selectedCategory } = useContext(CategoryContext);
 
   const renderTodo = ({ item, index }) => {
     return (
@@ -35,7 +34,7 @@ const DailyTodos = ({ todos }) => {
     <KeyboardAvoidingView>
       <Layout>
         <List
-          data={todos == [] ? [] : todos}
+          data={todos}
           renderItem={renderTodo}
           contentContainerStyle={{ paddingBottom: 200 }}
           ListFooterComponent={

@@ -1,3 +1,4 @@
+import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
 import {
   Icon,
@@ -10,7 +11,6 @@ import {
 import { useCallback, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import DailySubTodo from './DailySubTodo';
-import TodoModal from './TodoModal';
 
 // const todosApi =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
@@ -19,25 +19,20 @@ const todosApi = 'http://10.0.2.2:8000/todos/';
 
 const DailyTodo = ({ item }) => {
   const [completed, setCompleted] = useState(item.isCompleted);
-  const [visible, setVisible] = useState(false);
+  const openModal = useModalStore(state => state.openModal);
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
   const editTodo = useTodoStore(state => state.editTodo);
   const toggleTodo = useTodoStore(state => state.toggleTodo);
 
-  const openModal = useCallback(() => {
-    setVisible(true);
-  }, []);
-
   const handleCheck = useCallback(() => {
     setCompleted(!completed);
-    // API 요청 보내서 todo 상태 변화시키기
     toggleTodo({ ...item });
   }, [completed, item, toggleTodo]);
 
-  const renderSubTodo = ({ item }) => {
-    return <DailySubTodo item={item} />;
+  const renderSubTodo = ({ subTodo }) => {
+    return <DailySubTodo item={subTodo} />;
   };
 
   const checkIcon = props => {
@@ -56,7 +51,7 @@ const DailyTodo = ({ item }) => {
 
   const settingIcon = props => {
     return (
-      <TouchableOpacity onPress={openModal}>
+      <TouchableOpacity onPress={() => openModal(item)}>
         <Icon
           {...props}
           name="more-horizontal-outline"
@@ -91,14 +86,13 @@ const DailyTodo = ({ item }) => {
         key={item.id}
         accessoryLeft={props => checkIcon(props)}
         accessoryRight={props => settingIcon(props)}
-        onPress={() => setVisible(true)}
+        onPress={() => openModal(item)}
       />
       <List
-        data={item.subtodos}
+        data={item}
         renderItem={renderSubTodo}
         contentContainerStyle={{ marginLeft: 40, paddingLeft: 40 }}
       />
-      <TodoModal item={item} visible={visible} setVisible={setVisible} />
     </>
   );
 };

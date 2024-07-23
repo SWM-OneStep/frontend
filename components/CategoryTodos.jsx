@@ -1,4 +1,5 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
+import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
 import { Text } from '@ui-kitten/components';
 import { useContext, useEffect, useState } from 'react';
@@ -6,12 +7,15 @@ import DailyTodos from './DailyTodos';
 import TodoModal from './TodoModal';
 
 const CategoryTodos = () => {
-  const todos = useTodoStore(state => state.todos);
   const currentTodos = useTodoStore(state => state.currentTodos);
   const fetchTodo = useTodoStore(state => state.fetchTodo);
   const filterTodoByCategory = useTodoStore(
     state => state.filterTodoByCategory,
   );
+  const modalVisible = useModalStore(state => state.modalVisible);
+  const setModalVisible = useModalStore(state => state.setModalVisible);
+  const selectedTodo = useModalStore(state => state.selectedTodo);
+  const setSelectedTodo = useModalStore(state => state.setSelectedTodo);
   const { selectedCategory } = useContext(CategoryContext);
   const [loading, setLoading] = useState(true);
 
@@ -63,7 +67,7 @@ const CategoryTodos = () => {
       <TodoModal
         item={selectedTodo}
         visible={modalVisible}
-        onClose={handleModalClose}
+        setVisible={handleModalClose}
       />
     </>
   );
