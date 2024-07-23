@@ -1,15 +1,9 @@
+import { CategoryContext } from '@/contexts/CategoryContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Layout } from '@ui-kitten/components';
+import { useContext, useEffect } from 'react';
 import { ScrollView } from 'react-native';
 import CategoryButton from './CategoryButton';
-
-const categories = [
-  { id: 1, title: 'Item 1', description: 'Description 1', color: '#FFFFFF' },
-  { id: 2, title: 'Item 2', description: 'Description 2', color: '#121212' },
-  { id: 3, title: 'Item 3', description: 'Description 3', color: '#020202' },
-  { id: 4, title: 'Item 4', description: 'Description 4', color: '#239482' },
-  { id: 5, title: 'Item 5', description: 'Description 5', color: '#929292' },
-];
 
 const categoriesApi = 'http://10.0.2.2:8000/todos/category/';
 
@@ -17,19 +11,26 @@ const CategoryScroll = () => {
   // useEffect(() => {
   //   fetchCategories();
   // });
+  const { categories, setCategories } = useContext(CategoryContext);
 
-  const fetchCategories = async () => {
-    const accessToken = await AsyncStorage.getItem('accessToken');
-    const categoriesResponse = await fetch(categoriesApi, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    const categoriesData = await categoriesResponse.json();
-    // setCategories(categoriesData);
-  };
+  useEffect(() => {
+    const getCategories = async () => {
+      // const accessToken = await AsyncStorage.getItem('accessToken');
+      let userId = await AsyncStorage.getItem('userId');
+      if (userId === null) {
+        userId = 1;
+      }
+      const response = await fetch(categoriesApi + `?user_id=${userId}`, {
+        method: 'GET',
+        headers: {
+          // Authorization: 'Bearer ' + accessToken,
+        },
+      });
+      const responseData = await response.json();
+      setCategories(responseData);
+    };
+    getCategories();
+  });
 
   // const { selectedCategory, setSelectedCategory, categories, setCategories } =
   //   useContext(CategoryContext);

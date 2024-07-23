@@ -97,7 +97,7 @@ const DailyTodo = ({ item }) => {
         onPress={() => setVisible(true)}
       />
       <List
-        data={item.subTodos}
+        data={item.subtodos}
         renderItem={renderSubTodo}
         contentContainerStyle={{ marginLeft: 40, paddingLeft: 40 }}
       />
