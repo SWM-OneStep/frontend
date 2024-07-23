@@ -4,13 +4,14 @@ import { create } from 'zustand';
 // const todosApi =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
-const todosApi = 'http://10.0.2.2:8000/todos/';
+const todosApi = 'http://10.0.2.2:8000/todos/today/';
 
-const useTodoStore = create(set => ({
+const useTodoStore = create((set, get) => ({
   todos: [],
   setSelectedCategory: category => {
     set({ selectedCategory: category });
   },
+
   addTodo: async (startDate, endDate, content, categoryId) => {
     const apiData = {
       start_date: startDate,
@@ -32,6 +33,7 @@ const useTodoStore = create(set => ({
     set(state => ({ todos: [...state.todos, todo] }));
     return responseData.id;
   },
+
   deleteTodo: async id => {
     const bodyData = {
       user_id: 1,
@@ -49,6 +51,7 @@ const useTodoStore = create(set => ({
       todos: state.todos.filter(todo => todo.id !== id),
     }));
   },
+
   editTodo: async todo => {
     const editData = {
       user_id: 1,
@@ -68,6 +71,7 @@ const useTodoStore = create(set => ({
       todos: state.todos.map(t => (t.id === todo.id ? todo : t)),
     }));
   },
+
   fetchTodo: async () => {
     const response = await fetch(`${todosApi}?user_id=1`, {
       method: 'GET',
@@ -76,12 +80,14 @@ const useTodoStore = create(set => ({
       },
     });
     const responseData = await response.json();
+    console.log('fetchTodo todos', responseData);
     set({ todos: responseData });
   },
+
   toggleTodo: async todo => {
     const changedTodoApiData = {
       todo_id: todo.id,
-      user_id: '1',
+      user_id: 1,
       is_completed: !todo.is_completed,
     };
     let changedTodoFrontData = todo;
@@ -100,6 +106,26 @@ const useTodoStore = create(set => ({
         t.id === todo.id ? changedTodoFrontData : t,
       ),
     }));
+  },
+
+  filterTodoByCategory: async categoryId => {
+    let filteredTodos = null;
+
+    get().todos.forEach(todo => {
+      if (todo.id === categoryId) {
+        filteredTodos = todo;
+      }
+    });
+    if (filteredTodos !== null) {
+      set(state => ({
+        todos: filteredTodos,
+      }));
+    } else {
+      set(state => ({
+        todos: [],
+      }));
+    }
+    console.log('get().todos', get().todos);
   },
 }));
 
