@@ -1,6 +1,7 @@
+import { CategoryContext } from '@/contexts/CategoryContext';
 import useTodoStore from '@/contexts/TodoStore';
 import { Text } from '@ui-kitten/components';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import DailyTodos from './DailyTodos';
 
 const CategoryTodos = () => {
@@ -9,7 +10,7 @@ const CategoryTodos = () => {
   const filterTodoByCategory = useTodoStore(
     state => state.filterTodoByCategory,
   );
-  const [selectedCategory, setSelectedCategory] = useState(1);
+  const { selectedCategory, setSelectedCategory } = useContext(CategoryContext);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

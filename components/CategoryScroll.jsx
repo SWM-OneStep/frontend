@@ -1,9 +1,8 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Layout } from '@ui-kitten/components';
+import { Button, Icon, Layout, Text } from '@ui-kitten/components';
 import { useContext, useEffect } from 'react';
-import { ScrollView } from 'react-native';
-import CategoryButton from './CategoryButton';
+import { ScrollView, StyleSheet } from 'react-native';
 
 const categoriesApi = 'http://10.0.2.2:8000/todos/category/';
 
@@ -37,29 +36,37 @@ const CategoryScroll = () => {
   // const { selectedCategory, setSelectedCategory, categories, setCategories } =
   //   useContext(CategoryContext);
 
+  const handlePress = index => {
+    setSelectedCategory(index);
+  };
+
   return (
     <Layout>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        {categories.map((item, index) =>
-          selectedCategory === index ? (
-            <CategoryButton
-              text={item.title}
-              color={item.color}
-              key={index}
-              isSelected={true}
-            />
-          ) : (
-            <CategoryButton
-              text={item.title}
-              color={item.color}
-              key={index}
-              isSelected={false}
-            />
-          ),
-        )}
+        {categories.map((item, index) => (
+          <Button
+            accessoryLeft={props => (
+              <Icon {...props} name="star" fill={item.color} />
+            )}
+            style={styles.button}
+            status={(selectedCategory === item.id && 'basic') || 'control'}
+            onPress={() => handlePress(item.id)}
+            key={index}
+          >
+            <Text>{item.title}</Text>
+          </Button>
+        ))}
       </ScrollView>
     </Layout>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    marginHorizontal: 5,
+    marginBottom: 10,
+    borderRadius: 40,
+  },
+});
 
 export default CategoryScroll;
