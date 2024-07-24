@@ -59,10 +59,10 @@ const useTodoStore = create((set, get) => ({
     }));
   },
 
-  editTodo: async todo => {
+  editTodo: async (todo, content) => {
     const editData = {
       todo_id: todo.id,
-      content: todo.content,
+      content: content,
     };
     const response = await fetch(todosApi, {
       method: 'PATCH',
