@@ -19,8 +19,9 @@ const DailyTodo = ({ item }) => {
   const [completed, setCompleted] = useState(item.isCompleted);
   const openModal = useModalStore(state => state.openModal);
   const closeModal = useModalStore(state => state.closeModal);
-  // const [isEditing, setIsEditing] = useState(false);
-  const selectedTodo = useModalStore(state => state.selectedTodo);
+  const isEditing = useModalStore(state => state.isEditing);
+  const setIsEditing = useModalStore(state => state.setIsEditing);
+  const selectedTodo = useTodoStore(state => state.selectedTodo);
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
   const editTodo = useTodoStore(state => state.editTodo);
@@ -66,7 +67,7 @@ const DailyTodo = ({ item }) => {
     <>
       <ListItem
         title={
-          selectedTodo != null && item.id === selectedTodo.id ? (
+          isEditing && selectedTodo != null && item.id === selectedTodo.id ? (
             <Input
               value={content}
               onChangeText={value => setContent(value)}
@@ -76,7 +77,7 @@ const DailyTodo = ({ item }) => {
                   content,
                 });
                 closeModal();
-                // setIsEditing(false);
+                setIsEditing(false);
               }}
               autoFocus={true}
             />

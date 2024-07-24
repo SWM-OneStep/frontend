@@ -1,3 +1,4 @@
+import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
 import { Button, Card, Icon, Modal, Text } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
@@ -13,12 +14,18 @@ const deleteIcon = props => {
 // const todoApi =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
-const TodoModal = ({ item, visible, closeModal }) => {
+const TodoModal = ({ item = null, visible = false, closeModal = () => {} }) => {
+  const openEditModal = useModalStore(state => state.openEditModal);
+  const editTodo = useTodoStore(state => state.editTodo);
   const deleteTodo = useTodoStore(state => state.deleteTodo);
   const handleDelete = async item_id => {
     // setVisible(false);
     deleteTodo(item_id);
     closeModal();
+  };
+
+  const handleEdit = async () => {
+    openEditModal();
   };
 
   if (!item) {
@@ -44,7 +51,7 @@ const TodoModal = ({ item, visible, closeModal }) => {
               accessoryLeft={editIcon}
               status="basic"
               style={styles.button}
-              onPress={() => {}}
+              onPress={() => handleEdit()}
             >
               <Text>수정하기</Text>
             </Button>

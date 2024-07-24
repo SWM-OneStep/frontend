@@ -11,6 +11,7 @@ const useModalStore = create((set, get) => ({
     set(state => ({ modalVisible: visible }));
   },
   openModal: item => {
+    get().setIsEditing(false);
     get().setModalVisible(true);
     useTodoStore.getState().setSelectedTodo(item);
   },
@@ -19,6 +20,14 @@ const useModalStore = create((set, get) => ({
       get().setModalVisible(false);
       useTodoStore.getState().setSelectedTodo(null);
     }
+  },
+  openEditModal: () => {
+    get().setIsEditing(true);
+    get().setModalVisible(false);
+  },
+  closeEditModal: () => {
+    get().setIsEditiong(false);
+    get().setModalVisible(false);
   },
 }));
 

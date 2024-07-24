@@ -7,6 +7,7 @@ import { TouchableOpacity } from 'react-native';
 const DailySubTodo = ({ item }) => {
   const [completed, setCompleted] = useState(item.isCompleted);
   const openModal = useModalStore(state => state.openModal);
+  const selectedTodo = useTodoStore(state => state.selectedTodo);
   const isEditing = useModalStore(state => state.isEditing);
   const setIsEditing = useModalStore(state => state.setIsEditing);
   const [content, setContent] = useState(item.content);
@@ -51,7 +52,7 @@ const DailySubTodo = ({ item }) => {
     <>
       <ListItem
         title={
-          isEditing ? (
+          isEditing && selectedTodo != null && item.id === selectedTodo.id ? (
             <Input
               value={content}
               onChangeText={value => setContent(value)}
