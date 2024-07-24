@@ -62,14 +62,6 @@ const DailyTodo = ({ item }) => {
     );
   };
 
-  // useEffect(() => {
-  //   if (item != null && selectedTodo != null) {
-  //     setIsEditing(item.id === selectedTodo.id);
-  //   } else {
-  //     setIsEditing(false);
-  //   }
-  // }, [setIsEditing, item, selectedTodo]);
-
   return (
     <>
       <ListItem

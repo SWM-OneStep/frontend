@@ -2,7 +2,6 @@ import { CategoryContext } from '@/contexts/CategoryContext';
 import useTodoStore from '@/contexts/TodoStore';
 import { Input, List } from '@ui-kitten/components';
 import { useContext, useState } from 'react';
-import { View } from 'react-native';
 import DailyTodo from './DailyTodo';
 
 // const todosApi =
@@ -17,11 +16,7 @@ const DailyTodos = ({ todos }) => {
   const { selectedCategory } = useContext(CategoryContext);
 
   const renderTodo = ({ item, index }) => {
-    return (
-      <View>
-        <DailyTodo item={item} />
-      </View>
-    );
+    return <DailyTodo item={item} />;
   };
   const handleSubmit = async () => {
     const startDate = new Date().toISOString().split('T')[0];

@@ -15,11 +15,9 @@ const useModalStore = create((set, get) => ({
     useTodoStore.getState().setSelectedTodo(item);
   },
   closeModal: () => {
-    console.log('eeeeeeeeee');
     if (useTodoStore.getState().selectedTodo != null) {
-      console.log('hihihihihi');
       get().setModalVisible(false);
-      get().setSelectedTodo(null);
+      useTodoStore.getState().setSelectedTodo(null);
     }
   },
 }));

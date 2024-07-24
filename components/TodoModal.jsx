@@ -15,10 +15,10 @@ const deleteIcon = props => {
 
 const TodoModal = ({ item, visible, closeModal }) => {
   const deleteTodo = useTodoStore(state => state.deleteTodo);
-
   const handleDelete = async item_id => {
     // setVisible(false);
     deleteTodo(item_id);
+    closeModal();
   };
 
   if (!item) {

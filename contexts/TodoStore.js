@@ -57,7 +57,6 @@ const useTodoStore = create((set, get) => ({
     set(state => ({
       currentTodos: state.currentTodos.filter(todo => todo.id !== id),
     }));
-    console.log('deleteTodo currentTodos', get().currentTodos);
   },
 
   editTodo: async todo => {
@@ -91,7 +90,6 @@ const useTodoStore = create((set, get) => ({
     });
     const responseData = await response.json();
     set({ todos: responseData });
-    console.log('fetchTodo', get().todos);
   },
 
   toggleTodo: async todo => {
@@ -122,7 +120,6 @@ const useTodoStore = create((set, get) => ({
     let filteredTodos = null;
     if (Array.isArray(get().todos)) {
       get().todos.forEach(todo => {
-        console.log('todo', todo);
         if (todo.id === categoryId) {
           filteredTodos = todo.todos;
         }
@@ -137,7 +134,6 @@ const useTodoStore = create((set, get) => ({
         currentTodos: [],
       }));
     }
-    console.log('filterTodoByCategory currentTodos', get().currentTodos);
   },
 }));
 

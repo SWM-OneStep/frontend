@@ -13,7 +13,7 @@ const CategoryTodos = () => {
     state => state.filterTodoByCategory,
   );
   const modalVisible = useModalStore(state => state.modalVisible);
-  const selectedTodo = useModalStore(state => state.selectedTodo);
+  const selectedTodo = useTodoStore(state => state.selectedTodo);
   const closeModal = useModalStore(state => state.closeModal);
   const { selectedCategory } = useContext(CategoryContext);
   const [loading, setLoading] = useState(true);
