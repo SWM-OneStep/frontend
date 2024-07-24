@@ -13,15 +13,11 @@ const deleteIcon = props => {
 // const todoApi =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
-const TodoModal = ({ item, visible, setVisible }) => {
+const TodoModal = ({ item, visible, closeModal }) => {
   const deleteTodo = useTodoStore(state => state.deleteTodo);
-  const handleEdit = async () => {
-    // const token = AsyncStorage.getItem('accessToken');
-    setVisible(false);
-  };
 
   const handleDelete = async item_id => {
-    setVisible(false);
+    // setVisible(false);
     deleteTodo(item_id);
   };
 
@@ -34,7 +30,7 @@ const TodoModal = ({ item, visible, setVisible }) => {
       visible={visible}
       backdropStyle={styles.backdrop}
       onBackdropPress={() => {
-        setVisible(false);
+        closeModal();
       }}
       style={styles.modal}
     >
@@ -48,7 +44,7 @@ const TodoModal = ({ item, visible, setVisible }) => {
               accessoryLeft={editIcon}
               status="basic"
               style={styles.button}
-              onPress={() => handleEdit()}
+              onPress={() => {}}
             >
               <Text>수정하기</Text>
             </Button>

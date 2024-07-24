@@ -9,6 +9,10 @@ const todosApi = 'http://10.0.2.2:8000/todos/todo/';
 const useTodoStore = create((set, get) => ({
   todos: [],
   currentTodos: [],
+  selectedTodo: null,
+  setSelectedTodo: todo => {
+    set(state => ({ selectedTodo: todo }));
+  },
   addTodo: async (startDate, endDate, content, categoryId) => {
     const apiData = {
       start_date: startDate,

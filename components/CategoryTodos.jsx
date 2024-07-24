@@ -52,7 +52,7 @@ const CategoryTodos = () => {
       <TodoModal
         item={selectedTodo}
         visible={modalVisible}
-        setVisible={() => closeModal()}
+        closeModal={() => closeModal()}
       />
     </>
   );

@@ -1,8 +1,8 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
 import useTodoStore from '@/contexts/TodoStore';
-import { Input, Layout, List } from '@ui-kitten/components';
+import { Input, List } from '@ui-kitten/components';
 import { useContext, useState } from 'react';
-import { KeyboardAvoidingView, View } from 'react-native';
+import { View } from 'react-native';
 import DailyTodo from './DailyTodo';
 
 // const todosApi =
@@ -31,24 +31,20 @@ const DailyTodos = ({ todos }) => {
   };
 
   return (
-    <KeyboardAvoidingView>
-      <Layout>
-        <List
-          data={todos}
-          renderItem={renderTodo}
-          contentContainerStyle={{ paddingBottom: 200 }}
-          ListFooterComponent={
-            <Input
-              placeholder="Place your Text"
-              value={input}
-              onChangeText={nextInput => setInput(nextInput)}
-              onSubmitEditing={handleSubmit}
-            />
-          }
-          ListFooterComponentStyle={{ paddingTop: 0, paddingBottom: 125 }}
+    <List
+      data={todos}
+      renderItem={renderTodo}
+      contentContainerStyle={{ paddingBottom: 100 }}
+      ListFooterComponent={
+        <Input
+          placeholder="Place your Text"
+          value={input}
+          onChangeText={nextInput => setInput(nextInput)}
+          onSubmitEditing={handleSubmit}
         />
-      </Layout>
-    </KeyboardAvoidingView>
+      }
+      ListFooterComponentStyle={{ paddingTop: 0, paddingBottom: 125 }}
+    />
   );
 };
 
