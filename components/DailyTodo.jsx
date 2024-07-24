@@ -15,12 +15,12 @@ import DailySubTodo from './DailySubTodo';
 // const todosApi =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
-const todosApi = 'http://10.0.2.2:8000/todos/';
-
 const DailyTodo = ({ item }) => {
   const [completed, setCompleted] = useState(item.isCompleted);
   const openModal = useModalStore(state => state.openModal);
-  const [isEditing, setIsEditing] = useState(false);
+  const closeModal = useModalStore(state => state.closeModal);
+  // const [isEditing, setIsEditing] = useState(false);
+  const selectedTodo = useModalStore(state => state.selectedTodo);
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
   const editTodo = useTodoStore(state => state.editTodo);
@@ -62,11 +62,19 @@ const DailyTodo = ({ item }) => {
     );
   };
 
+  // useEffect(() => {
+  //   if (item != null && selectedTodo != null) {
+  //     setIsEditing(item.id === selectedTodo.id);
+  //   } else {
+  //     setIsEditing(false);
+  //   }
+  // }, [setIsEditing, item, selectedTodo]);
+
   return (
     <>
       <ListItem
         title={
-          isEditing ? (
+          selectedTodo != null && item.id === selectedTodo.id ? (
             <Input
               value={content}
               onChangeText={value => setContent(value)}
@@ -75,7 +83,8 @@ const DailyTodo = ({ item }) => {
                   ...item,
                   content,
                 });
-                setIsEditing(false);
+                closeModal();
+                // setIsEditing(false);
               }}
               autoFocus={true}
             />

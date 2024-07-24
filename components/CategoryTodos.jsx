@@ -13,9 +13,8 @@ const CategoryTodos = () => {
     state => state.filterTodoByCategory,
   );
   const modalVisible = useModalStore(state => state.modalVisible);
-  const setModalVisible = useModalStore(state => state.setModalVisible);
   const selectedTodo = useModalStore(state => state.selectedTodo);
-  const setSelectedTodo = useModalStore(state => state.setSelectedTodo);
+  const closeModal = useModalStore(state => state.closeModal);
   const { selectedCategory } = useContext(CategoryContext);
   const [loading, setLoading] = useState(true);
 
@@ -43,20 +42,6 @@ const CategoryTodos = () => {
     }
   };
 
-  const handleTodoPress = todoId => {
-    const todo = getTodoById(todoId);
-    if (todo != null) {
-      setSelectedTodo(todo);
-      setModalVisible(true);
-    }
-  };
-
-  const handleModalClose = () => {
-    setModalVisible(false);
-    setSelectedTodo(null);
-  };
-
-  // return <DailyTodos todos={todos} />;
   if (loading) {
     return <Text>Loading...</Text>;
   }
@@ -67,7 +52,7 @@ const CategoryTodos = () => {
       <TodoModal
         item={selectedTodo}
         visible={modalVisible}
-        setVisible={handleModalClose}
+        setVisible={() => closeModal()}
       />
     </>
   );
