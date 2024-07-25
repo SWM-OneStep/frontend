@@ -5,6 +5,7 @@ import { Text } from '@ui-kitten/components';
 import { useContext, useEffect, useState } from 'react';
 import DailyTodos from './DailyTodos';
 import TodoModal from './TodoModal';
+import { KeyboardAvoidingView } from 'react-native';
 
 const CategoryTodos = () => {
   const currentTodos = useTodoStore(state => state.currentTodos);
@@ -47,14 +48,14 @@ const CategoryTodos = () => {
   }
 
   return (
-    <>
+    <KeyboardAvoidingView>
       <DailyTodos todos={currentTodos} />
       <TodoModal
         item={selectedTodo}
         visible={modalVisible}
         closeModal={() => closeModal()}
       />
-    </>
+    </KeyboardAvoidingView>
   );
 };
 

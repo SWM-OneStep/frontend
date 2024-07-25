@@ -3,6 +3,7 @@ import useTodoStore from '@/contexts/TodoStore';
 import { Input, List } from '@ui-kitten/components';
 import { useContext, useState } from 'react';
 import DailyTodo from './DailyTodo';
+import { KeyboardAvoidingView } from 'react-native';
 
 const DailyTodos = ({ todos }) => {
   const [input, setInput] = useState('');
@@ -19,27 +20,26 @@ const DailyTodos = ({ todos }) => {
   };
 
   return (
-    <>
-      <List
-        data={todos}
-        renderItem={renderTodo}
-        // contentContainerStyle=
-        ListFooterComponent={
-          <Input
-            placeholder="Place your Text"
-            value={input}
-            onChangeText={nextInput => {
-              console.log(nextInput);
-              setInput(nextInput);
-            }}
-            onFocus={console.log('focused')}
-            onBlur={console.log('blurred')}
-            onSubmitEditing={handleSubmit}
-          />
-        }
-        ListFooterComponentStyle={{ paddingTop: 0 }}
-      />
-    </>
+    <List
+      data={todos}
+      renderItem={renderTodo}
+      // contentContainerStyle=
+      ListFooterComponent={
+        <Input
+          placeholder="Place your Text"
+          value={input}
+          onChangeText={nextInput => {
+            console.log(nextInput);
+            setInput(nextInput);
+          }}
+          autoFocus={true}
+          onFocus={console.log('focused')}
+          onBlur={console.log('blurred')}
+          onSubmitEditing={handleSubmit}
+        />
+      }
+      ListFooterComponentStyle={{ paddingTop: 0 }}
+    />
   );
 };
 
