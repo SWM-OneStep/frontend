@@ -9,7 +9,7 @@ const todosApi =
 
 // const todosApi = 'http://localhost:8000/todos/';
 
-const DailyTodo = ({ item, index }) => {
+const DailyTodo = ({ item, drag, isActive }) => {
   const [completed, setCompleted] = useState(item.is_completed);
   const [visible, setVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -76,10 +76,12 @@ const DailyTodo = ({ item, index }) => {
             <Text>{item.content}</Text>
           )
         }
-        key={index}
+        key={item.id}
         accessoryLeft={props => checkIcon(props)}
         accessoryRight={props => settingIcon(props)}
         onPress={() => setVisible(true)}
+        onLongPress={drag}
+        isActive={isActive}
       />
       <TodoModal
         item={item}
