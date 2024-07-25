@@ -10,12 +10,12 @@ const TodayView = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <WeeklyCalendar
+        selectedDate={selectedDate}
+        onSelectedDate={setSelectedDate}
+      />
+      <CategoryScroll />
       <KeyboardAvoidingView>
-        <WeeklyCalendar
-          selectedDate={selectedDate}
-          onSelectedDate={setSelectedDate}
-        />
-        <CategoryScroll />
         <CategoryTodos />
       </KeyboardAvoidingView>
     </SafeAreaView>
