@@ -11,9 +11,9 @@ const DailyTodos = ({ todos }) => {
     <List
       data={todos}
       renderItem={renderTodo}
-      contentContainerStyle={{ paddingBottom: 100 }}
+      // contentContainerStyle=
       ListFooterComponent={<TodoInput />}
-      ListFooterComponentStyle={{ paddingTop: 0, paddingBottom: 125 }}
+      ListFooterComponentStyle={{ paddingTop: 0 }}
     />
   );
 };
