@@ -23,6 +23,10 @@ const RootLayout = () => {
                     name="(tabs)"
                     options={{ headerShown: false }}
                   />
+                  <Stack.Screen
+                    name="oauthredirect"
+                    options={{ headerShown: false }}
+                  />
                 </Stack>
               </GestureHandlerRootView>
             </ApplicationProvider>

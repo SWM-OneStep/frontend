@@ -8,10 +8,11 @@ import { StatusBar } from 'expo-status-bar';
 import { useCallback, useContext, useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { GoogleIcon } from './../components/GoogleIcon';
+import { LOCAL_API } from '@/config';
+import { makeRedirectUri } from 'expo-auth-session';
 
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
-
 // const loginApi =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/login/google/';
 
@@ -19,18 +20,23 @@ const androidClientId =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/user/';
 // 시점에 따라 aws ec2에 포함되지 않았을 수 있음 -> 빠른 시일 내에 자동배포로 이 문제 해결 예정
 
-const loginApi = 'http://10.0.2.2:8000/auth/login/google/';
-const userApi = 'http://10.0.2.2:8000/auth/user/';
+const loginApi = LOCAL_API.login;
+const userApi = LOCAL_API.user;
 
 const imageSource = require('../assets/todo_logo.png');
-
+const redirectUri = makeRedirectUri({
+  scheme: 'onestep',
+  path: '/',
+});
 const Login = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
   const config = {
     androidClientId,
   };
-  const [request, response, promptAsync] = Google.useAuthRequest(config);
-
+  const [request, response, promptAsync] = Google.useAuthRequest(
+    config,
+    redirectUri,
+  );
   const getDeviceToken = useCallback(async () => {
     try {
       const token = await AsyncStorage.getItem('deviceToken');
@@ -46,7 +52,7 @@ const Login = () => {
         await AsyncStorage.setItem('deviceToken', token);
         return token;
       } catch (e) {
-        router.replace('/index');
+        router.replace('index');
         return null;
       }
     }
@@ -71,6 +77,7 @@ const Login = () => {
   const handleToken = useCallback(async () => {
     const getToken = async ({ token }) => {
       const deviceToken = await getDeviceToken();
+
       const tokenData = {
         token: token,
         deviceToken: deviceToken,
@@ -103,17 +110,15 @@ const Login = () => {
         if (userInfoData) {
           await AsyncStorage.setItem('userId', userInfoData.id.toString());
           await AsyncStorage.setItem('username', userInfoData.username);
-          router.replace('(tabs)');
         }
-        router.replace('(tabs)');
       }
+      router.replace('(tabs)');
     }
   }, [response, setIsLoggedIn, getDeviceToken, getUserInfo]);
 
   useEffect(() => {
     handleToken();
   }, [handleToken]);
-
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
