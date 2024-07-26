@@ -11,6 +11,10 @@ const deleteIcon = props => {
   return <Icon {...props} name="trash-2-outline" fill="red" />;
 };
 
+const listIcon = props => {
+  return <Icon {...props} name="list-outline" fill="green" />;
+};
+
 // const todoApi =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
@@ -62,6 +66,16 @@ const TodoModal = ({ item = null, visible = false, closeModal = () => {} }) => {
               onPress={() => handleDelete(item.id)}
             >
               <Text>삭제하기</Text>
+            </Button>
+          </View>
+          <View>
+            <Button
+              accessoryLeft={listIcon}
+              status="basic"
+              style={styles.button}
+              onPress={() => handleDelete(item.id)}
+            >
+              <Text>하위 투두 생성하기</Text>
             </Button>
           </View>
         </View>
