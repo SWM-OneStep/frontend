@@ -40,7 +40,6 @@ const useTodoStore = create((set, get) => ({
     set(state => ({ currentTodos: [...state.currentTodos, todo] }));
   },
   addSubTodo: async (content, todo, date, order) => {
-    console.log('addSubTodo called');
     const modifiedOrder = order ? order : '0:hzzzzzzz';
     const apiData = {
       content: content,
@@ -82,7 +81,6 @@ const useTodoStore = create((set, get) => ({
       });
     }
     set(state => ({ todos: modifiedTodo }));
-    console.log('currentTodos', get().currentTodos);
   },
   findTodoById: id => {
     let selectedTodo = null;

@@ -17,7 +17,6 @@ const DailySubTodo = ({ item }) => {
 
   const handleCheck = useCallback(() => {
     setCompleted(!completed);
-    console.log('...item', { ...item });
     toggleTodo({ ...item });
   }, [completed, item, toggleTodo]);
 
