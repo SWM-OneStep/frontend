@@ -39,15 +39,14 @@ const CategoryScroll = () => {
   const handlePress = index => {
     setSelectedCategory(index);
   };
+  const starIcon = props => <Icon {...props} name="star" />;
 
   return (
     <Layout>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         {categories.map((item, index) => (
           <Button
-            accessoryLeft={props => (
-              <Icon {...props} name="star" fill={item.color} />
-            )}
+            accessoryLeft={starIcon}
             style={styles.button}
             status={(selectedCategory === item.id && 'primary') || 'basic'}
             onPress={() => handlePress(item.id)}
