@@ -17,7 +17,7 @@ const DailySubTodo = ({ item }) => {
 
   const handleCheck = useCallback(() => {
     setCompleted(!completed);
-    // API 요청 보내서 todo 상태 변화시키기
+    console.log('...item', { ...item });
     toggleTodo({ ...item });
   }, [completed, item, toggleTodo]);
 

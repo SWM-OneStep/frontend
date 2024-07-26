@@ -20,16 +20,25 @@ const listIcon = props => {
 
 const TodoModal = ({ item = null, visible = false, closeModal = () => {} }) => {
   const openEditModal = useModalStore(state => state.openEditModal);
-  const editTodo = useTodoStore(state => state.editTodo);
+  const setSubTodoInputActivated = useModalStore(
+    state => state.setSubTodoInputActivated,
+  );
+  const setModalVisible = useModalStore(state => state.setModalVisible);
+  const setSelectedTodo = useTodoStore(state => state.setSelectedTodo);
   const deleteTodo = useTodoStore(state => state.deleteTodo);
   const handleDelete = async item_id => {
-    // setVisible(false);
     deleteTodo(item_id);
     closeModal();
   };
 
   const handleEdit = async () => {
     openEditModal();
+  };
+
+  const handleSubtodoCreateInitialize = todo => {
+    setModalVisible(false);
+    setSubTodoInputActivated(true);
+    setSelectedTodo(todo);
   };
 
   if (!item) {
@@ -73,7 +82,7 @@ const TodoModal = ({ item = null, visible = false, closeModal = () => {} }) => {
               accessoryLeft={listIcon}
               status="basic"
               style={styles.button}
-              onPress={() => handleDelete(item.id)}
+              onPress={() => handleSubtodoCreateInitialize(item)}
             >
               <Text>하위 투두 생성하기</Text>
             </Button>

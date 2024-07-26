@@ -6,6 +6,7 @@ import { create } from 'zustand';
 
 const todosTodayApi = 'http://10.0.2.2:8000/todos/today/';
 const todosApi = 'http://10.0.2.2:8000/todos/todo/';
+const subTodosApi = 'http://10.0.2.2:8000/todos/sub/';
 
 const useTodoStore = create((set, get) => ({
   todos: [],
@@ -38,7 +39,62 @@ const useTodoStore = create((set, get) => ({
     set(state => ({ todos: [...state.todos, todo] }));
     set(state => ({ currentTodos: [...state.currentTodos, todo] }));
   },
-
+  addSubTodo: async (content, todo, date, order) => {
+    console.log('addSubTodo called');
+    const modifiedOrder = order ? order : '0:hzzzzzzz';
+    const apiData = {
+      content: content,
+      todo: todo.id,
+      date: date,
+      order: modifiedOrder,
+    };
+    const response = await fetch(subTodosApi, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(apiData),
+    });
+    const responseData = await response.json();
+    let currentSubTodos = todo.subtodos;
+    currentSubTodos.push(responseData);
+    let modifiedTodo = [];
+    if (Array.isArray(get().currentTodos)) {
+      get().currentTodos.forEach(t => {
+        if (t.id === todo.id) {
+          t.subtodos = currentSubTodos;
+          modifiedTodo.push(t);
+        } else {
+          modifiedTodo.push(t);
+        }
+      });
+    }
+    set(state => ({ currentTodos: modifiedTodo }));
+    modifiedTodo = [];
+    if (Array.isArray(get().todos)) {
+      get().currentTodos.forEach(t => {
+        if (t.id === todo.id) {
+          t.subtodos = currentSubTodos;
+          modifiedTodo.push(t);
+        } else {
+          modifiedTodo.push(t);
+        }
+      });
+    }
+    set(state => ({ todos: modifiedTodo }));
+    console.log('currentTodos', get().currentTodos);
+  },
+  findTodoById: id => {
+    let selectedTodo = null;
+    if (Array.isArray(get().currentTodos)) {
+      get().currentTodos.forEach(todo => {
+        if (todo.id === id) {
+          selectedTodo = todo;
+        }
+      });
+    }
+    return selectedTodo;
+  },
   deleteTodo: async id => {
     const bodyData = {
       user_id: 1,

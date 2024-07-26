@@ -4,6 +4,10 @@ import useTodoStore from './TodoStore';
 const useModalStore = create((set, get) => ({
   isEditing: false,
   modalVisible: false,
+  subTodoInputActivated: false,
+  setSubTodoInputActivated: value => {
+    set(state => ({ subTodoInputActivated: value }));
+  },
   setIsEditing: editing => {
     set(state => ({ isEditing: editing }));
   },
