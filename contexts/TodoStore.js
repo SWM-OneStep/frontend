@@ -138,7 +138,6 @@ const useTodoStore = create((set, get) => ({
   },
 
   filterTodoByDate: async date => {
-    console.log('filterTodoByDate', date);
     let filteredTodos = [];
     if (Array.isArray(get().currentTodos)) {
       get().currentTodos.forEach(todo => {

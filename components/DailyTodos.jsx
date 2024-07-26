@@ -1,4 +1,5 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
+import { DateContext } from '@/contexts/DateContext';
 import useTodoStore from '@/contexts/TodoStore';
 import { Input, List } from '@ui-kitten/components';
 import { useContext, useState } from 'react';
@@ -11,9 +12,10 @@ const DailyTodos = ({ todos }) => {
   const renderTodo = ({ item, index }) => {
     return <DailyTodo item={item} key={index} />;
   };
+  const { date } = useContext(DateContext);
   const handleSubmit = async () => {
-    const startDate = new Date().toISOString().split('T')[0];
-    const endDate = new Date().toISOString().split('T')[0];
+    const startDate = date.split('T')[0];
+    const endDate = date.split('T')[0];
     addTodo(startDate, endDate, input, selectedCategory);
     setInput('');
   };
