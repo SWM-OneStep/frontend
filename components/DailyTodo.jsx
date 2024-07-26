@@ -16,7 +16,6 @@ import DailySubTodo from './DailySubTodo';
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
 const DailyTodo = ({ item }) => {
-  console.log('daily todo');
   const [completed, setCompleted] = useState(item.isCompleted);
   const openModal = useModalStore(state => state.openModal);
   const closeModal = useModalStore(state => state.closeModal);

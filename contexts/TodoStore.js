@@ -1,3 +1,4 @@
+import { isTodoIncludedInTodayView } from '@/utils/compareDate';
 import { create } from 'zustand';
 
 // const todosApi =
@@ -134,6 +135,21 @@ const useTodoStore = create((set, get) => ({
         currentTodos: [],
       }));
     }
+  },
+
+  filterTodoByDate: async date => {
+    console.log('filterTodoByDate', date);
+    let filteredTodos = [];
+    if (Array.isArray(get().currentTodos)) {
+      get().currentTodos.forEach(todo => {
+        if (isTodoIncludedInTodayView(todo.startDate, todo.endDate, date)) {
+          filteredTodos.push(todo);
+        }
+      });
+    }
+    set(state => ({
+      currentTodos: filteredTodos,
+    }));
   },
 }));
 
