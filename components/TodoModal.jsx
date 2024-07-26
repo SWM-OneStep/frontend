@@ -1,3 +1,4 @@
+import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
 import { Button, Card, Icon, Modal, Text } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
@@ -10,28 +11,46 @@ const deleteIcon = props => {
   return <Icon {...props} name="trash-2-outline" fill="red" />;
 };
 
-const todoApi =
-  'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
+const listIcon = props => {
+  return <Icon {...props} name="list-outline" fill="green" />;
+};
 
-const TodoModal = ({ item, visible, isEditing, setVisible, setIsEditing }) => {
+// const todoApi =
+//   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
+
+const TodoModal = ({ item = null, visible = false, closeModal = () => {} }) => {
+  const openEditModal = useModalStore(state => state.openEditModal);
+  const setSubTodoInputActivated = useModalStore(
+    state => state.setSubTodoInputActivated,
+  );
+  const setModalVisible = useModalStore(state => state.setModalVisible);
+  const setSelectedTodo = useTodoStore(state => state.setSelectedTodo);
   const deleteTodo = useTodoStore(state => state.deleteTodo);
-  const handleEdit = async () => {
-    // const token = AsyncStorage.getItem('accessToken');
-    setVisible(false);
-    setIsEditing(true);
+  const handleDelete = async item_id => {
+    deleteTodo(item_id);
+    closeModal();
   };
 
-  const handleDelete = async item_id => {
-    setVisible(false);
-    deleteTodo(item_id);
+  const handleEdit = async () => {
+    openEditModal();
   };
+
+  const handleSubtodoCreateInitialize = todo => {
+    setModalVisible(false);
+    setSubTodoInputActivated(true);
+    setSelectedTodo(todo);
+  };
+
+  if (!item) {
+    return null;
+  }
 
   return (
     <Modal
       visible={visible}
       backdropStyle={styles.backdrop}
       onBackdropPress={() => {
-        setVisible(false);
+        closeModal();
       }}
       style={styles.modal}
     >
@@ -56,6 +75,16 @@ const TodoModal = ({ item, visible, isEditing, setVisible, setIsEditing }) => {
               onPress={() => handleDelete(item.id)}
             >
               <Text>삭제하기</Text>
+            </Button>
+          </View>
+          <View>
+            <Button
+              accessoryLeft={listIcon}
+              status="basic"
+              style={styles.button}
+              onPress={() => handleSubtodoCreateInitialize(item)}
+            >
+              <Text>하위 투두 생성하기</Text>
             </Button>
           </View>
         </View>

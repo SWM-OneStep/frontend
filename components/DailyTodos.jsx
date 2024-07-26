@@ -1,50 +1,43 @@
+import { CategoryContext } from '@/contexts/CategoryContext';
+import { DateContext } from '@/contexts/DateContext';
 import useTodoStore from '@/contexts/TodoStore';
-import { Input, Layout, List } from '@ui-kitten/components';
-import { useEffect, useState } from 'react';
-import { KeyboardAvoidingView } from 'react-native';
-import DailyTodo from '@/components/DailyTodo';
+import { Input, List } from '@ui-kitten/components';
+import { useContext, useState } from 'react';
+import DailyTodo from './DailyTodo';
 
-const todosApi =
-  'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
-
-// const todosApi = 'http://10.0.2.2:8000/todos/';
-
-const DailyTodos = () => {
-  const todos = useTodoStore(state => state.todos);
-  const addTodo = useTodoStore(state => state.addTodo);
-  const fetchTodo = useTodoStore(state => state.fetchTodo);
-
-  useEffect(() => {
-    fetchTodo();
-  }, [fetchTodo]);
+const DailyTodos = ({ todos }) => {
   const [input, setInput] = useState('');
+  const addTodo = useTodoStore(state => state.addTodo);
+  const { selectedCategory } = useContext(CategoryContext);
   const renderTodo = ({ item, index }) => {
-    return <DailyTodo item={item} index={index} />;
+    return <DailyTodo item={item} key={index} />;
   };
+  const { date } = useContext(DateContext);
   const handleSubmit = async () => {
-    addTodo(input);
+    const startDate = date.split('T')[0];
+    const endDate = date.split('T')[0];
+    addTodo(startDate, endDate, input, selectedCategory);
     setInput('');
   };
 
   return (
-    <KeyboardAvoidingView>
-      <Layout>
-        <List
-          data={todos}
-          renderItem={renderTodo}
-          contentContainerStyle={{ paddingBottom: 200 }}
-          ListFooterComponent={
-            <Input
-              placeholder="Place your Text"
-              value={input}
-              onChangeText={nextInput => setInput(nextInput)}
-              onSubmitEditing={handleSubmit}
-            />
-          }
-          ListFooterComponentStyle={{ paddingTop: 0, paddingBottom: 125 }}
+    <List
+      data={todos}
+      renderItem={renderTodo}
+      // contentContainerStyle=
+      ListFooterComponent={
+        <Input
+          placeholder="Place your Text"
+          value={input}
+          onChangeText={nextInput => {
+            setInput(nextInput);
+          }}
+          autoFocus={true}
+          onSubmitEditing={handleSubmit}
         />
-      </Layout>
-    </KeyboardAvoidingView>
+      }
+      ListFooterComponentStyle={{ paddingTop: 0 }}
+    />
   );
 };
 

@@ -12,15 +12,15 @@ import { GoogleIcon } from './../components/GoogleIcon';
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
 
-const loginApi =
-  'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/login/google/';
+// const loginApi =
+//   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/login/google/';
 
-const userApi =
-  'http://http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/user/';
+// const userApi =
+//   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/user/';
 // 시점에 따라 aws ec2에 포함되지 않았을 수 있음 -> 빠른 시일 내에 자동배포로 이 문제 해결 예정
 
-// const loginApi = 'http://10.0.2.2:8000/auth/login/google/';
-// const userApi = 'http://10.0.2.2:8000/auth/user/';
+const loginApi = 'http://10.0.2.2:8000/auth/login/google/';
+const userApi = 'http://10.0.2.2:8000/auth/user/';
 
 const imageSource = require('../assets/todo_logo.png');
 
@@ -100,6 +100,11 @@ const Login = () => {
         // 예: 상태 업데이트, API 호출 등
         await getToken({ token });
         const userInfoData = await getUserInfo();
+        if (userInfoData) {
+          await AsyncStorage.setItem('userId', userInfoData.id.toString());
+          await AsyncStorage.setItem('username', userInfoData.username);
+          router.replace('(tabs)');
+        }
         router.replace('(tabs)');
       }
     }

@@ -1,4 +1,5 @@
-import DailyTodos from '@/components/DailyTodos';
+import CategoryScroll from '@/components/CategoryScroll';
+import CategoryTodos from '@/components/CategoryTodos';
 import WeeklyCalendar from '@/components/WeeklyCalendar';
 import moment from 'moment';
 import React, { useState } from 'react';
@@ -9,12 +10,13 @@ const TodayView = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView>
+      <KeyboardAvoidingView style={{ flex: 1 }}>
         <WeeklyCalendar
           selectedDate={selectedDate}
           onSelectedDate={setSelectedDate}
         />
-        <DailyTodos />
+        <CategoryScroll />
+        <CategoryTodos />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
