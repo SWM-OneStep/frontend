@@ -6,6 +6,7 @@ import * as eva from '@eva-design/eva';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { Stack } from 'expo-router';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const RootLayout = () => {
   return (
@@ -15,10 +16,15 @@ const RootLayout = () => {
           <CategoryProvider>
             <IconRegistry icons={[EvaIconsPack]} />
             <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
-              <Stack>
-                <Stack.Screen name="index" options={{ headerShown: false }} />
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              </Stack>
+              <GestureHandlerRootView>
+                <Stack>
+                  <Stack.Screen name="index" options={{ headerShown: false }} />
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
+                  />
+                </Stack>
+              </GestureHandlerRootView>
             </ApplicationProvider>
           </CategoryProvider>
         </DateProvider>

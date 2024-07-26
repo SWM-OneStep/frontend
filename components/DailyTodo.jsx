@@ -16,8 +16,18 @@ import DailySubTodo from './DailySubTodo';
 // const todosApi =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
-const DailyTodo = ({ item }) => {
-  const [completed, setCompleted] = useState(item.isCompleted);
+// const todosApi = 'http://localhost:8000/todos/';
+
+const DailyTodo = ({ item, drag, isActive }) => {
+  const [completed, setCompleted] = useState(item.is_completed);
+  const [visible, setVisible] = useState(false);
+  const [content, setContent] = useState(item.content);
+  const theme = useTheme();
+  const { date } = useContext(DateContext);
+  const editTodo = useTodoStore(state => state.editTodo);
+  const toggleTodo = useTodoStore(state => state.toggleTodo);
+  const addSubTodo = useTodoStore(state => state.addSubTodo);
+  onst[(completed, setCompleted)] = useState(item.isCompleted);
   const openModal = useModalStore(state => state.openModal);
   const closeModal = useModalStore(state => state.closeModal);
   const isEditing = useModalStore(state => state.isEditing);
@@ -30,12 +40,6 @@ const DailyTodo = ({ item }) => {
   const setSubTodoInputActivated = useModalStore(
     state => state.setSubTodoInputActivated,
   );
-  const [content, setContent] = useState(item.content);
-  const theme = useTheme();
-  const { date } = useContext(DateContext);
-  const editTodo = useTodoStore(state => state.editTodo);
-  const toggleTodo = useTodoStore(state => state.toggleTodo);
-  const addSubTodo = useTodoStore(state => state.addSubTodo);
 
   const handleCheck = useCallback(() => {
     setCompleted(!completed);
@@ -105,6 +109,8 @@ const DailyTodo = ({ item }) => {
         accessoryLeft={props => checkIcon(props)}
         accessoryRight={props => settingIcon(props)}
         onPress={() => openModal(item)}
+        onLongPress={drag}
+        isActive={isActive}
       />
       <List
         data={item && item.subtodos ? item.subtodos : []}

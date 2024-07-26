@@ -16,6 +16,12 @@ const TabLayout = () => {
           title: 'Inbox',
         }}
       />
+      <Tabs.Screen
+        name="dragNDropView"
+        option={{
+          title: 'DragNDrop',
+        }}
+      />
     </Tabs>
   );
 };
