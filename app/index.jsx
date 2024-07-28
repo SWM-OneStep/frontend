@@ -5,12 +5,11 @@ import { Button, Text } from '@ui-kitten/components';
 import * as Google from 'expo-auth-session/providers/google';
 import { Link, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect, useState, useRef } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { GoogleIcon } from './../components/GoogleIcon';
-import { LOCAL_API } from '@/config';
 import { makeRedirectUri } from 'expo-auth-session';
-
+import { Api } from '@/utils/api';
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
 // const loginApi =
@@ -20,23 +19,44 @@ const androidClientId =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/user/';
 // 시점에 따라 aws ec2에 포함되지 않았을 수 있음 -> 빠른 시일 내에 자동배포로 이 문제 해결 예정
 
-const loginApi = LOCAL_API.login;
-const userApi = LOCAL_API.user;
-
 const imageSource = require('../assets/todo_logo.png');
 const redirectUri = makeRedirectUri({
   scheme: 'onestep',
   path: '/',
 });
+
+const config = {
+  androidClientId,
+};
+
 const Login = () => {
-  const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
-  const config = {
-    androidClientId,
-  };
+  const { setIsLoggedIn } = useContext(LoginContext);
+
+  let accessTokenRef = useRef(null);
+
   const [request, response, promptAsync] = Google.useAuthRequest(
     config,
     redirectUri,
   );
+
+  const getTokenFromLocal = async () => {
+    const jwtAccessToken = await AsyncStorage.getItem('accessToken');
+    return jwtAccessToken;
+  };
+
+  const handleLocalToken = async () => {
+    getTokenFromLocal()
+      .then(token => {
+        token &&
+          Api.verifyToken(token).then(() => {
+            router.replace('(tabs)');
+          });
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
   const getDeviceToken = useCallback(async () => {
     try {
       const token = await AsyncStorage.getItem('deviceToken');
@@ -59,14 +79,7 @@ const Login = () => {
   }, []);
 
   const getUserInfo = useCallback(async () => {
-    const jwtAccessToken = await AsyncStorage.getItem('accessToken');
-    const localResponse = await fetch(userApi, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${jwtAccessToken}`,
-      },
-    });
+    const localResponse = await Api.getUserInfo(accessTokenRef.current);
     if (!localResponse.ok || localResponse.error) {
       return null;
     }
@@ -82,13 +95,7 @@ const Login = () => {
         token: token,
         deviceToken: deviceToken,
       };
-      const localResponse = await fetch(loginApi, {
-        method: 'POST', // HTTP 메서드 지정
-        headers: {
-          'Content-Type': 'application/json', // 요청 헤더 설정
-        },
-        body: JSON.stringify(tokenData), // 전송할 데이터를 JSON 문자열로 변환
-      });
+      const localResponse = await Api.login(tokenData);
       const localJwtData = await localResponse.json();
       if (localResponse.error) {
         return;
@@ -96,6 +103,7 @@ const Login = () => {
       if (localJwtData) {
         await AsyncStorage.setItem('accessToken', localJwtData.access);
         await AsyncStorage.setItem('refreshToken', localJwtData.refresh);
+        accessTokenRef.current = localJwtData.access;
         setIsLoggedIn(true);
       }
     };
@@ -105,12 +113,12 @@ const Login = () => {
       if (token) {
         // 여기서 토큰을 사용하여 추가 작업을 수행할 수 있습니다.
         // 예: 상태 업데이트, API 호출 등
+        // 왜 userId AsyncStorage에 저장하는지 모르겠음
         await getToken({ token });
-        const userInfoData = await getUserInfo();
-        if (userInfoData) {
-          await AsyncStorage.setItem('userId', userInfoData.id.toString());
-          await AsyncStorage.setItem('username', userInfoData.username);
+        await getUserInfo().then(userInfo => {
+          AsyncStorage.setItem('userId', userInfo.id.toString());
         }
+      }}
       }
       router.replace('(tabs)');
     }
@@ -119,6 +127,7 @@ const Login = () => {
   useEffect(() => {
     handleToken();
   }, [handleToken]);
+
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -133,6 +142,7 @@ const Login = () => {
         <Link replace href="/(tabs)">
           <Text appearance="hint">Go to Main page</Text>
         </Link>
+        <Button onPress={handleLocalToken}>Check Local Token</Button>
       </View>
     </View>
   );
