@@ -12,12 +12,6 @@ import { makeRedirectUri } from 'expo-auth-session';
 import { Api } from '@/utils/api';
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
-// const loginApi =
-//   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/login/google/';
-
-// const userApi =
-//   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/user/';
-// 시점에 따라 aws ec2에 포함되지 않았을 수 있음 -> 빠른 시일 내에 자동배포로 이 문제 해결 예정
 
 const imageSource = require('../assets/todo_logo.png');
 const redirectUri = makeRedirectUri({
@@ -45,16 +39,14 @@ const Login = () => {
   };
 
   const handleLocalToken = async () => {
-    getTokenFromLocal()
-      .then(token => {
-        token &&
-          Api.verifyToken(token).then(() => {
-            router.replace('(tabs)');
-          });
-      })
-      .catch(e => {
+    const token = await getTokenFromLocal();
+    if (token) {
+      try {
+        Api.verifyToken(token).then(() => router.replace('(tabs)'));
+      } catch (e) {
         console.log(e);
-      });
+      }
+    }
   };
 
   const getDeviceToken = useCallback(async () => {
@@ -83,7 +75,7 @@ const Login = () => {
     if (!localResponse.ok || localResponse.error) {
       return null;
     }
-    const responseData = await localResponse.json();
+    const responseData = localResponse.json();
     return responseData;
   }, []);
 
@@ -115,12 +107,12 @@ const Login = () => {
         // 예: 상태 업데이트, API 호출 등
         // 왜 userId AsyncStorage에 저장하는지 모르겠음
         await getToken({ token });
-        await getUserInfo().then(userInfo => {
-          AsyncStorage.setItem('userId', userInfo.id.toString());
-        }
-      }}
+        const userInfo = await getUserInfo();
+
+        await AsyncStorage.setItem('userId', userInfo.id.toString());
+        await AsyncStorage.setItem('username', userInfo.username);
+        router.replace('(tabs)');
       }
-      router.replace('(tabs)');
     }
   }, [response, setIsLoggedIn, getDeviceToken, getUserInfo]);
 
