@@ -27,6 +27,7 @@ const RootLayout = () => {
                     name="oauthredirect"
                     options={{ headerShown: false }}
                   />
+                  <Stack.Screen name="categoryView" />
                 </Stack>
               </GestureHandlerRootView>
             </ApplicationProvider>
