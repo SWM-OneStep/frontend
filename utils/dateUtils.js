@@ -1,4 +1,8 @@
-export const isTodoIncludedInTodayView = (startDate, endDate, currentDate) => {
+export const isTodoIncludedInTodayView = ({
+  startDate,
+  endDate,
+  currentDate,
+}) => {
   if (startDate && endDate) {
     if (currentDate >= startDate && currentDate <= endDate) {
       return true;
