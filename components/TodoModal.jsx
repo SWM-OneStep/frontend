@@ -1,6 +1,14 @@
 import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
-import { Button, Card, Icon, Modal, Text } from '@ui-kitten/components';
+import {
+  Button,
+  Calendar,
+  Card,
+  Icon,
+  Modal,
+  Text,
+} from '@ui-kitten/components';
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 const editIcon = props => {
@@ -15,6 +23,14 @@ const listIcon = props => {
   return <Icon {...props} name="list-outline" fill="green" />;
 };
 
+const calendarIcon = props => {
+  return <Icon {...props} name="calendar-outline" fill="blue" />;
+};
+
+const inboxIcon = props => {
+  return <Icon {...props} name="inbox-outline" fill="blue" />;
+};
+
 // const todoApi =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
@@ -26,6 +42,10 @@ const TodoModal = ({ item = null, visible = false, closeModal = () => {} }) => {
   const setModalVisible = useModalStore(state => state.setModalVisible);
   const setSelectedTodo = useTodoStore(state => state.setSelectedTodo);
   const deleteTodo = useTodoStore(state => state.deleteTodo);
+
+  const [calendarDate, setCalendarDate] = useState(new Date());
+  const [calendarModalVisible, setCalendarModalVisible] = useState(false);
+
   const handleDelete = async item_id => {
     deleteTodo(item_id);
     closeModal();
@@ -46,57 +66,94 @@ const TodoModal = ({ item = null, visible = false, closeModal = () => {} }) => {
   }
 
   return (
-    <Modal
-      visible={visible}
-      backdropStyle={styles.backdrop}
-      onBackdropPress={() => {
-        closeModal();
-      }}
-      style={styles.modal}
-    >
-      <Card disabled={true} style={styles.card}>
-        <View style={styles.container}>
-          <View style={styles.textContainer}>
-            <Text category="h6">{item.content}</Text>
+    <>
+      <Modal
+        visible={visible}
+        backdropStyle={styles.backdrop}
+        onBackdropPress={() => {
+          closeModal();
+        }}
+        style={styles.modal}
+      >
+        <Card disabled={true} style={styles.card}>
+          <View style={styles.container}>
+            <View style={styles.textContainer}>
+              <Text category="h6">{item.content}</Text>
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                accessoryLeft={editIcon}
+                status="basic"
+                style={styles.button}
+                onPress={() => handleEdit()}
+              >
+                <Text>수정하기</Text>
+              </Button>
+              <Button
+                accessoryLeft={deleteIcon}
+                status="basic"
+                style={styles.button}
+                onPress={() => handleDelete(item.id)}
+              >
+                <Text>삭제하기</Text>
+              </Button>
+            </View>
+            <View>
+              <Button
+                accessoryLeft={listIcon}
+                status="basic"
+                style={styles.button}
+                onPress={() => handleSubtodoCreateInitialize(item)}
+              >
+                <Text>하위 투두 생성하기</Text>
+              </Button>
+            </View>
+            <View>
+              <Button
+                accessoryLeft={calendarIcon}
+                status="basic"
+                style={styles.button}
+                onPress={() => {
+                  setCalendarModalVisible(true);
+                }}
+              >
+                <Text>날짜 바꾸기</Text>
+              </Button>
+            </View>
+            <View>
+              <Button
+                accessoryLeft={inboxIcon}
+                status="basic"
+                style={styles.button}
+                onPress={() => {}}
+              >
+                <Text>보관함에 넣기</Text>
+              </Button>
+            </View>
           </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              accessoryLeft={editIcon}
-              status="basic"
-              style={styles.button}
-              onPress={() => handleEdit()}
-            >
-              <Text>수정하기</Text>
-            </Button>
-            <Button
-              accessoryLeft={deleteIcon}
-              status="basic"
-              style={styles.button}
-              onPress={() => handleDelete(item.id)}
-            >
-              <Text>삭제하기</Text>
-            </Button>
-          </View>
-          <View>
-            <Button
-              accessoryLeft={listIcon}
-              status="basic"
-              style={styles.button}
-              onPress={() => handleSubtodoCreateInitialize(item)}
-            >
-              <Text>하위 투두 생성하기</Text>
-            </Button>
-          </View>
-        </View>
-      </Card>
-    </Modal>
+        </Card>
+      </Modal>
+      <Modal
+        visible={calendarModalVisible}
+        backdropStyle={styles.backdrop}
+        onBackdropPress={() => {
+          setCalendarModalVisible(false);
+        }}
+        style={styles.modal}
+      >
+        <Calendar
+          date={calendarDate}
+          onSelect={nextDate => setCalendarDate(nextDate)}
+        />
+      </Modal>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   modal: {
     bottom: 0,
-    top: '75%',
+    top: '57%',
     width: '100%',
     justifyContent: 'flex-end', // Align the modal at the bottom
   },
