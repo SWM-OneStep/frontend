@@ -19,7 +19,6 @@ import DailySubTodo from './DailySubTodo';
 // const todosApi = 'http://localhost:8000/todos/';
 
 const DailyTodo = ({ item, drag, isActive }) => {
-  const [completed, setCompleted] = useState(item.is_completed);
   const [visible, setVisible] = useState(false);
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
@@ -27,7 +26,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const editTodo = useTodoStore(state => state.editTodo);
   const toggleTodo = useTodoStore(state => state.toggleTodo);
   const addSubTodo = useTodoStore(state => state.addSubTodo);
-  onst[(completed, setCompleted)] = useState(item.isCompleted);
+  const [completed, setCompleted] = useState(item.isCompleted);
   const openModal = useModalStore(state => state.openModal);
   const closeModal = useModalStore(state => state.closeModal);
   const isEditing = useModalStore(state => state.isEditing);

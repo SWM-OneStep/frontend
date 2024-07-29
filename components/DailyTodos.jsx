@@ -2,7 +2,7 @@ import { CategoryContext } from '@/contexts/CategoryContext';
 import { DateContext } from '@/contexts/DateContext';
 import useTodoStore from '@/contexts/TodoStore';
 import { Input, List } from '@ui-kitten/components';
-import { useContext, useState } from 'react';
+import { Fragment, useContext, useState } from 'react';
 import DailyTodo from './DailyTodo';
 
 const DailyTodos = ({ todos }) => {
@@ -21,23 +21,24 @@ const DailyTodos = ({ todos }) => {
   };
 
   return (
-    <List
-      data={todos}
-      renderItem={renderTodo}
-      // contentContainerStyle=
-      ListFooterComponent={
-        <Input
-          placeholder="Place your Text"
-          value={input}
-          onChangeText={nextInput => {
-            setInput(nextInput);
-          }}
-          autoFocus={true}
-          onSubmitEditing={handleSubmit}
-        />
-      }
-      ListFooterComponentStyle={{ paddingTop: 0 }}
-    />
+    <Fragment>
+      <List
+        data={todos}
+        renderItem={renderTodo}
+        ListFooterComponentStyle={{ paddingTop: 0, flex: 1 }}
+      />
+      {/* <KeyboardAvoidingView> */}
+      <Input
+        placeholder="Place your Text"
+        value={input}
+        onChangeText={nextInput => {
+          setInput(nextInput);
+        }}
+        autoFocus={true}
+        onSubmitEditing={handleSubmit}
+      />
+      {/* </KeyboardAvoidingView> */}
+    </Fragment>
   );
 };
 
