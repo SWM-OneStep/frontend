@@ -5,7 +5,6 @@ import useTodoStore from '@/contexts/TodoStore';
 import { Text } from '@ui-kitten/components';
 import { useContext, useEffect, useState } from 'react';
 import DailyTodos from './DailyTodos';
-import TodoModal from './TodoModal';
 
 const CategoryTodos = () => {
   const currentTodos = useTodoStore(state => state.currentTodos);
@@ -46,16 +45,7 @@ const CategoryTodos = () => {
     return <Text>Loading...</Text>;
   }
 
-  return (
-    <>
-      <DailyTodos todos={currentTodos} />
-      <TodoModal
-        item={selectedTodo}
-        visible={modalVisible}
-        closeModal={() => closeModal()}
-      />
-    </>
-  );
+  return <DailyTodos todos={currentTodos} />;
 };
 
 export default CategoryTodos;

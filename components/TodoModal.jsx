@@ -34,7 +34,7 @@ const inboxIcon = props => {
 // const todoApi =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
-const TodoModal = ({ item = null, visible = false, closeModal = () => {} }) => {
+const TodoModal = ({ item = null, visible = false, setVisible = () => {} }) => {
   const openEditModal = useModalStore(state => state.openEditModal);
   const setSubTodoInputActivated = useModalStore(
     state => state.setSubTodoInputActivated,
@@ -48,7 +48,7 @@ const TodoModal = ({ item = null, visible = false, closeModal = () => {} }) => {
 
   const handleDelete = async item_id => {
     deleteTodo(item_id);
-    closeModal();
+    setVisible(false);
   };
 
   const handleEdit = async () => {
@@ -71,7 +71,7 @@ const TodoModal = ({ item = null, visible = false, closeModal = () => {} }) => {
         visible={visible}
         backdropStyle={styles.backdrop}
         onBackdropPress={() => {
-          closeModal();
+          setVisible(false);
         }}
         style={styles.modal}
       >
@@ -114,6 +114,7 @@ const TodoModal = ({ item = null, visible = false, closeModal = () => {} }) => {
                 status="basic"
                 style={styles.button}
                 onPress={() => {
+                  setVisible(false);
                   setCalendarModalVisible(true);
                 }}
               >
@@ -139,12 +140,18 @@ const TodoModal = ({ item = null, visible = false, closeModal = () => {} }) => {
         onBackdropPress={() => {
           setCalendarModalVisible(false);
         }}
-        style={styles.modal}
+        style={styles.modal_calendar}
       >
-        <Calendar
-          date={calendarDate}
-          onSelect={nextDate => setCalendarDate(nextDate)}
-        />
+        <Card disabled={true} style={styles.card_calendar}>
+          <Calendar
+            date={calendarDate}
+            onSelect={nextDate => setCalendarDate(nextDate)}
+            style={styles.calendar}
+          />
+        </Card>
+        <Button>
+          <Text>확인</Text>
+        </Button>
       </Modal>
     </>
   );
@@ -157,6 +164,12 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'flex-end', // Align the modal at the bottom
   },
+  modal_calendar: {
+    bottom: 0,
+    width: '100%',
+    top: '50%',
+    justifyContent: 'flex-end',
+  },
   card: {
     width: '100%',
     height: '100%',
@@ -164,6 +177,16 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 16,
+  },
+  card_calendar: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  calendar: {
+    width: '100%',
   },
   backdrop: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
