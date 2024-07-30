@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const getUserInfo = async () => {
-  const user = await AsyncStorage.getItem('user');
-  return JSON.parse(user);
+export const getUserInfoFromLocal = async () => {
+  const userId = await AsyncStorage.getItem('userId');
+  const userName = await AsyncStorage.getItem('userName');
+  return { userId: userId, userName: userName };
 };
 
-export const getAccessToken = async () => {
+export const getAccessTokenFromLocal = async () => {
   const accessToken = await AsyncStorage.getItem('accessToken');
   return accessToken;
 };

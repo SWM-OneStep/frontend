@@ -117,7 +117,7 @@ export const Api = {
    * }
    */
   verifyToken: token => {
-    return handleRequest(() => axios.post(API_PATH.verifyToken, { token }));
+    return handleRequest(() => axios.post(API_PATH.verify, { token }));
   },
   /**
    * Google 로그인 요청을 서버에 보냅니다.
@@ -136,9 +136,26 @@ export const Api = {
   },
 
   getCategory: (accessToken, userId) => {
-    return axios.get(
-      `${API_PATH.category}?user_id=${userId}`,
-      metadata(accessToken),
+    return handleRequest(() =>
+      axios.get(`${API_PATH.categories}?user_id=${userId}`),
+    );
+  },
+
+  /**
+   * 서버에 카테고리를 추가합니다.
+   *
+   * @example
+   * // categoryData 예시:
+   * {
+   *   title: "categoryName",
+   *   userId: userId, // int
+   *   color: "selectedColor"
+   *   order: 일단 프론트에서 보내기 //int
+   * }
+   */
+  addCategory: (accessToken, categoryData) => {
+    return handleRequest(() =>
+      axios.post(API_PATH.category, categoryData, metadata(accessToken)),
     );
   },
 };

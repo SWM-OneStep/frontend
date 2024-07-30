@@ -4,7 +4,7 @@ const Oauthredirect = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace('(tabs)');
+    router.back();
   });
   return null;
 };
