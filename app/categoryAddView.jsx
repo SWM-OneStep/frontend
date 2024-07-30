@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import { SafeAreaView, View, TouchableOpacity, FlatList } from 'react-native';
 import {
   ApplicationProvider,
@@ -9,46 +9,49 @@ import {
 } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LOCAL_API } from '@/utils/config';
 import { useRouter } from 'expo-router';
+import {
+  getUserInfoFromLocal,
+  getAccessTokenFromLocal,
+} from '@/utils/asyncStorageUtils';
+import useCategoryAddMutation from '../hooks/useCategoryAddMutation';
 
 const colors = ['#FF3D71', '#FF7E29', '#FFC233', '#4CAF50', '#00BCD4'];
-const categoryAPI = LOCAL_API.categories;
 
-const Category = () => {
+const CategoryAddView = () => {
   const router = useRouter();
   const [categoryName, setCategoryName] = useState('');
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const bottomSheetRef = useRef(null);
+  const { mutate: addCategory } = useCategoryAddMutation({
+    onSuccess: () => {
+      router.back();
+      setCategoryName('');
+    },
+  });
+  const user = getUserInfoFromLocal();
+  const accessToken = getAccessTokenFromLocal();
 
   const openBottomSheet = () => {
     bottomSheetRef.current.snapToIndex(0);
   };
-  const handleCategoryAdd = useCallback(async () => {
-    // const accessToken = await AsyncStorage.getItem('accessToken');
-    let userId = await AsyncStorage.getItem('userId');
-    if (userId === null) {
-      userId = 1;
-    }
-    const response = await fetch(categoryAPI, {
-      method: 'POST',
-      headers: {
-        // Authorization: 'Bearer ' + accessToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        title: categoryName,
-        user_id: userId,
-        color: selectedColor,
-      }),
+
+  const tmpOrder = () => {
+    const now = new Date();
+    const milliseconds = now.getTime();
+    const unixTime = Math.floor(milliseconds / 1000);
+    return unixTime;
+  };
+
+  const handleAddCategory = () => {
+    addCategory(accessToken, {
+      title: categoryName,
+      userId: user.id,
+      color: selectedColor,
+      order: tmpOrder(),
     });
-    const responseData = await response.json();
-    console.log(responseData);
-    if (responseData) {
-      router.back();
-    }
-  }, [categoryName, router, selectedColor]);
+    setCategoryName('');
+  };
 
   const renderColorItem = ({ item }) => (
     <TouchableOpacity
@@ -100,7 +103,7 @@ const Category = () => {
               }}
             />
           </TouchableOpacity>
-          <Button onPress={() => handleCategoryAdd()}>완료</Button>
+          <Button onPress={() => handleAddCategory()}>완료</Button>
           <BottomSheet
             enablePanDownToClose={true}
             ref={bottomSheetRef}
@@ -139,4 +142,4 @@ const Category = () => {
   );
 };
 
-export default Category;
+export default CategoryAddView;
