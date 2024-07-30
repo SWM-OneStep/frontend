@@ -1,4 +1,4 @@
-import { isTodoIncludedInTodayView } from '@/utils/compareDate';
+import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
 import { create } from 'zustand';
 
 // const todosApi =
