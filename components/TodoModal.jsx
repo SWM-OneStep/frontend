@@ -32,8 +32,8 @@ const inboxIcon = props => {
   return <Icon {...props} name="inbox-outline" fill="blue" />;
 };
 
-// const todoApi =
-//   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
+const todosApi =
+  'http://ec2-43-201-109-163.ap-northeast-2.compute.amazonaws.com:8000/todos/todo/';
 
 const TodoModal = ({
   item = null,
@@ -73,8 +73,26 @@ const TodoModal = ({
 
   const handleTodoDateUpdate = async date => {
     const kstDate = convertGmtToKst(date).toISOString().split('T')[0];
-    console.log('kstDate', kstDate);
     // API 호출
+    const updatedTodo = await fetchTodoDateUpdateApi(kstDate);
+    console.log('updatedTodo', updatedTodo);
+  };
+
+  const fetchTodoDateUpdateApi = async date => {
+    const bodyData = {
+      id: item.id,
+      start_date: date,
+      end_date: date,
+    };
+    const response = await fetch(todosApi, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify(bodyData),
+    });
+    const updatedTodo = await response.json();
+    return updatedTodo;
   };
 
   return (
