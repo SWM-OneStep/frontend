@@ -34,7 +34,12 @@ const inboxIcon = props => {
 // const todoApi =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
-const TodoModal = ({ item = null, visible = false, setVisible = () => {} }) => {
+const TodoModal = ({
+  item = null,
+  isTodo = true,
+  visible = false,
+  setVisible = () => {},
+}) => {
   const openEditModal = useModalStore(state => state.openEditModal);
   const setSubTodoInputActivated = useModalStore(
     state => state.setSubTodoInputActivated,
@@ -73,7 +78,7 @@ const TodoModal = ({ item = null, visible = false, setVisible = () => {} }) => {
         onBackdropPress={() => {
           setVisible(false);
         }}
-        style={styles.modal}
+        style={isTodo ? styles.modalTodo : styles.modalSubTodo}
       >
         <Card disabled={true} style={styles.card}>
           <View style={styles.container}>
@@ -98,16 +103,18 @@ const TodoModal = ({ item = null, visible = false, setVisible = () => {} }) => {
                 <Text>삭제하기</Text>
               </Button>
             </View>
-            <View>
-              <Button
-                accessoryLeft={listIcon}
-                status="basic"
-                style={styles.button}
-                onPress={() => handleSubtodoCreateInitialize(item)}
-              >
-                <Text>하위 투두 생성하기</Text>
-              </Button>
-            </View>
+            {isTodo ? (
+              <View>
+                <Button
+                  accessoryLeft={listIcon}
+                  status="basic"
+                  style={styles.button}
+                  onPress={() => handleSubtodoCreateInitialize(item)}
+                >
+                  <Text>하위 투두 생성하기</Text>
+                </Button>
+              </View>
+            ) : null}
             <View>
               <Button
                 accessoryLeft={calendarIcon}
@@ -140,16 +147,23 @@ const TodoModal = ({ item = null, visible = false, setVisible = () => {} }) => {
         onBackdropPress={() => {
           setCalendarModalVisible(false);
         }}
-        style={styles.modal_calendar}
+        style={styles.modalCalendar}
       >
-        <Card disabled={true} style={styles.card_calendar}>
+        <Card disabled={true} style={styles.cardCalendar}>
           <Calendar
             date={calendarDate}
-            onSelect={nextDate => setCalendarDate(nextDate)}
+            onSelect={nextDate => {
+              setCalendarDate(nextDate);
+            }}
             style={styles.calendar}
           />
         </Card>
-        <Button>
+        <Button
+          onPress={() => {
+            console.log(calendarDate.toISOString());
+            setCalendarModalVisible(false);
+          }}
+        >
           <Text>확인</Text>
         </Button>
       </Modal>
@@ -158,13 +172,19 @@ const TodoModal = ({ item = null, visible = false, setVisible = () => {} }) => {
 };
 
 const styles = StyleSheet.create({
-  modal: {
+  modalTodo: {
     bottom: 0,
     top: '57%',
     width: '100%',
     justifyContent: 'flex-end', // Align the modal at the bottom
   },
-  modal_calendar: {
+  modalSubTodo: {
+    bottom: 0,
+    top: '65%',
+    width: '100%',
+    justifyContent: 'flex-end', // Align the modal at the bottom
+  },
+  modalCalendar: {
     bottom: 0,
     width: '100%',
     top: '50%',
@@ -178,7 +198,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     padding: 16,
   },
-  card_calendar: {
+  cardCalendar: {
     width: '100%',
     height: '100%',
     backgroundColor: 'white',

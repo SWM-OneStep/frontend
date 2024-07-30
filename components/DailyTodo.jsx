@@ -136,6 +136,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
       />
       <TodoModal
         item={item}
+        isTodo={true}
         visible={modalVisible}
         setVisible={setModalVisible}
       />

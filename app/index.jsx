@@ -22,6 +22,9 @@ const androidClientId =
 const loginApi = 'http://10.0.2.2:8000/auth/login/google/';
 const userApi = 'http://10.0.2.2:8000/auth/user/';
 
+const testApi =
+  'http://ec2-43-201-109-163.ap-northeast-2.compute.amazonaws.com:8000/todos/category/?user_id=1';
+
 const imageSource = require('../assets/todo_logo.png');
 
 const Login = () => {

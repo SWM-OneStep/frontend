@@ -79,6 +79,7 @@ const DailySubTodo = ({ item }) => {
       />
       <TodoModal
         item={item}
+        isTodo={false}
         visible={modalVisible}
         setVisible={setModalVisible}
       />
