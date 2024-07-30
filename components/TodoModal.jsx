@@ -1,5 +1,6 @@
 import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
+import { convertGmtToKst } from '@/utils/convertTimezone';
 import {
   Button,
   Calendar,
@@ -69,6 +70,12 @@ const TodoModal = ({
   if (!item) {
     return null;
   }
+
+  const handleTodoDateUpdate = async date => {
+    const kstDate = convertGmtToKst(date).toISOString().split('T')[0];
+    console.log('kstDate', kstDate);
+    // API 호출
+  };
 
   return (
     <>
@@ -160,7 +167,7 @@ const TodoModal = ({
         </Card>
         <Button
           onPress={() => {
-            console.log(calendarDate.toISOString());
+            handleTodoDateUpdate(calendarDate);
             setCalendarModalVisible(false);
           }}
         >
