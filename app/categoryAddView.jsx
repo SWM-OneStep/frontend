@@ -46,12 +46,6 @@ const CategoryAddView = () => {
   };
 
   const handleAddCategory = () => {
-    // console.log({
-    //   title: categoryName,
-    //   userId: parseInt(userId, 10),
-    //   color: selectedColor,
-    //   order: tmpOrder(),
-    // });
     const addCategoryData = {
       title: categoryName,
       user_id: parseInt(userId, 10),

@@ -2,15 +2,19 @@ import axios from 'axios';
 import { API_PATH } from './config';
 
 const metadata = accessToken => {
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-
+  let headers = null;
   if (accessToken) {
-    headers.Authorization = 'Bearer ' + accessToken;
+    headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    };
+  } else {
+    headers = {
+      'Content-Type': 'application/json',
+    };
   }
 
-  return headers;
+  return { headers };
 };
 
 const handleRequest = async request => {
@@ -162,7 +166,7 @@ export const Api = {
       () =>
         fetch(API_PATH.categories, {
           method: 'POST',
-          headers: metadata(),
+          headers: metadata(accessToken),
           body: JSON.stringify(categoryData),
         }),
       // axios({
