@@ -6,9 +6,9 @@ const metadata = accessToken => {
     'Content-Type': 'application/json',
   };
 
-  if (accessToken) {
-    headers.Authorization = 'Bearer ' + accessToken;
-  }
+  // if (accessToken) {
+  //   headers.Authorization = 'Bearer ' + accessToken;
+  // }
 
   return { headers };
 };
