@@ -12,22 +12,26 @@ const CategoryScroll = () => {
   const { selectedCategory, setSelectedCategory } = useContext(CategoryContext);
   const [orderedCategories, setOrderedCategories] = useState([]);
   const { userId, accessToken } = useContext(LoginContext);
-  const onSuccess = data => {
-    const sorted = [...data].sort((a, b) => a.id - b.id);
-    setOrderedCategories(sorted);
-  };
 
-  const { isLoading, error } = useCategoriesQuery(
+  const { isLoading, error, data, isSuccess } = useCategoriesQuery(
     accessToken,
     userId,
-    onSuccess,
   );
 
   useEffect(() => {
-    if (orderedCategories && orderedCategories.length > 0) {
+    if (isSuccess) {
+      const sorted =
+        data.length > 1 ? [...data].sort((a, b) => a.id - b.id) : data;
+      setOrderedCategories(sorted);
+    }
+  }, [data, isSuccess]);
+
+  useEffect(() => {
+    if (orderedCategories.length > 0) {
       setSelectedCategory(orderedCategories[0].id);
     }
-  }, [orderedCategories, setSelectedCategory]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderedCategories]);
 
   if (isLoading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
