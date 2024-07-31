@@ -2,17 +2,21 @@ import { API_PATH } from './config';
 import axios from 'axios';
 
 const metadata = accessToken => {
-  return {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + accessToken,
-    },
+  const headers = {
+    'Content-Type': 'application/json',
   };
+
+  if (accessToken) {
+    headers.Authorization = 'Bearer ' + accessToken;
+  }
+
+  return { headers };
 };
 
 const handleRequest = async request => {
   try {
     const response = await request();
+    console.log(response);
     return response.data;
   } catch (err) {
     console.log(err);
@@ -137,7 +141,7 @@ export const Api = {
 
   getCategory: (accessToken, userId) => {
     return handleRequest(() =>
-      axios.get(`${API_PATH.categories}?user_id=${userId}`),
+      axios.get(`${API_PATH.categories}?user_id=${userId}`, metadata()),
     );
   },
 
@@ -154,8 +158,20 @@ export const Api = {
    * }
    */
   addCategory: (accessToken, categoryData) => {
-    return handleRequest(() =>
-      axios.post(API_PATH.category, categoryData, metadata(accessToken)),
+    return handleRequest(
+      () =>
+        fetch(API_PATH.categories, {
+          method: 'POST',
+          headers: metadata(),
+          body: JSON.stringify(categoryData),
+        }),
+      // axios({
+      //   method: 'POST',
+      //   headers: metadata(),
+      //   url: API_PATH.categories,
+      //   data: JSON.stringify(categoryData),
+      // }),
+      // axios.post(API_PATH.categories, JSON.stringify(categoryData), metadata()),
     );
   },
 };

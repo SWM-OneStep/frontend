@@ -13,8 +13,8 @@ const useCategoriesQuery = (accessToken, userId, onSuccess) => {
   return useQuery({
     queryKey: [QUERY_KEY],
     queryFn: () => fetcher(accessToken, userId),
-    refetchInterval: 30000,
-    refetchIntervalInBackground: true,
+    // refetchInterval: 30000,
+    // refetchIntervalInBackground: true,
     keepPreviousData: true,
     onSuccess: onSuccess,
     onError: error => {

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import { SafeAreaView, View, TouchableOpacity, FlatList } from 'react-native';
 import {
   ApplicationProvider,
@@ -10,10 +10,7 @@ import {
 import * as eva from '@eva-design/eva';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useRouter } from 'expo-router';
-import {
-  getUserInfoFromLocal,
-  getAccessTokenFromLocal,
-} from '@/utils/asyncStorageUtils';
+import { LoginContext } from '@/contexts/LoginContext';
 import useCategoryAddMutation from '../hooks/useCategoryAddMutation';
 
 const colors = ['#FF3D71', '#FF7E29', '#FFC233', '#4CAF50', '#00BCD4'];
@@ -23,14 +20,14 @@ const CategoryAddView = () => {
   const [categoryName, setCategoryName] = useState('');
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const bottomSheetRef = useRef(null);
+  const { userId, accessToken } = useContext(LoginContext);
+
   const { mutate: addCategory } = useCategoryAddMutation({
     onSuccess: () => {
-      router.back();
       setCategoryName('');
+      router.back();
     },
   });
-  const user = getUserInfoFromLocal();
-  const accessToken = getAccessTokenFromLocal();
 
   const openBottomSheet = () => {
     bottomSheetRef.current.snapToIndex(0);
@@ -40,17 +37,22 @@ const CategoryAddView = () => {
     const now = new Date();
     const milliseconds = now.getTime();
     const unixTime = Math.floor(milliseconds / 1000);
-    return unixTime;
+    return unixTime.toString();
   };
 
   const handleAddCategory = () => {
-    addCategory(accessToken, {
+    console.log({
       title: categoryName,
-      userId: user.id,
+      userId: parseInt(userId, 10),
       color: selectedColor,
       order: tmpOrder(),
     });
-    setCategoryName('');
+    addCategory(accessToken, {
+      title: categoryName,
+      userId: parseInt(userId, 10),
+      color: selectedColor,
+      order: tmpOrder(),
+    });
   };
 
   const renderColorItem = ({ item }) => (
