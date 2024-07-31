@@ -1,5 +1,7 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
+import { LoginContext } from '@/contexts/LoginContext';
 import useTodoStore from '@/contexts/TodoStore';
+import { useTodoAddMutation } from '@/hooks/useTodoMutations';
 import { Input, List } from '@ui-kitten/components';
 import { Fragment, useContext, useState } from 'react';
 import { ScaleDecorator } from 'react-native-draggable-flatlist';
@@ -7,9 +9,14 @@ import DailyTodo from './DailyTodo';
 
 const DailyTodos = () => {
   const [input, setInput] = useState('');
+  const { userId, accessToken } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
+  const { mutate: addTodo } = useTodoAddMutation({
+    onSuccess: () => {
+      console.log('Todo added successfully');
+    },
+  });
 
-  // const addTodo = useTodoStore(state => state.addTodo);
   const currentTodos = useTodoStore(state => state.currentTodos);
 
   const renderTodo = ({ item, drag, isActive }) => {
@@ -19,9 +26,13 @@ const DailyTodos = () => {
   };
   // const { date } = useContext(DateContext);
   const handleSubmit = async () => {
-    // const startDate = date.split('T')[0];
-    // const endDate = date.split('T')[0];
-    // addTodo(startDate, endDate, input, selectedCategory);
+    addTodo(accessToken, {
+      userId: parseInt(userId, 10),
+      startDate: new Date(),
+      endDate: new Date(),
+      content: input,
+      category: selectedCategory.id,
+    });
     setInput('');
   };
   return (

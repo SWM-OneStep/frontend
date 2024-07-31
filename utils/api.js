@@ -1,16 +1,16 @@
-import { API_PATH } from './config';
 import axios from 'axios';
+import { API_PATH } from './config';
 
 const metadata = accessToken => {
   const headers = {
     'Content-Type': 'application/json',
   };
 
-  // if (accessToken) {
-  //   headers.Authorization = 'Bearer ' + accessToken;
-  // }
+  if (accessToken) {
+    headers.Authorization = 'Bearer ' + accessToken;
+  }
 
-  return { headers };
+  return headers;
 };
 
 const handleRequest = async request => {
@@ -30,7 +30,7 @@ export const Api = {
    * 서버로부터 사용자의 todo를 받아온다.
    *
    */
-  fetchTodos: ({ accessToken, userId }) => {
+  fetchTodos: (accessToken, userId) => {
     return handleRequest(() =>
       axios.get(`${API_PATH.todos}?user_id=${userId}`, metadata(accessToken)),
     );

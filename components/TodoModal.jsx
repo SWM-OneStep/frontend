@@ -1,5 +1,7 @@
+import { LoginContext } from '@/contexts/LoginContext';
 import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
+import { useTodoUpdateMutation } from '@/hooks/useTodoMutations';
 import { convertGmtToKst } from '@/utils/convertTimezone';
 import {
   Button,
@@ -9,7 +11,7 @@ import {
   Modal,
   Text,
 } from '@ui-kitten/components';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 const editIcon = props => {
@@ -51,6 +53,13 @@ const TodoModal = ({
 
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [calendarModalVisible, setCalendarModalVisible] = useState(false);
+  const { userId, accessToken } = useContext(LoginContext);
+
+  const { mutate: updateTodoDate } = useTodoUpdateMutation({
+    onSuccess: () => {
+      console.log('Todo date updated successfully');
+    },
+  });
 
   const handleDelete = async item_id => {
     deleteTodo(item_id);
@@ -74,8 +83,13 @@ const TodoModal = ({
   const handleTodoDateUpdate = async date => {
     const kstDate = convertGmtToKst(date).toISOString().split('T')[0];
     // API 호출
-    const updatedTodo = await fetchTodoDateUpdateApi(kstDate);
-    console.log('updatedTodo', updatedTodo);
+    // const updatedTodo = await fetchTodoDateUpdateApi(kstDate);
+    const result = updateTodoDate(accessToken, {
+      todo_id: item.id,
+      start_date: kstDate,
+      end_date: kstDate,
+    });
+    console.log('updatedTodo called', result);
   };
 
   const fetchTodoDateUpdateApi = async date => {

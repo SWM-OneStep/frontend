@@ -1,16 +1,16 @@
-import React, { useState, useRef, useContext } from 'react';
-import { SafeAreaView, View, TouchableOpacity, FlatList } from 'react-native';
-import {
-  ApplicationProvider,
-  Layout,
-  Input,
-  Button,
-  Text,
-} from '@ui-kitten/components';
+import { LoginContext } from '@/contexts/LoginContext';
 import * as eva from '@eva-design/eva';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import {
+  ApplicationProvider,
+  Button,
+  Input,
+  Layout,
+  Text,
+} from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
-import { LoginContext } from '@/contexts/LoginContext';
+import React, { useContext, useRef, useState } from 'react';
+import { FlatList, SafeAreaView, TouchableOpacity, View } from 'react-native';
 import useCategoryAddMutation from '../hooks/useCategoryAddMutation';
 
 const colors = ['#FF3D71', '#FF7E29', '#FFC233', '#4CAF50', '#00BCD4'];
@@ -22,7 +22,12 @@ const CategoryAddView = () => {
   const bottomSheetRef = useRef(null);
   const { userId, accessToken } = useContext(LoginContext);
 
-  const { mutate: addCategory } = useCategoryAddMutation({
+  const {
+    mutate: addCategory,
+    isLoading,
+    isError,
+    error,
+  } = useCategoryAddMutation({
     onSuccess: () => {
       setCategoryName('');
       router.back();
@@ -41,18 +46,19 @@ const CategoryAddView = () => {
   };
 
   const handleAddCategory = () => {
-    console.log({
+    // console.log({
+    //   title: categoryName,
+    //   userId: parseInt(userId, 10),
+    //   color: selectedColor,
+    //   order: tmpOrder(),
+    // });
+    const addCategoryData = {
       title: categoryName,
-      userId: parseInt(userId, 10),
+      user_id: parseInt(userId, 10),
       color: selectedColor,
       order: tmpOrder(),
-    });
-    addCategory(accessToken, {
-      title: categoryName,
-      userId: parseInt(userId, 10),
-      color: selectedColor,
-      order: tmpOrder(),
-    });
+    };
+    addCategory({ accessToken, addCategoryData });
   };
 
   const renderColorItem = ({ item }) => (

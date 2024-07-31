@@ -41,6 +41,7 @@ const Login = () => {
           router.replace('(tabs)');
         })
         .catch(e => {
+          console.log('error occurred');
           console.log(e);
           console.log('token expired');
           router.replace('/');
