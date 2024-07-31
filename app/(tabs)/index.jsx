@@ -13,7 +13,7 @@ const TodayView = () => {
         <SafeAreaView style={styles.container}>
           <WeeklyCalendar />
           <CategoryScroll />
-          {/* <CategoryTodos /> */}
+          <CategoryTodos />
         </SafeAreaView>
       </DateProvider>
     </CategoryProvider>

@@ -31,12 +31,9 @@ const Login = () => {
   const [request, response, promptAsync] = Google.useAuthRequest(config);
 
   const handleLocalToken = async () => {
-    console.log('check local token');
     const token = await getAccessTokenFromLocal();
     const user = await getUserInfoFromLocal();
-    console.log('why', token, user);
     if (token) {
-      console.log('verify token');
       Api.verifyToken(token)
         .then(() => {
           setAccessToken(token);
