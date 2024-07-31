@@ -1,4 +1,9 @@
 import { LoginContext } from '@/contexts/LoginContext';
+import { Api } from '@/utils/api';
+import {
+  getAccessTokenFromLocal,
+  getUserInfoFromLocal,
+} from '@/utils/asyncStorageUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import { Button, Text } from '@ui-kitten/components';
@@ -8,11 +13,6 @@ import { StatusBar } from 'expo-status-bar';
 import { useCallback, useContext, useEffect, useRef } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { GoogleIcon } from './../components/GoogleIcon';
-import { Api } from '@/utils/api';
-import {
-  getAccessTokenFromLocal,
-  getUserInfoFromLocal,
-} from '@/utils/asyncStorageUtils';
 
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';

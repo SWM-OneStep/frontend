@@ -1,11 +1,11 @@
+import { LoginContext } from '@/contexts/LoginContext';
 import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
+import useTodosQuery from '@/hooks/useTodoQuery';
 import { Text } from '@ui-kitten/components';
 import { useContext, useEffect } from 'react';
 import DailyTodos from './DailyTodos';
 import TodoModal from './TodoModal';
-import { LoginContext } from '@/contexts/LoginContext';
-import useTodosQuery from '@/hooks/useTodoQuery';
 const CategoryTodos = () => {
   const { accessToken, userId } = useContext(LoginContext);
   const { isLoading, error, data, isSuccess } = useTodosQuery(
