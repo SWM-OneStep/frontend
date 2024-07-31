@@ -1,61 +1,69 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, Icon, Layout, Text } from '@ui-kitten/components';
-import { useContext, useEffect } from 'react';
+import { useRouter } from 'expo-router';
+import { useContext, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
-
-const categoriesApi = 'http://10.0.2.2:8000/todos/category/';
+import useCategoriesQuery from '@/hooks/useCategoriesQuery';
+import { LoginContext } from '@/contexts/LoginContext';
 
 const CategoryScroll = () => {
-  // useEffect(() => {
-  //   fetchCategories();
-  // });
-  const { selectedCategory, setSelectedCategory, categories, setCategories } =
-    useContext(CategoryContext);
+  const router = useRouter();
+
+  const { selectedCategory, setSelectedCategory } = useContext(CategoryContext);
+  const [orderedCategories, setOrderedCategories] = useState([]);
+  const { userId, accessToken } = useContext(LoginContext);
+
+  const { isLoading, error, data, isSuccess } = useCategoriesQuery(
+    accessToken,
+    userId,
+  );
 
   useEffect(() => {
-    const getCategories = async () => {
-      // const accessToken = await AsyncStorage.getItem('accessToken');
-      let userId = await AsyncStorage.getItem('userId');
-      if (userId === null) {
-        userId = 1;
-      }
-      const response = await fetch(categoriesApi + `?user_id=${userId}`, {
-        method: 'GET',
-        headers: {
-          // Authorization: 'Bearer ' + accessToken,
-        },
-      });
-      const responseData = await response.json();
-      setCategories(responseData);
-      setSelectedCategory(responseData[0].id);
-    };
-    getCategories();
-  }, [setCategories, setSelectedCategory]);
+    if (isSuccess) {
+      const sorted =
+        data.length > 1 ? [...data].sort((a, b) => a.id - b.id) : data;
+      setOrderedCategories(sorted);
+    }
+  }, [data, isSuccess]);
 
-  // const { selectedCategory, setSelectedCategory, categories, setCategories } =
-  //   useContext(CategoryContext);
+  useEffect(() => {
+    if (orderedCategories.length > 0) {
+      setSelectedCategory(orderedCategories[0].id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderedCategories]);
+
+  if (isLoading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error: {error.message}</Text>;
 
   const handlePress = index => {
     setSelectedCategory(index);
   };
-
+  const starIcon = props => <Icon {...props} name="star" />;
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
   return (
     <Layout>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        {categories.map((item, index) => (
-          <Button
-            accessoryLeft={props => (
-              <Icon {...props} name="star" fill={item.color} />
-            )}
-            style={styles.button}
-            status={(selectedCategory === item.id && 'primary') || 'basic'}
-            onPress={() => handlePress(item.id)}
-            key={index}
-          >
-            <Text>{item.title}</Text>
-          </Button>
-        ))}
+        {orderedCategories &&
+          orderedCategories.map((item, index) => (
+            <Button
+              accessoryLeft={starIcon}
+              style={styles.button}
+              status={(selectedCategory === item.id && 'primary') || 'basic'}
+              onPress={() => handlePress(item.id)}
+              key={index}
+            >
+              <Text>{item.title}</Text>
+            </Button>
+          ))}
+        <Button
+          style={styles.button}
+          onPress={() => router.push('/categoryAddView')}
+        >
+          <Text> + </Text>
+        </Button>
       </ScrollView>
     </Layout>
   );

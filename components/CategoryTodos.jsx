@@ -1,54 +1,45 @@
-import { CategoryContext } from '@/contexts/CategoryContext';
-import { DateContext } from '@/contexts/DateContext';
 import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
 import { Text } from '@ui-kitten/components';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import DailyTodos from './DailyTodos';
 import TodoModal from './TodoModal';
-
+import { LoginContext } from '@/contexts/LoginContext';
+import useTodosQuery from '@/hooks/useTodoQuery';
 const CategoryTodos = () => {
-  const currentTodos = useTodoStore(state => state.currentTodos);
-  const fetchTodo = useTodoStore(state => state.fetchTodo);
-  const filterTodoByCategory = useTodoStore(
-    state => state.filterTodoByCategory,
+  const { accessToken, userId } = useContext(LoginContext);
+  const { isLoading, error, data, isSuccess } = useTodosQuery(
+    accessToken,
+    userId,
   );
-  const filterTodoByDate = useTodoStore(state => state.filterTodoByDate);
-  const { date } = useContext(DateContext);
+
   const modalVisible = useModalStore(state => state.modalVisible);
   const selectedTodo = useTodoStore(state => state.selectedTodo);
   const closeModal = useModalStore(state => state.closeModal);
-  const { selectedCategory } = useContext(CategoryContext);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const awaitForFetchTodo = async () => {
-      setLoading(true);
-      await fetchTodo();
-      setLoading(false);
-    };
+    if (isSuccess) {
+      useTodoStore.setState({ currentTodos: data });
+    }
+  }, [isSuccess, data]);
 
-    awaitForFetchTodo();
-  }, [fetchTodo]);
+  // useEffect(() => {
+  //   const fetchTodoByCategoryThenByDate = async () => {
+  //     if (!loading) {
+  //       await filterTodoByCategory(selectedCategory);
+  //       await filterTodoByDate(date);
+  //     }
+  //   };
 
-  useEffect(() => {
-    const fetchTodoByCategoryThenByDate = async () => {
-      if (!loading) {
-        await filterTodoByCategory(selectedCategory);
-        await filterTodoByDate(date);
-      }
-    };
+  //   fetchTodoByCategoryThenByDate();
+  // }, [filterTodoByCategory, selectedCategory, loading, filterTodoByDate, date]);
 
-    fetchTodoByCategoryThenByDate();
-  }, [filterTodoByCategory, selectedCategory, loading, filterTodoByDate, date]);
-
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
+  if (isLoading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error: {error.message}</Text>;
 
   return (
     <>
-      <DailyTodos todos={currentTodos} />
+      <DailyTodos />
       <TodoModal
         item={selectedTodo}
         visible={modalVisible}

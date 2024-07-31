@@ -3,33 +3,50 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import { Button, Text } from '@ui-kitten/components';
 import * as Google from 'expo-auth-session/providers/google';
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { GoogleIcon } from './../components/GoogleIcon';
+import { Api } from '@/utils/api';
+import {
+  getAccessTokenFromLocal,
+  getUserInfoFromLocal,
+} from '@/utils/asyncStorageUtils';
 
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
 
-// const loginApi =
-//   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/login/google/';
-
-// const userApi =
-//   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/auth/user/';
-// 시점에 따라 aws ec2에 포함되지 않았을 수 있음 -> 빠른 시일 내에 자동배포로 이 문제 해결 예정
-
-const loginApi = 'http://10.0.2.2:8000/auth/login/google/';
-const userApi = 'http://10.0.2.2:8000/auth/user/';
-
 const imageSource = require('../assets/todo_logo.png');
 
+const config = {
+  androidClientId,
+};
+
 const Login = () => {
-  const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
-  const config = {
-    androidClientId,
-  };
+  const { setIsLoggedIn, setUserId, setAccessToken } = useContext(LoginContext);
+
+  let accessTokenRef = useRef(null);
+
   const [request, response, promptAsync] = Google.useAuthRequest(config);
+
+  const handleLocalToken = async () => {
+    const token = await getAccessTokenFromLocal();
+    const user = await getUserInfoFromLocal();
+    if (token) {
+      Api.verifyToken(token)
+        .then(() => {
+          setAccessToken(token);
+          setUserId(user.userId);
+          router.replace('(tabs)');
+        })
+        .catch(e => {
+          console.log(e);
+          console.log('token expired');
+          router.replace('/');
+        });
+    }
+  };
 
   const getDeviceToken = useCallback(async () => {
     try {
@@ -46,26 +63,16 @@ const Login = () => {
         await AsyncStorage.setItem('deviceToken', token);
         return token;
       } catch (e) {
-        router.replace('/index');
+        router.replace('index');
         return null;
       }
     }
   }, []);
 
   const getUserInfo = useCallback(async () => {
-    const jwtAccessToken = await AsyncStorage.getItem('accessToken');
-    const localResponse = await fetch(userApi, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${jwtAccessToken}`,
-      },
-    });
-    if (!localResponse.ok || localResponse.error) {
-      return null;
-    }
-    const responseData = await localResponse.json();
-    return responseData;
+    const localResponse = await Api.getUserInfo(accessTokenRef.current);
+
+    return localResponse;
   }, []);
 
   const handleToken = useCallback(async () => {
@@ -75,20 +82,13 @@ const Login = () => {
         token: token,
         deviceToken: deviceToken,
       };
-      const localResponse = await fetch(loginApi, {
-        method: 'POST', // HTTP 메서드 지정
-        headers: {
-          'Content-Type': 'application/json', // 요청 헤더 설정
-        },
-        body: JSON.stringify(tokenData), // 전송할 데이터를 JSON 문자열로 변환
-      });
-      const localJwtData = await localResponse.json();
-      if (localResponse.error) {
-        return;
-      }
-      if (localJwtData) {
-        await AsyncStorage.setItem('accessToken', localJwtData.access);
-        await AsyncStorage.setItem('refreshToken', localJwtData.refresh);
+      const localResponse = await Api.googleLogin(tokenData);
+
+      if (localResponse) {
+        await AsyncStorage.setItem('accessToken', localResponse.access);
+        await AsyncStorage.setItem('refreshToken', localResponse.refresh);
+        accessTokenRef.current = localResponse.access;
+        setAccessToken(localResponse.access);
         setIsLoggedIn(true);
       }
     };
@@ -98,17 +98,25 @@ const Login = () => {
       if (token) {
         // 여기서 토큰을 사용하여 추가 작업을 수행할 수 있습니다.
         // 예: 상태 업데이트, API 호출 등
+        // 이때 로딩화면 출력
         await getToken({ token });
-        const userInfoData = await getUserInfo();
-        if (userInfoData) {
-          await AsyncStorage.setItem('userId', userInfoData.id.toString());
-          await AsyncStorage.setItem('username', userInfoData.username);
-          router.replace('(tabs)');
-        }
+        const user = await getUserInfo();
+
+        // id, name 따로 저장하길래 한번에 해보았음
+        await AsyncStorage.setItem('userId', user.id.toString());
+        await AsyncStorage.setItem('userName', user.username);
+        setUserId(user.id);
         router.replace('(tabs)');
       }
     }
-  }, [response, setIsLoggedIn, getDeviceToken, getUserInfo]);
+  }, [
+    response,
+    getDeviceToken,
+    setAccessToken,
+    setIsLoggedIn,
+    getUserInfo,
+    setUserId,
+  ]);
 
   useEffect(() => {
     handleToken();
@@ -125,9 +133,7 @@ const Login = () => {
         <Button accessoryLeft={GoogleIcon} onPress={() => promptAsync()}>
           Sign in with Google
         </Button>
-        <Link replace href="/(tabs)">
-          <Text appearance="hint">Go to Main page</Text>
-        </Link>
+        <Button onPress={() => handleLocalToken()}>Check Local Token</Button>
       </View>
     </View>
   );

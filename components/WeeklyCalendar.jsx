@@ -1,9 +1,12 @@
 import { Icon, Layout, Text, useTheme } from '@ui-kitten/components';
 import moment from 'moment';
 import 'moment/locale/ko';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
-const WeeklyCalendar = ({ selectedDate, onSelectedDate }) => {
+import { DateContext } from '@/contexts/DateContext';
+
+const WeeklyCalendar = () => {
+  const { selectedDate, setSelectedDate } = useContext(DateContext);
   const [currentDate, setcurrentDate] = useState(moment());
   const theme = useTheme();
   // const todos = useTodos();
@@ -26,12 +29,12 @@ const WeeklyCalendar = ({ selectedDate, onSelectedDate }) => {
   }, [currentDate]);
   useEffect(() => {
     moment().isBetween(weekDates[0], weekDates[6])
-      ? onSelectedDate(currentDate)
-      : onSelectedDate(weekDates[0]);
-  }, [weekDates, onSelectedDate, currentDate]);
+      ? setSelectedDate(currentDate)
+      : setSelectedDate(weekDates[0]);
+  }, [weekDates, setSelectedDate, currentDate]);
 
   const handleDateSelect = date => {
-    onSelectedDate(date);
+    setSelectedDate(date);
   };
 
   return (

@@ -1,0 +1,26 @@
+// useTodosQuery.js
+import { useQuery } from '@tanstack/react-query';
+import { Api } from '@/utils/api';
+
+export const TODO_QUERY_KEY = '/todos';
+
+const fetcher = async (accessToken, userId) => {
+  const data = await Api.fetchTodos(accessToken, userId);
+  return data;
+};
+
+const useTodosQuery = (accessToken, userId, onSuccess) => {
+  return useQuery({
+    queryKey: [TODO_QUERY_KEY],
+    queryFn: () => fetcher(accessToken, userId),
+    refetchInterval: 60000,
+    refetchIntervalInBackground: true,
+    keepPreviousData: true,
+    onSuccess: onSuccess,
+    onError: error => {
+      console.error('Error fetching todos:', error);
+    },
+  });
+};
+
+export default useTodosQuery;

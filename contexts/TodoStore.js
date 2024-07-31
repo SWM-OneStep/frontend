@@ -1,4 +1,4 @@
-import { isTodoIncludedInTodayView } from '@/utils/compareDate';
+import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
 import { create } from 'zustand';
 
 // const todosApi =
@@ -15,6 +15,7 @@ const useTodoStore = create((set, get) => ({
   setSelectedTodo: todo => {
     set(state => ({ selectedTodo: todo }));
   },
+
   addTodo: async (startDate, endDate, content, categoryId) => {
     const apiData = {
       start_date: startDate,
