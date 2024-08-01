@@ -4,7 +4,6 @@ import TODO_QUERY_KEY from './useTodoQuery';
 
 // 생성 (Add Todo)
 const addTodoFetcher = async ({ accessToken, todoData }) => {
-  console.log('addTodoFetcher todoData', todoData);
   const data = await Api.addTodo(accessToken, todoData);
   return data;
 };
@@ -19,19 +18,17 @@ export const useTodoAddMutation = () => {
 };
 
 // 수정 (Update Todo)
-const updateTodoFetcher = async (accessToken, todoId, updatedData) => {
-  const data = await Api.updateTodo(accessToken, todoId, updatedData);
+const updateTodoFetcher = async ({ accessToken, updatedData }) => {
+  const data = await Api.updateTodo({
+    accessToken: accessToken,
+    updateData: updatedData,
+  });
   return data;
 };
 
-export const useTodoUpdateMutation = onSuccess => {
-  const queryClient = useQueryClient();
+export const useTodoUpdateMutation = () => {
   return useMutation({
     mutationFn: updateTodoFetcher,
-    onSuccess: () => {
-      queryClient.invalidateQueries(TODO_QUERY_KEY);
-      if (onSuccess) onSuccess();
-    },
     onError: error => {
       console.error('Error editing todo:', error);
     },

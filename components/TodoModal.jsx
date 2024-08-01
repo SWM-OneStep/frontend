@@ -3,7 +3,9 @@ import { LoginContext } from '@/contexts/LoginContext';
 import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
 import { useTodoUpdateMutation } from '@/hooks/useTodoMutations';
+import TODO_QUERY_KEY from '@/hooks/useTodoQuery';
 import { convertGmtToKst } from '@/utils/convertTimezone';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Calendar,
@@ -12,7 +14,7 @@ import {
   Modal,
   Text,
 } from '@ui-kitten/components';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 const editIcon = props => {
@@ -57,10 +59,13 @@ const TodoModal = ({
   const { userId, accessToken } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
 
-  const { mutate: updateTodoDate } = useTodoUpdateMutation({
-    onSuccess: () => {
-      console.log('Todo date updated successfully');
-    },
+  const { mutate: updateTodoDate, isSuccess } = useTodoUpdateMutation();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (isSuccess) {
+      queryClient.invalidateQueries(TODO_QUERY_KEY);
+    }
   });
 
   const handleDelete = async item_id => {
@@ -84,34 +89,19 @@ const TodoModal = ({
   }
 
   const handleTodoDateUpdate = date => {
-    console.log('handleTodoDateUpdate called');
     const kstDate = convertGmtToKst(date).toISOString().split('T')[0];
     // API 호출
     // const updatedTodo = await fetchTodoDateUpdateApi(kstDate);
-    const result = updateTodoDate(accessToken, {
-      todo_id: item.id,
+    const updatedTodo = {
       start_date: kstDate,
       end_date: kstDate,
+      todo_id: item.id,
       category_id: selectedCategory,
-    });
-    console.log('updatedTodo called', result);
-  };
-
-  const fetchTodoDateUpdateApi = async date => {
-    const bodyData = {
-      id: item.id,
-      start_date: date,
-      end_date: date,
     };
-    const response = await fetch(todosApi, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify(bodyData),
+    updateTodoDate({
+      accessToken: accessToken,
+      updatedData: updatedTodo,
     });
-    const updatedTodo = await response.json();
-    return updatedTodo;
   };
 
   return (

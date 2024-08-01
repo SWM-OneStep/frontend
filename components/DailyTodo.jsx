@@ -20,8 +20,6 @@ import TodoModal from './TodoModal';
 const todosApi = 'http://localhost:8000/todos/todo/';
 
 const DailyTodo = ({ item, drag, isActive }) => {
-  console.log('DailyTodo item: ', item);
-
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
   const { selectedDate } = useContext(DateContext);
@@ -58,7 +56,6 @@ const DailyTodo = ({ item, drag, isActive }) => {
   };
 
   const renderSubTodo = ({ item, index }) => {
-    console.log('renderSubtodo subitem,', item);
     return <DailySubTodo item={item} key={index} />;
   };
 
