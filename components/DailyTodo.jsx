@@ -89,10 +89,17 @@ const DailyTodo = ({ item, drag, isActive }) => {
     );
   };
 
+  const tmpOrder = () => {
+    const now = new Date();
+    const milliseconds = now.getTime();
+    const unixTime = Math.floor(milliseconds / 1000);
+    return unixTime.toString();
+  };
+
   const handleSubtodoSubmit = () => {
     if (subTodoInput !== '') {
       const modifiedDate = selectedDate.toISOString().split('T')[0];
-      addSubTodo(subTodoInput, item, modifiedDate, '0:hzzzzzzz');
+      addSubTodo(subTodoInput, item, modifiedDate, tmpOrder());
       setSubtodoInput('');
       setSubTodoInputActivated(false);
     }

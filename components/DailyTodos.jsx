@@ -38,15 +38,16 @@ const DailyTodos = () => {
   };
   // const { date } = useContext(DateContext);
   const handleSubmit = async () => {
+    const todos = useTodoStore.getState().todos;
     const newTodoData = {
       userId: parseInt(userId, 10),
-      startDate: new Date().toISOString().split('T')[0],
-      endDate: new Date().toISOString().split('T')[0],
+      startDate: selectedDate.format('YYYY-MM-DD'),
+      endDate: selectedDate.format('YYYY-MM-DD'),
       content: input,
       categoryId: selectedCategory,
       order:
-        currentTodos.length > 0
-          ? LexoRank.parse(currentTodos[currentTodos.length - 1].order)
+        todos.length > 0
+          ? LexoRank.parse(todos[todos.length - 1].order)
               .genNext()
               .toString()
           : LexoRank.middle().toString(),
