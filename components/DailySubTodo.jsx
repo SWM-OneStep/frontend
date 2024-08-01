@@ -3,6 +3,7 @@ import useTodoStore from '@/contexts/TodoStore';
 import { Icon, Input, ListItem, Text, useTheme } from '@ui-kitten/components';
 import { useCallback, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
+import TodoModal from './TodoModal';
 
 const DailySubTodo = ({ item }) => {
   const [completed, setCompleted] = useState(item.isCompleted);
@@ -14,6 +15,8 @@ const DailySubTodo = ({ item }) => {
   const theme = useTheme();
   const editTodo = useTodoStore(state => state.editTodo);
   const toggleTodo = useTodoStore(state => state.toggleTodo);
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleCheck = useCallback(() => {
     setCompleted(!completed);
@@ -73,6 +76,12 @@ const DailySubTodo = ({ item }) => {
         accessoryRight={props => settingIcon(props)}
         onPress={() => openModal(item)}
         style={{ paddingLeft: 40 }}
+      />
+      <TodoModal
+        item={item}
+        isTodo={false}
+        visible={modalVisible}
+        setVisible={setModalVisible}
       />
     </>
   );

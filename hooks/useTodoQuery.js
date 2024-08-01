@@ -1,6 +1,6 @@
 // useTodosQuery.js
-import { useQuery } from '@tanstack/react-query';
 import { Api } from '@/utils/api';
+import { useQuery } from '@tanstack/react-query';
 
 export const TODO_QUERY_KEY = '/todos';
 

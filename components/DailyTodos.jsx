@@ -1,20 +1,22 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
-import { DateContext } from '@/contexts/DateContext';
+import { LoginContext } from '@/contexts/LoginContext';
 import useTodoStore from '@/contexts/TodoStore';
-import { Input, Layout } from '@ui-kitten/components';
-import { useContext, useState } from 'react';
+import { useTodoAddMutation } from '@/hooks/useTodoMutations';
+import { Input, List } from '@ui-kitten/components';
+import { Fragment, useContext, useState } from 'react';
+import { ScaleDecorator } from 'react-native-draggable-flatlist';
 import DailyTodo from './DailyTodo';
-import {
-  DraggableFlatList,
-  ScaleDecorator,
-} from 'react-native-draggable-flatlist';
-import { LexoRank } from 'lexorank';
 
 const DailyTodos = () => {
   const [input, setInput] = useState('');
+  const { userId, accessToken } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
+  const { mutate: addTodo } = useTodoAddMutation({
+    onSuccess: () => {
+      console.log('Todo added successfully');
+    },
+  });
 
-  // const addTodo = useTodoStore(state => state.addTodo);
   const currentTodos = useTodoStore(state => state.currentTodos);
 
   const renderTodo = ({ item, drag, isActive }) => {
@@ -24,61 +26,37 @@ const DailyTodos = () => {
   };
   // const { date } = useContext(DateContext);
   const handleSubmit = async () => {
-    // const startDate = date.split('T')[0];
-    // const endDate = date.split('T')[0];
-    // addTodo(startDate, endDate, input, selectedCategory);
+    const newTodoData = {
+      userId: parseInt(userId, 10),
+      startDate: new Date(),
+      endDate: new Date(),
+      content: input,
+      category: selectedCategory.id,
+    };
+
+    console.log('handleSubmit newTodoData', newTodoData);
+    addTodo(accessToken, newTodoData);
     setInput('');
   };
-
-  const handleDragEnd = ({ from, to, data: newData }) => {
-    if (!newData || newData.length === 0) return;
-    if (from === to) {
-      return;
-    }
-
-    const newDataCopied = newData.map((item, index) => {
-      if (index === to) {
-        const updatedItem = { ...item };
-        if (to === 0) {
-          updatedItem.order = LexoRank.parse(newData[to + 1].order)
-            .genPrev()
-            .toString();
-        } else if (to === newData.length - 1) {
-          updatedItem.order = LexoRank.parse(newData[to - 1].order)
-            .genNext()
-            .toString();
-        } else {
-          const lexoOrderPrev = LexoRank.parse(newData[to - 1].order);
-          const lexoOrderNext = LexoRank.parse(newData[to + 1].order);
-          const lexoOrderMid = lexoOrderPrev.between(lexoOrderNext);
-          updatedItem.order = lexoOrderMid.toString();
-        }
-        return updatedItem;
-      }
-      return item;
-    });
-    onTodos(newDataCopied);
-  };
   return (
-    <Layout>
-      <DraggableFlatList
+    <Fragment>
+      <List
         data={currentTodos}
         renderItem={renderTodo}
-        onDragEnd={handleDragEnd}
-        ListFooterComponent={
-          <Input
-            placeholder="Place your Text"
-            value={input}
-            onChangeText={nextInput => {
-              setInput(nextInput);
-            }}
-            autoFocus={true}
-            onSubmitEditing={handleSubmit}
-          />
-        }
-        ListFooterComponentStyle={{ paddingTop: 0 }}
+        ListFooterComponentStyle={{ paddingTop: 0, flex: 1 }}
       />
-    </Layout>
+      {/* <KeyboardAvoidingView> */}
+      <Input
+        placeholder="Place your Text"
+        value={input}
+        onChangeText={nextInput => {
+          setInput(nextInput);
+        }}
+        autoFocus={true}
+        onSubmitEditing={handleSubmit}
+      />
+      {/* </KeyboardAvoidingView> */}
+    </Fragment>
   );
 };
 

@@ -1,9 +1,9 @@
+import { Api } from '@/utils/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEY as categoryQueryKey } from './useCategoriesQuery';
-import { Api } from '@/utils/api';
 
-const fetcher = async (accessToken, categoryData) => {
-  const data = await Api.addCategory(accessToken, categoryData);
+const fetcher = async ({ accessToken, addCategoryData }) => {
+  const data = await Api.addCategory(accessToken, addCategoryData);
   return data;
 };
 

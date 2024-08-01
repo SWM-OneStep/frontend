@@ -1,20 +1,27 @@
-import { API_PATH } from './config';
 import axios from 'axios';
+import { API_PATH } from './config';
 
 const metadata = accessToken => {
-  const headers = {
-    'Content-Type': 'application/json',
-  };
+  let headers = null;
+  if (accessToken) {
+    headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    };
+  } else {
+    headers = {
+      'Content-Type': 'application/json',
+    };
+  }
 
-  // if (accessToken) {
-  //   headers.Authorization = 'Bearer ' + accessToken;
-  // }
-
-  return { headers };
+  console.log('metadata headers', headers);
+  return headers;
+  // return { headers };
 };
 
 const handleRequest = async request => {
   try {
+    console.log('requestststs', request);
     const response = await request();
     console.log(response);
     return response.data;
@@ -30,7 +37,7 @@ export const Api = {
    * 서버로부터 사용자의 todo를 받아온다.
    *
    */
-  fetchTodos: ({ accessToken, userId }) => {
+  fetchTodos: (accessToken, userId) => {
     return handleRequest(() =>
       axios.get(`${API_PATH.todos}?user_id=${userId}`, metadata(accessToken)),
     );
@@ -158,20 +165,22 @@ export const Api = {
    * }
    */
   addCategory: (accessToken, categoryData) => {
+    console.log('metadata', metadata());
     return handleRequest(
-      () =>
-        fetch(API_PATH.categories, {
-          method: 'POST',
-          headers: metadata(),
-          body: JSON.stringify(categoryData),
-        }),
+      // () =>
+      //   fetch(API_PATH.categories, {
+      //     method: 'POST',
+      //     headers: metadata(),
+      //     body: JSON.stringify(categoryData),
+      //   }),
       // axios({
       //   method: 'POST',
       //   headers: metadata(),
       //   url: API_PATH.categories,
       //   data: JSON.stringify(categoryData),
       // }),
-      // axios.post(API_PATH.categories, JSON.stringify(categoryData), metadata()),
+      () =>
+        axios.post(API_PATH.categories, categoryData, metadata(accessToken)),
     );
   },
 };

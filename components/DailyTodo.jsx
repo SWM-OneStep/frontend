@@ -12,20 +12,21 @@ import {
 import { useCallback, useContext, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import DailySubTodo from './DailySubTodo';
+import TodoModal from './TodoModal';
 
 // const todosApi =
 //   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
 
-// const todosApi = 'http://localhost:8000/todos/';
+const todosApi = 'http://localhost:8000/todos/todo/';
 
 const DailyTodo = ({ item, drag, isActive }) => {
-  const [completed, setCompleted] = useState(item.is_completed);
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
   const { date } = useContext(DateContext);
   const editTodo = useTodoStore(state => state.editTodo);
   const toggleTodo = useTodoStore(state => state.toggleTodo);
   const addSubTodo = useTodoStore(state => state.addSubTodo);
+  const [completed, setCompleted] = useState(item.isCompleted);
   const openModal = useModalStore(state => state.openModal);
   const closeModal = useModalStore(state => state.closeModal);
   const isEditing = useModalStore(state => state.isEditing);
@@ -39,6 +40,8 @@ const DailyTodo = ({ item, drag, isActive }) => {
     state => state.setSubTodoInputActivated,
   );
 
+  const [modalVisible, setModalVisible] = useState(false);
+
   const handleCheck = useCallback(() => {
     setCompleted(!completed);
     toggleTodo({ ...item });
@@ -50,7 +53,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
 
   const settingIcon = props => {
     return (
-      <TouchableOpacity onPress={() => openModal(item)}>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
         <Icon
           {...props}
           name="more-horizontal-outline"
@@ -106,7 +109,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
         key={item.id}
         accessoryLeft={props => checkIcon(props)}
         accessoryRight={props => settingIcon(props)}
-        onPress={() => openModal(item)}
+        onPress={() => setModalVisible(true)}
         onLongPress={drag}
         isActive={isActive}
       />
@@ -130,6 +133,12 @@ const DailyTodo = ({ item, drag, isActive }) => {
             />
           ) : null
         }
+      />
+      <TodoModal
+        item={item}
+        isTodo={true}
+        visible={modalVisible}
+        setVisible={setModalVisible}
       />
     </>
   );
