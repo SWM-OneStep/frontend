@@ -21,7 +21,6 @@ const metadata = accessToken => {
 
 const handleRequest = async request => {
   try {
-    console.log('requestststs', request);
     const response = await request();
     console.log(response);
     return response.data;
@@ -58,7 +57,8 @@ export const Api = {
    * @returns {Promise<Object>} 새로 추가된 할 일 객체를 반환하는 프로미스.
    * @throws {Error} 요청이 실패할 경우 에러를 던집니다.
    */
-  addTodo: ({ accessToken, todoData }) => {
+  addTodo: (accessToken, todoData) => {
+    console.log('addTodo todoData', todoData);
     return handleRequest(() =>
       axios.post(API_PATH.todos, todoData, metadata(accessToken)),
     );

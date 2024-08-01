@@ -27,18 +27,18 @@ const useTodoStore = create((set, get) => ({
       is_completed: false,
     };
     // const accessToken = await AsyncStorage.getItem('accessToken');
-    const response = await fetch(todosApi, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // Authorization: 'Bearer ' + accessToken,
-      },
-      body: JSON.stringify(apiData),
-    });
-    const responseData = await response.json();
-    const todo = responseData;
-    set(state => ({ todos: [...state.todos, todo] }));
-    set(state => ({ currentTodos: [...state.currentTodos, todo] }));
+    // const response = await fetch(todosApi, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     // Authorization: 'Bearer ' + accessToken,
+    //   },
+    //   body: JSON.stringify(apiData),
+    // });
+    // const responseData = await response.json();
+    // const todo = responseData;
+    // set(state => ({ todos: [...state.todos, todo] }));
+    // set(state => ({ currentTodos: [...state.currentTodos, todo] }));
   },
   addSubTodo: async (content, todo, date, order) => {
     const modifiedOrder = order ? order : '0:hzzzzzzz';
