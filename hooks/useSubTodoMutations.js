@@ -22,7 +22,7 @@ export const useSubTodoAddMutation = () => {
 const updateSubTodoFetcher = async ({ accessToken, updatedData }) => {
   const data = await Api.updateSubTodo({
     accessToken: accessToken,
-    updateData: updatedData,
+    updatedData: updatedData,
   });
   return data;
 };

@@ -54,11 +54,6 @@ const CategoryTodos = () => {
   return (
     <>
       <DailyTodos />
-      {/* <TodoModal
-        item={selectedTodo}
-        visible={modalVisible}
-        closeModal={() => closeModal()}
-      /> */}
     </>
   );
 };

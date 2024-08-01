@@ -202,7 +202,7 @@ export const Api = {
    *   sub_id: subTodoId,
    * }
    */
-  updateSubTodo: (accessToken, updatedData) => {
+  updateSubTodo: ({ accessToken, updatedData }) => {
     return handleRequest(() =>
       axios.patch(API_PATH.subTodos, updatedData, metadata(accessToken)),
     );
