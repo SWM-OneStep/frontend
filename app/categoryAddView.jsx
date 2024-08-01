@@ -1,6 +1,8 @@
 import { LoginContext } from '@/contexts/LoginContext';
+import { QUERY_KEY as categoryQueryKey } from '@/hooks/useCategoriesQuery';
 import * as eva from '@eva-design/eva';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   ApplicationProvider,
   Button,
@@ -22,21 +24,13 @@ const CategoryAddView = () => {
   const bottomSheetRef = useRef(null);
   const { userId, accessToken } = useContext(LoginContext);
 
-  const {
-    mutate: addCategory,
-    isLoading,
-    isError,
-    error,
-    isSuccess,
-  } = useCategoryAddMutation({
-    onSuccess: () => {
-      setCategoryName('');
-      router.back();
-    },
-  });
+  const { mutate: addCategory, isSuccess } = useCategoryAddMutation();
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (isSuccess) {
+      queryClient.invalidateQueries(categoryQueryKey);
       setCategoryName('');
       router.back();
     }
