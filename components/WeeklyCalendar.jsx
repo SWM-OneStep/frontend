@@ -1,15 +1,17 @@
+import { DateContext } from '@/contexts/DateContext';
+import useTodoStore from '@/contexts/TodoStore';
+import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
 import { Icon, Layout, Text, useTheme } from '@ui-kitten/components';
 import moment from 'moment';
 import 'moment/locale/ko';
 import React, { useContext, useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { DateContext } from '@/contexts/DateContext';
 
 const WeeklyCalendar = () => {
   const { selectedDate, setSelectedDate } = useContext(DateContext);
   const [currentDate, setcurrentDate] = useState(moment());
   const theme = useTheme();
-  // const todos = useTodos();
+  const todos = useTodoStore(state => state.todos);
   const getWeekDates = date => {
     const start = date.clone().startOf('ISOWeek');
     const r = Array.from({ length: 7 }, (_, i) => start.clone().add(i, 'days'));
@@ -105,7 +107,17 @@ const WeeklyCalendar = () => {
                 marginTop: 4,
               }}
             >
-              <Text category="c1" style={{ color: theme['color-basic-800'] }} />
+              <Text category="c1" style={{ color: theme['color-basic-800'] }}>
+                {
+                  todos.filter(todo =>
+                    isTodoIncludedInTodayView(
+                      todo.startDate,
+                      todo.endDate,
+                      date.format('YYYY-MM-DD'),
+                    ),
+                  ).length
+                }
+              </Text>
             </Layout>
           </TouchableOpacity>
         ))}

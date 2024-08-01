@@ -6,6 +6,8 @@ import { TouchableOpacity } from 'react-native';
 import TodoModal from './TodoModal';
 
 const DailySubTodo = ({ item }) => {
+  console.log('DailySubTodo item: ', item);
+
   const [completed, setCompleted] = useState(item.isCompleted);
   const openModal = useModalStore(state => state.openModal);
   const selectedTodo = useTodoStore(state => state.selectedTodo);

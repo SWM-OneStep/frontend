@@ -9,7 +9,7 @@ import {
   Text,
   useTheme,
 } from '@ui-kitten/components';
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useRef, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import DailySubTodo from './DailySubTodo';
 import TodoModal from './TodoModal';
@@ -24,7 +24,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
 
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
-  const { date } = useContext(DateContext);
+  const { selectedDate } = useContext(DateContext);
   const editTodo = useTodoStore(state => state.editTodo);
   const toggleTodo = useTodoStore(state => state.toggleTodo);
   const addSubTodo = useTodoStore(state => state.addSubTodo);
@@ -42,6 +42,8 @@ const DailyTodo = ({ item, drag, isActive }) => {
     state => state.setSubTodoInputActivated,
   );
 
+  const subtodoTextInputRef = useRef(null);
+
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleCheck = useCallback(() => {
@@ -49,21 +51,15 @@ const DailyTodo = ({ item, drag, isActive }) => {
     toggleTodo({ ...item });
   }, [completed, item, toggleTodo]);
 
-  const renderSubTodo = ({ subItem, index }) => {
-    return <DailySubTodo item={subItem} key={index} />;
+  const focusSubtodoTextInput = () => {
+    if (subtodoTextInputRef.current) {
+      subtodoTextInputRef.current.focus();
+    }
   };
 
-  const settingIcon = props => {
-    return (
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <Icon
-          {...props}
-          name="more-horizontal-outline"
-          pack="eva"
-          fill={theme['text-basic-color']}
-        />
-      </TouchableOpacity>
-    );
+  const renderSubTodo = ({ item, index }) => {
+    console.log('renderSubtodo subitem,', item);
+    return <DailySubTodo item={item} key={index} />;
   };
 
   const checkIcon = props => {
@@ -80,10 +76,33 @@ const DailyTodo = ({ item, drag, isActive }) => {
     );
   };
 
+  const settingIcon = props => {
+    return (
+      <TouchableOpacity onPress={() => openModal(item)}>
+        <Icon
+          {...props}
+          name="more-horizontal-outline"
+          pack="eva"
+          fill={theme['text-basic-color']}
+        />
+      </TouchableOpacity>
+    );
+  };
+
+  const tmpOrder = () => {
+    const now = new Date();
+    const milliseconds = now.getTime();
+    const unixTime = Math.floor(milliseconds / 1000);
+    return unixTime.toString();
+  };
+
   const handleSubtodoSubmit = () => {
-    addSubTodo(subTodoInput, item, date, '0:hzzzzzzz');
-    setSubtodoInput('');
-    setSubTodoInputActivated(false);
+    if (subTodoInput !== '') {
+      const modifiedDate = selectedDate.toISOString().split('T')[0];
+      addSubTodo(subTodoInput, item, modifiedDate, tmpOrder());
+      setSubtodoInput('');
+      setSubTodoInputActivated(false);
+    }
   };
 
   return (
@@ -116,7 +135,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
         isActive={isActive}
       />
       <List
-        data={item && item.subtodos ? item.subtodos : []}
+        data={item.subtodos}
         renderItem={renderSubTodo}
         contentContainerStyle={{ marginLeft: 40, paddingLeft: 40 }}
         ListFooterComponent={
@@ -130,7 +149,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
               onChangeText={nextInput => {
                 setSubtodoInput(nextInput);
               }}
-              // autoFocus={true}
+              autoFocus={true}
               onSubmitEditing={handleSubtodoSubmit}
             />
           ) : null

@@ -1,11 +1,9 @@
-import { createContext, useContext, useState } from 'react';
-import { LoginContext } from './LoginContext';
+import { createContext, useState } from 'react';
 
 export const CategoryContext = createContext();
 
 const CategoryProvider = ({ children }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const { userId, accessToken } = useContext(LoginContext);
 
   return (
     <CategoryContext.Provider
