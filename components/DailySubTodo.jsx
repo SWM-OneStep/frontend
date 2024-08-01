@@ -74,7 +74,7 @@ const DailySubTodo = ({ item }) => {
         key={item.id}
         accessoryLeft={props => checkIcon(props)}
         accessoryRight={props => settingIcon(props)}
-        onPress={() => openModal(item)}
+        onPress={() => setModalVisible(true)}
         style={{ paddingLeft: 40 }}
       />
       <TodoModal
