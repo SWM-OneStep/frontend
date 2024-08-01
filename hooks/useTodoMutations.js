@@ -3,19 +3,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import TODO_QUERY_KEY from './useTodoQuery';
 
 // 생성 (Add Todo)
-const addTodoFetcher = async (accessToken, todoData) => {
+const addTodoFetcher = async ({ accessToken, todoData }) => {
+  console.log('addTodoFetcher todoData', todoData);
   const data = await Api.addTodo(accessToken, todoData);
   return data;
 };
 
-export const useTodoAddMutation = onSuccess => {
-  const queryClient = useQueryClient();
+export const useTodoAddMutation = () => {
   return useMutation({
     mutationFn: addTodoFetcher,
-    onSuccess: () => {
-      queryClient.invalidateQueries(TODO_QUERY_KEY);
-      if (onSuccess) onSuccess();
-    },
     onError: error => {
       console.error('Error adding todo:', error);
     },

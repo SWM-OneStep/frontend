@@ -20,6 +20,8 @@ import TodoModal from './TodoModal';
 const todosApi = 'http://localhost:8000/todos/todo/';
 
 const DailyTodo = ({ item, drag, isActive }) => {
+  console.log('DailyTodo item: ', item);
+
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
   const { date } = useContext(DateContext);
