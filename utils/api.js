@@ -14,11 +14,14 @@ const metadata = accessToken => {
     };
   }
 
-  return { headers };
+  console.log('metadata headers', headers);
+  return headers;
+  // return { headers };
 };
 
 const handleRequest = async request => {
   try {
+    console.log('requestststs', request);
     const response = await request();
     console.log(response);
     return response.data;
@@ -162,20 +165,22 @@ export const Api = {
    * }
    */
   addCategory: (accessToken, categoryData) => {
+    console.log('metadata', metadata());
     return handleRequest(
-      () =>
-        fetch(API_PATH.categories, {
-          method: 'POST',
-          headers: metadata(accessToken),
-          body: JSON.stringify(categoryData),
-        }),
+      // () =>
+      //   fetch(API_PATH.categories, {
+      //     method: 'POST',
+      //     headers: metadata(),
+      //     body: JSON.stringify(categoryData),
+      //   }),
       // axios({
       //   method: 'POST',
       //   headers: metadata(),
       //   url: API_PATH.categories,
       //   data: JSON.stringify(categoryData),
       // }),
-      // axios.post(API_PATH.categories, JSON.stringify(categoryData), metadata()),
+      () =>
+        axios.post(API_PATH.categories, categoryData, metadata(accessToken)),
     );
   },
 };

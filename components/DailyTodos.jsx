@@ -26,13 +26,16 @@ const DailyTodos = () => {
   };
   // const { date } = useContext(DateContext);
   const handleSubmit = async () => {
-    addTodo(accessToken, {
+    const newTodoData = {
       userId: parseInt(userId, 10),
       startDate: new Date(),
       endDate: new Date(),
       content: input,
       category: selectedCategory.id,
-    });
+    };
+
+    console.log('handleSubmit newTodoData', newTodoData);
+    addTodo(accessToken, newTodoData);
     setInput('');
   };
   return (

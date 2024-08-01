@@ -1,3 +1,4 @@
+import { CategoryContext } from '@/contexts/CategoryContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
@@ -54,6 +55,7 @@ const TodoModal = ({
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [calendarModalVisible, setCalendarModalVisible] = useState(false);
   const { userId, accessToken } = useContext(LoginContext);
+  const { selectedCategory } = useContext(CategoryContext);
 
   const { mutate: updateTodoDate } = useTodoUpdateMutation({
     onSuccess: () => {
@@ -80,7 +82,8 @@ const TodoModal = ({
     return null;
   }
 
-  const handleTodoDateUpdate = async date => {
+  const handleTodoDateUpdate = date => {
+    console.log('handleTodoDateUpdate called');
     const kstDate = convertGmtToKst(date).toISOString().split('T')[0];
     // API 호출
     // const updatedTodo = await fetchTodoDateUpdateApi(kstDate);
@@ -88,6 +91,7 @@ const TodoModal = ({
       todo_id: item.id,
       start_date: kstDate,
       end_date: kstDate,
+      category_id: selectedCategory,
     });
     console.log('updatedTodo called', result);
   };

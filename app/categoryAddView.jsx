@@ -9,7 +9,7 @@ import {
   Text,
 } from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { FlatList, SafeAreaView, TouchableOpacity, View } from 'react-native';
 import useCategoryAddMutation from '../hooks/useCategoryAddMutation';
 
@@ -27,12 +27,21 @@ const CategoryAddView = () => {
     isLoading,
     isError,
     error,
+    isSuccess,
   } = useCategoryAddMutation({
     onSuccess: () => {
       setCategoryName('');
       router.back();
     },
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      setCategoryName('');
+      router.back();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess]);
 
   const openBottomSheet = () => {
     bottomSheetRef.current.snapToIndex(0);
