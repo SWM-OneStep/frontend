@@ -1,3 +1,4 @@
+import { CategoryContext } from '@/contexts/CategoryContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
@@ -12,6 +13,7 @@ const CategoryTodos = () => {
     accessToken,
     userId,
   );
+  const { selectedCategory } = useContext(CategoryContext);
 
   const modalVisible = useModalStore(state => state.modalVisible);
   const selectedTodo = useTodoStore(state => state.selectedTodo);
@@ -19,9 +21,13 @@ const CategoryTodos = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      useTodoStore.setState({ currentTodos: data });
+      useTodoStore.setState({ todos: data });
+      let filteredTodos = data.filter(
+        todo => todo.categoryId === selectedCategory,
+      );
+      useTodoStore.setState({ currentTodos: filteredTodos });
     }
-  }, [isSuccess, data]);
+  }, [isSuccess, data, selectedCategory]);
 
   // useEffect(() => {
   //   const fetchTodoByCategoryThenByDate = async () => {

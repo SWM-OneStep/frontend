@@ -9,7 +9,7 @@ import {
   Text,
   useTheme,
 } from '@ui-kitten/components';
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useRef, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import DailySubTodo from './DailySubTodo';
 import TodoModal from './TodoModal';
@@ -42,12 +42,20 @@ const DailyTodo = ({ item, drag, isActive }) => {
     state => state.setSubTodoInputActivated,
   );
 
+  const subtodoTextInputRef = useRef(null);
+
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleCheck = useCallback(() => {
     setCompleted(!completed);
     toggleTodo({ ...item });
   }, [completed, item, toggleTodo]);
+
+  const focusSubtodoTextInput = () => {
+    if (subtodoTextInputRef.current) {
+      subtodoTextInputRef.current.focus();
+    }
+  };
 
   const renderSubTodo = ({ item, index }) => {
     console.log('renderSubtodo subitem,', item);
@@ -82,10 +90,12 @@ const DailyTodo = ({ item, drag, isActive }) => {
   };
 
   const handleSubtodoSubmit = () => {
-    const modifiedDate = selectedDate.toISOString().split('T')[0];
-    addSubTodo(subTodoInput, item, modifiedDate, '0:hzzzzzzz');
-    setSubtodoInput('');
-    setSubTodoInputActivated(false);
+    if (subTodoInput !== '') {
+      const modifiedDate = selectedDate.toISOString().split('T')[0];
+      addSubTodo(subTodoInput, item, modifiedDate, '0:hzzzzzzz');
+      setSubtodoInput('');
+      setSubTodoInputActivated(false);
+    }
   };
 
   return (
@@ -132,7 +142,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
               onChangeText={nextInput => {
                 setSubtodoInput(nextInput);
               }}
-              // autoFocus={true}
+              autoFocus={true}
               onSubmitEditing={handleSubtodoSubmit}
             />
           ) : null

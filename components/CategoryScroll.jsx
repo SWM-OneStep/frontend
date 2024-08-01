@@ -1,10 +1,10 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
+import { LoginContext } from '@/contexts/LoginContext';
+import useCategoriesQuery from '@/hooks/useCategoriesQuery';
 import { Button, Icon, Layout, Text } from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
-import useCategoriesQuery from '@/hooks/useCategoriesQuery';
-import { LoginContext } from '@/contexts/LoginContext';
 
 const CategoryScroll = () => {
   const router = useRouter();
