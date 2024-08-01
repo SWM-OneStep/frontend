@@ -15,8 +15,8 @@ const metadata = accessToken => {
   }
 
   console.log('metadata headers', headers);
-  return headers;
-  // return { headers };
+  // return headers;
+  return { headers };
 };
 
 const handleRequest = async request => {
