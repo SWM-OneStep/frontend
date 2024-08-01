@@ -74,6 +74,7 @@ const TodoModal = ({
 
   const handleSubtodoCreateInitialize = todo => {
     setModalVisible(false);
+    setVisible(false);
     setSubTodoInputActivated(true);
     setSelectedTodo(todo);
   };
@@ -119,6 +120,7 @@ const TodoModal = ({
         visible={visible}
         backdropStyle={styles.backdrop}
         onBackdropPress={() => {
+          setModalVisible(false);
           setVisible(false);
         }}
         style={isTodo ? styles.modalTodo : styles.modalSubTodo}

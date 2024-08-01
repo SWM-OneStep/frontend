@@ -56,6 +56,7 @@ const useTodoStore = create((set, get) => ({
       body: JSON.stringify(apiData),
     });
     const responseData = await response.json();
+    console.log('responseData', responseData);
     let currentSubTodos = todo.subtodos;
     currentSubTodos.push(responseData);
     let modifiedTodo = [];

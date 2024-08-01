@@ -69,7 +69,7 @@ const DailyTodos = () => {
         onChangeText={nextInput => {
           setInput(nextInput);
         }}
-        autoFocus={true}
+        autoFocus={false}
         onSubmitEditing={handleSubmit}
       />
       {/* </KeyboardAvoidingView> */}
