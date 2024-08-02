@@ -15,7 +15,7 @@ import {
   Text,
   useTheme,
 } from '@ui-kitten/components';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import DailySubTodo from './DailySubTodo';
 import TodoModal from './TodoModal';
@@ -44,8 +44,6 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const { mutate: addSubTodo, isSuccess: addSubTodoIsSuccess } =
     useSubTodoAddMutation();
 
-  const subtodoTextInputRef = useRef(null);
-
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -59,12 +57,6 @@ const DailyTodo = ({ item, drag, isActive }) => {
     setCompleted(!completed);
     toggleTodo({ ...item });
   }, [completed, item, toggleTodo]);
-
-  const focusSubtodoTextInput = () => {
-    if (subtodoTextInputRef.current) {
-      subtodoTextInputRef.current.focus();
-    }
-  };
 
   const renderSubTodo = ({ item, index }) => {
     return <DailySubTodo item={item} key={index} />;
