@@ -1,5 +1,5 @@
 import CategoryScroll from '@/components/CategoryScroll';
-import CategoryTodos from '@/components/CategoryTodos';
+import DailyTodos from '@/components/DailyTodos';
 import WeeklyCalendar from '@/components/WeeklyCalendar';
 import CategoryProvider from '@/contexts/CategoryContext';
 import DateProvider from '@/contexts/DateContext';
@@ -13,7 +13,7 @@ const TodayView = () => {
         <SafeAreaView style={styles.container}>
           <WeeklyCalendar />
           <CategoryScroll />
-          <CategoryTodos />
+          <DailyTodos />
         </SafeAreaView>
       </DateProvider>
     </CategoryProvider>
