@@ -1,7 +1,6 @@
-// const BASE_URL =
-//   'http://ec2-43-201-109-163.ap-northeast-2.compute.amazonaws.com:8000';
+const BASE_URL = 'https://dev.stepby.one';
 
-const BASE_URL = 'http://10.0.2.2:8000';
+// const BASE_URL = 'http://10.0.2.2:8000';
 
 export const API_PATH = {
   categories: `${BASE_URL}/todos/category/`,
