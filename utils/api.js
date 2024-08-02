@@ -14,7 +14,6 @@ const metadata = accessToken => {
     };
   }
 
-  console.log('metadata headers', headers);
   // return headers;
   return { headers };
 };
@@ -22,7 +21,7 @@ const metadata = accessToken => {
 const handleRequest = async request => {
   try {
     const response = await request();
-    console.log(response);
+    console.log('response', response.data);
     return response.data;
   } catch (err) {
     console.log(err);
@@ -58,7 +57,6 @@ export const Api = {
    * @throws {Error} 요청이 실패할 경우 에러를 던집니다.
    */
   addTodo: (accessToken, todoData) => {
-    console.log('addTodo todoData', todoData);
     return handleRequest(() =>
       axios.post(API_PATH.todos, todoData, metadata(accessToken)),
     );
@@ -165,7 +163,6 @@ export const Api = {
    * }
    */
   addCategory: (accessToken, categoryData) => {
-    console.log('metadata', metadata());
     return handleRequest(
       // () =>
       //   fetch(API_PATH.categories, {

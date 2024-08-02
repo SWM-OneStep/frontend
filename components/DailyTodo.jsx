@@ -58,7 +58,6 @@ const DailyTodo = ({ item, drag, isActive }) => {
   };
 
   const renderSubTodo = ({ item, index }) => {
-    console.log('renderSubtodo subitem,', item);
     return <DailySubTodo item={item} key={index} />;
   };
 

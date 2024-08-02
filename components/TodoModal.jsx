@@ -57,11 +57,7 @@ const TodoModal = ({
   const { userId, accessToken } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
 
-  const { mutate: updateTodoDate } = useTodoUpdateMutation({
-    onSuccess: () => {
-      console.log('Todo date updated successfully');
-    },
-  });
+  const { mutate: updateTodoDate } = useTodoUpdateMutation();
 
   const handleDelete = async item_id => {
     deleteTodo(item_id);
@@ -84,7 +80,6 @@ const TodoModal = ({
   }
 
   const handleTodoDateUpdate = date => {
-    console.log('handleTodoDateUpdate called');
     const kstDate = convertGmtToKst(date).toISOString().split('T')[0];
     // API 호출
     // const updatedTodo = await fetchTodoDateUpdateApi(kstDate);
@@ -94,7 +89,6 @@ const TodoModal = ({
       end_date: kstDate,
       category_id: selectedCategory,
     });
-    console.log('updatedTodo called', result);
   };
 
   const fetchTodoDateUpdateApi = async date => {

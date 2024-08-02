@@ -24,13 +24,12 @@ const updateTodoFetcher = async (accessToken, todoId, updatedData) => {
   return data;
 };
 
-export const useTodoUpdateMutation = onSuccess => {
+export const useTodoUpdateMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateTodoFetcher,
     onSuccess: () => {
       queryClient.invalidateQueries(TODO_QUERY_KEY);
-      if (onSuccess) onSuccess();
     },
     onError: error => {
       console.error('Error editing todo:', error);
