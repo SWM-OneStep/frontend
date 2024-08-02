@@ -84,7 +84,6 @@ const TodoModal = ({
   }
 
   const handleTodoDateUpdate = date => {
-    console.log('handleTodoDateUpdate called');
     const kstDate = convertGmtToKst(date).toISOString().split('T')[0];
     // API 호출
     // const updatedTodo = await fetchTodoDateUpdateApi(kstDate);
@@ -94,7 +93,6 @@ const TodoModal = ({
       end_date: kstDate,
       category_id: selectedCategory,
     });
-    console.log('updatedTodo called', result);
   };
 
   const fetchTodoDateUpdateApi = async date => {
