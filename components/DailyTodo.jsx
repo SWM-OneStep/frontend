@@ -1,6 +1,12 @@
 import { DateContext } from '@/contexts/DateContext';
+import { LoginContext } from '@/contexts/LoginContext';
 import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
+import {
+  SUBTODO_QUERY_KEY,
+  useSubTodoAddMutation,
+} from '@/hooks/useSubTodoMutations';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Icon,
   Input,
@@ -9,15 +15,10 @@ import {
   Text,
   useTheme,
 } from '@ui-kitten/components';
-import { useCallback, useContext, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import DailySubTodo from './DailySubTodo';
 import TodoModal from './TodoModal';
-
-// const todosApi =
-//   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
-
-const todosApi = 'http://localhost:8000/todos/todo/';
 
 const DailyTodo = ({ item, drag, isActive }) => {
   const [content, setContent] = useState(item.content);
@@ -25,7 +26,6 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const { selectedDate } = useContext(DateContext);
   const editTodo = useTodoStore(state => state.editTodo);
   const toggleTodo = useTodoStore(state => state.toggleTodo);
-  const addSubTodo = useTodoStore(state => state.addSubTodo);
   const [completed, setCompleted] = useState(item.isCompleted);
   const openModal = useModalStore(state => state.openModal);
   const closeModal = useModalStore(state => state.closeModal);
@@ -33,16 +33,27 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const setIsEditing = useModalStore(state => state.setIsEditing);
   const selectedTodo = useTodoStore(state => state.selectedTodo);
   const [subTodoInput, setSubtodoInput] = useState('');
+  const { accessToken } = useContext(LoginContext);
   const subTodoInputActivated = useModalStore(
     state => state.subTodoInputActivated,
   );
   const setSubTodoInputActivated = useModalStore(
     state => state.setSubTodoInputActivated,
   );
+  const queryClient = useQueryClient();
+  const { mutate: addSubTodo, isSuccess: addSubTodoIsSuccess } =
+    useSubTodoAddMutation();
 
   const subtodoTextInputRef = useRef(null);
 
   const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (addSubTodoIsSuccess) {
+      queryClient.invalidateQueries(SUBTODO_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addSubTodoIsSuccess]);
 
   const handleCheck = useCallback(() => {
     setCompleted(!completed);
@@ -95,8 +106,15 @@ const DailyTodo = ({ item, drag, isActive }) => {
 
   const handleSubtodoSubmit = () => {
     if (subTodoInput !== '') {
-      const modifiedDate = selectedDate.toISOString().split('T')[0];
-      addSubTodo(subTodoInput, item, modifiedDate, tmpOrder());
+      const modifiedDate = selectedDate.format('YYYY-MM-DD');
+      const subTodoData = {
+        todo: item.id,
+        content: subTodoInput,
+        date: modifiedDate,
+        isCompleted: false,
+        order: tmpOrder(),
+      };
+      addSubTodo({ accessToken: accessToken, todoData: subTodoData });
       setSubtodoInput('');
       setSubTodoInputActivated(false);
     }

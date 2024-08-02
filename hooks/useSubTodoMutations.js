@@ -1,7 +1,7 @@
 import { Api } from '@/utils/api';
 import { useMutation } from '@tanstack/react-query';
 
-const SUBTODO_QUERY_KEY = '/sub';
+export const SUBTODO_QUERY_KEY = '/sub';
 
 // 생성 (Add Todo)
 const addSubTodoFetcher = async ({ accessToken, todoData }) => {
