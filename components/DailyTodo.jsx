@@ -1,6 +1,5 @@
 import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
-import useModalStore from '@/contexts/ModalStore';
 import { QUERY_KEY } from '@/hooks/useCategoriesQuery';
 import {
   SUBTODO_QUERY_KEY,
@@ -26,7 +25,6 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const theme = useTheme();
   const { selectedDate } = useContext(DateContext);
   const [completed, setCompleted] = useState(item.isCompleted);
-  const closeModal = useModalStore(state => state.closeModal);
   const [isEditing, setIsEditing] = useState(false);
   const [subTodoInput, setSubtodoInput] = useState('');
   const { accessToken } = useContext(LoginContext);

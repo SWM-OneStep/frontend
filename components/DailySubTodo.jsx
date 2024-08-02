@@ -1,6 +1,4 @@
 import { LoginContext } from '@/contexts/LoginContext';
-import useModalStore from '@/contexts/ModalStore';
-import useTodoStore from '@/contexts/TodoStore';
 import {
   SUBTODO_QUERY_KEY,
   useSubTodoUpdateMutation,
@@ -13,13 +11,9 @@ import TodoModal from './TodoModal';
 
 const DailySubTodo = ({ item }) => {
   const [completed, setCompleted] = useState(item.isCompleted);
-  const selectedTodo = useTodoStore(state => state.selectedTodo);
-  const isEditing = useModalStore(state => state.isEditing);
-  const setIsEditing = useModalStore(state => state.setIsEditing);
+  const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
-  const editTodo = useTodoStore(state => state.editTodo);
-
   const { accessToken } = useContext(LoginContext);
   const [modalVisible, setModalVisible] = useState(false);
   const queryClient = useQueryClient();
@@ -38,6 +32,19 @@ const DailySubTodo = ({ item }) => {
     const updatedData = {
       subtodoId: item.id,
       isCompleted: !item.isCompleted,
+    };
+    updateSubTodo({ accessToken: accessToken, updatedData: updatedData });
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setModalVisible(false);
+  };
+
+  const handleSubTodoUpdate = () => {
+    const updatedData = {
+      subtodoId: item.id,
+      content: content,
     };
     updateSubTodo({ accessToken: accessToken, updatedData: updatedData });
   };
@@ -73,15 +80,12 @@ const DailySubTodo = ({ item }) => {
     <>
       <ListItem
         title={
-          isEditing && selectedTodo != null && item.id === selectedTodo.id ? (
+          isEditing ? (
             <Input
               value={content}
               onChangeText={value => setContent(value)}
               onSubmitEditing={() => {
-                editTodo({
-                  ...item,
-                  content,
-                });
+                handleSubTodoUpdate();
                 setIsEditing(false);
               }}
               autoFocus={true}
@@ -101,6 +105,7 @@ const DailySubTodo = ({ item }) => {
         isTodo={false}
         visible={modalVisible}
         setVisible={setModalVisible}
+        onEdit={handleEdit}
       />
     </>
   );
