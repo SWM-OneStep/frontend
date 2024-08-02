@@ -216,9 +216,14 @@ export const Api = {
    *   sub_id: subTodoId,
    * }
    */
-  deleteSubTodo: (accessToken, subTodoId) => {
+  deleteSubTodo: ({ accessToken, subTodoId }) => {
     return handleRequest(() =>
-      axios.delete(API_PATH.subTodos, metadata(accessToken)),
+      axios.request({
+        url: API_PATH.subTodos,
+        method: 'DELETE',
+        headers: metadata(accessToken),
+        data: { subtodoId: subTodoId },
+      }),
     );
   },
 };

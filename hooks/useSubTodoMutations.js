@@ -1,5 +1,5 @@
 import { Api } from '@/utils/api';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 const SUBTODO_QUERY_KEY = '/sub';
 
@@ -37,19 +37,17 @@ export const useSubTodoUpdateMutation = () => {
 };
 
 // 삭제 (Delete Todo)
-const deleteSubTodoFetcher = async (accessToken, todoId) => {
-  const data = await Api.deleteSubTodo(accessToken, todoId);
+const deleteSubTodoFetcher = async ({ accessToken, subTodoId }) => {
+  const data = await Api.deleteSubTodo({
+    accessToken: accessToken,
+    subTodoId: subTodoId,
+  });
   return data;
 };
 
-export const useSubTodoDeleteMutation = onSuccess => {
-  const queryClient = useQueryClient();
+export const useSubTodoDeleteMutation = () => {
   return useMutation({
     mutationFn: deleteSubTodoFetcher,
-    onSuccess: () => {
-      queryClient.invalidateQueries(SUBTODO_QUERY_KEY);
-      if (onSuccess) onSuccess();
-    },
     onError: error => {
       console.error('Error deleting todo:', error);
     },

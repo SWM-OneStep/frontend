@@ -1,6 +1,5 @@
 import { Api } from '@/utils/api';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import TODO_QUERY_KEY from './useTodoQuery';
+import { useMutation } from '@tanstack/react-query';
 
 // 생성 (Add Todo)
 const addTodoFetcher = async ({ accessToken, todoData }) => {
@@ -36,19 +35,14 @@ export const useTodoUpdateMutation = () => {
 };
 
 // 삭제 (Delete Todo)
-const deleteTodoFetcher = async (accessToken, todoId) => {
-  const data = await Api.deleteTodo(accessToken, todoId);
+const deleteTodoFetcher = async ({ accessToken, todoId }) => {
+  const data = await Api.deleteTodo({ accessToken, todoId });
   return data;
 };
 
-export const useTodoDeleteMutation = onSuccess => {
-  const queryClient = useQueryClient();
+export const useTodoDeleteMutation = () => {
   return useMutation({
     mutationFn: deleteTodoFetcher,
-    onSuccess: () => {
-      queryClient.invalidateQueries(TODO_QUERY_KEY);
-      if (onSuccess) onSuccess();
-    },
     onError: error => {
       console.error('Error deleting todo:', error);
     },

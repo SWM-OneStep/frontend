@@ -2,8 +2,14 @@ import { CategoryContext } from '@/contexts/CategoryContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
-import { useSubTodoUpdateMutation } from '@/hooks/useSubTodoMutations';
-import { useTodoUpdateMutation } from '@/hooks/useTodoMutations';
+import {
+  useSubTodoDeleteMutation,
+  useSubTodoUpdateMutation,
+} from '@/hooks/useSubTodoMutations';
+import {
+  useTodoDeleteMutation,
+  useTodoUpdateMutation,
+} from '@/hooks/useTodoMutations';
 import TODO_QUERY_KEY from '@/hooks/useTodoQuery';
 import { convertGmtToKst } from '@/utils/convertTimezone';
 import { useQueryClient } from '@tanstack/react-query';
@@ -50,17 +56,20 @@ const TodoModal = ({
   );
   const setModalVisible = useModalStore(state => state.setModalVisible);
   const setSelectedTodo = useTodoStore(state => state.setSelectedTodo);
-  const deleteTodo = useTodoStore(state => state.deleteTodo);
 
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [calendarModalVisible, setCalendarModalVisible] = useState(false);
   const { accessToken } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
 
-  const { mutate: updateTodoDate, updateTodoDateIsSuccess } =
+  const { mutate: updateTodoDate, isSuccess: updateTodoDateIsSuccess } =
     useTodoUpdateMutation();
-  const { mutate: updateSubTodoDate, updateSubTodoDateIsSuccess } =
+  const { mutate: updateSubTodoDate, isSuccess: updateSubTodoDateIsSuccess } =
     useSubTodoUpdateMutation();
+  const { mutate: deleteTodo, isSuccess: deleteTodoIsSuccess } =
+    useTodoDeleteMutation();
+  const { mutate: deleteSubTodo, isSuccess: deleteSubTodoIsSuccess } =
+    useSubTodoDeleteMutation();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -77,8 +86,26 @@ const TodoModal = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateSubTodoDateIsSuccess]);
 
+  useEffect(() => {
+    if (deleteTodoIsSuccess) {
+      queryClient.invalidateQueries(TODO_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteTodoIsSuccess]);
+
+  useEffect(() => {
+    if (deleteSubTodoIsSuccess) {
+      queryClient.invalidateQueries(TODO_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteSubTodoIsSuccess]);
+
   const handleDelete = async item_id => {
-    deleteTodo(item_id);
+    if (isTodo) {
+      deleteTodo({ accessToken: accessToken, todoId: item_id });
+    } else {
+      deleteSubTodo({ accessToken: accessToken, subTodoId: item_id });
+    }
     setVisible(false);
   };
 
