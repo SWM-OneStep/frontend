@@ -8,7 +8,6 @@ import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
 import { Text } from '@ui-kitten/components';
 import { useContext, useEffect } from 'react';
 import DailyTodos from './DailyTodos';
-import TodoModal from './TodoModal';
 const CategoryTodos = () => {
   const { accessToken, userId } = useContext(LoginContext);
   const { isLoading, error, data, isSuccess } = useTodosQuery(
@@ -55,11 +54,6 @@ const CategoryTodos = () => {
   return (
     <>
       <DailyTodos />
-      <TodoModal
-        item={selectedTodo}
-        visible={modalVisible}
-        closeModal={() => closeModal()}
-      />
     </>
   );
 };
