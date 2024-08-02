@@ -39,7 +39,7 @@ const DailySubTodo = ({ item }) => {
 
   const settingIcon = props => {
     return (
-      <TouchableOpacity onPress={() => openModal(item)}>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
         <Icon
           {...props}
           name="more-horizontal-outline"
