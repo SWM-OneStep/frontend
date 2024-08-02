@@ -1,4 +1,5 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
+import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
@@ -56,8 +57,9 @@ const TodoModal = ({
   );
   const setModalVisible = useModalStore(state => state.setModalVisible);
   const setSelectedTodo = useTodoStore(state => state.setSelectedTodo);
+  const { selectedDate } = useContext(DateContext);
 
-  const [calendarDate, setCalendarDate] = useState(new Date());
+  const [calendarDate, setCalendarDate] = useState(selectedDate.toDate());
   const [calendarModalVisible, setCalendarModalVisible] = useState(false);
   const { accessToken } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
