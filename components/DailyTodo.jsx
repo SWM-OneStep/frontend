@@ -1,7 +1,6 @@
 import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useModalStore from '@/contexts/ModalStore';
-import useTodoStore from '@/contexts/TodoStore';
 import { QUERY_KEY } from '@/hooks/useCategoriesQuery';
 import {
   SUBTODO_QUERY_KEY,
@@ -26,20 +25,12 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
   const { selectedDate } = useContext(DateContext);
-  const editTodo = useTodoStore(state => state.editTodo);
   const [completed, setCompleted] = useState(item.isCompleted);
   const closeModal = useModalStore(state => state.closeModal);
-  const isEditing = useModalStore(state => state.isEditing);
-  const setIsEditing = useModalStore(state => state.setIsEditing);
-  const selectedTodo = useTodoStore(state => state.selectedTodo);
+  const [isEditing, setIsEditing] = useState(false);
   const [subTodoInput, setSubtodoInput] = useState('');
   const { accessToken } = useContext(LoginContext);
-  const subTodoInputActivated = useModalStore(
-    state => state.subTodoInputActivated,
-  );
-  const setSubTodoInputActivated = useModalStore(
-    state => state.setSubTodoInputActivated,
-  );
+  const [subTodoInputActivated, setSubTodoInputActivated] = useState(false);
   const queryClient = useQueryClient();
   const { mutate: addSubTodo, isSuccess: addSubTodoIsSuccess } =
     useSubTodoAddMutation();
@@ -67,6 +58,14 @@ const DailyTodo = ({ item, drag, isActive }) => {
     const updatedData = {
       todoId: item.id,
       isCompleted: !item.isCompleted,
+    };
+    updateTodo({ accessToken: accessToken, updatedData: updatedData });
+  };
+
+  const handleTodoUpdate = () => {
+    const updatedData = {
+      todoId: item.id,
+      content: content,
     };
     updateTodo({ accessToken: accessToken, updatedData: updatedData });
   };
@@ -109,6 +108,11 @@ const DailyTodo = ({ item, drag, isActive }) => {
     return unixTime.toString();
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+    setModalVisible(false);
+  };
+
   const handleSubtodoSubmit = () => {
     if (subTodoInput !== '') {
       const modifiedDate = selectedDate.format('YYYY-MM-DD');
@@ -129,16 +133,12 @@ const DailyTodo = ({ item, drag, isActive }) => {
     <>
       <ListItem
         title={
-          isEditing && selectedTodo != null && item.id === selectedTodo.id ? (
+          isEditing ? (
             <Input
               value={content}
               onChangeText={value => setContent(value)}
               onSubmitEditing={() => {
-                editTodo({
-                  ...item,
-                  content,
-                });
-                closeModal();
+                handleTodoUpdate();
                 setIsEditing(false);
               }}
               autoFocus={true}
@@ -159,9 +159,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
         renderItem={renderSubTodo}
         contentContainerStyle={{ marginLeft: 40, paddingLeft: 40 }}
         ListFooterComponent={
-          subTodoInputActivated &&
-          selectedTodo &&
-          item.id === selectedTodo.id ? (
+          subTodoInputActivated ? (
             <Input
               placeholder="Place your Text"
               style={styles.input}
@@ -180,6 +178,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
         isTodo={true}
         visible={modalVisible}
         setVisible={setModalVisible}
+        onEdit={handleEdit}
       />
     </>
   );

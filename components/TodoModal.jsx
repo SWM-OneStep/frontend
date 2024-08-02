@@ -49,8 +49,8 @@ const TodoModal = ({
   isTodo = true,
   visible = false,
   setVisible = () => {},
+  onEdit = () => {},
 }) => {
-  const openEditModal = useModalStore(state => state.openEditModal);
   const setSubTodoInputActivated = useModalStore(
     state => state.setSubTodoInputActivated,
   );
@@ -107,10 +107,6 @@ const TodoModal = ({
       deleteSubTodo({ accessToken: accessToken, subTodoId: item_id });
     }
     setVisible(false);
-  };
-
-  const handleEdit = async () => {
-    openEditModal();
   };
 
   const handleSubtodoCreateInitialize = todo => {
@@ -170,7 +166,7 @@ const TodoModal = ({
                 accessoryLeft={editIcon}
                 status="basic"
                 style={styles.button}
-                onPress={() => handleEdit()}
+                onPress={onEdit}
               >
                 <Text>수정하기</Text>
               </Button>
