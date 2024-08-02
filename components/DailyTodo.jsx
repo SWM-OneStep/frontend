@@ -2,10 +2,12 @@ import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
+import { QUERY_KEY } from '@/hooks/useCategoriesQuery';
 import {
   SUBTODO_QUERY_KEY,
   useSubTodoAddMutation,
 } from '@/hooks/useSubTodoMutations';
+import { useTodoUpdateMutation } from '@/hooks/useTodoMutations';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   Icon,
@@ -15,7 +17,7 @@ import {
   Text,
   useTheme,
 } from '@ui-kitten/components';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import DailySubTodo from './DailySubTodo';
 import TodoModal from './TodoModal';
@@ -25,9 +27,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const theme = useTheme();
   const { selectedDate } = useContext(DateContext);
   const editTodo = useTodoStore(state => state.editTodo);
-  const toggleTodo = useTodoStore(state => state.toggleTodo);
   const [completed, setCompleted] = useState(item.isCompleted);
-  const openModal = useModalStore(state => state.openModal);
   const closeModal = useModalStore(state => state.closeModal);
   const isEditing = useModalStore(state => state.isEditing);
   const setIsEditing = useModalStore(state => state.setIsEditing);
@@ -43,6 +43,8 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const queryClient = useQueryClient();
   const { mutate: addSubTodo, isSuccess: addSubTodoIsSuccess } =
     useSubTodoAddMutation();
+  const { mutate: updateTodo, isSuccess: updateTodoIsSuccess } =
+    useTodoUpdateMutation();
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -53,10 +55,21 @@ const DailyTodo = ({ item, drag, isActive }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addSubTodoIsSuccess]);
 
-  const handleCheck = useCallback(() => {
+  useEffect(() => {
+    if (updateTodoIsSuccess) {
+      queryClient.invalidateQueries(QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateTodoIsSuccess]);
+
+  const handleCheck = () => {
     setCompleted(!completed);
-    toggleTodo({ ...item });
-  }, [completed, item, toggleTodo]);
+    const updatedData = {
+      todoId: item.id,
+      isCompleted: !item.isCompleted,
+    };
+    updateTodo({ accessToken: accessToken, updatedData: updatedData });
+  };
 
   const renderSubTodo = ({ item, index }) => {
     return <DailySubTodo item={item} key={index} />;
