@@ -2,8 +2,17 @@ import { CategoryContext } from '@/contexts/CategoryContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
-import { useTodoUpdateMutation } from '@/hooks/useTodoMutations';
+import {
+  useSubTodoDeleteMutation,
+  useSubTodoUpdateMutation,
+} from '@/hooks/useSubTodoMutations';
+import {
+  useTodoDeleteMutation,
+  useTodoUpdateMutation,
+} from '@/hooks/useTodoMutations';
+import TODO_QUERY_KEY from '@/hooks/useTodoQuery';
 import { convertGmtToKst } from '@/utils/convertTimezone';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Calendar,
@@ -12,7 +21,7 @@ import {
   Modal,
   Text,
 } from '@ui-kitten/components';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 const editIcon = props => {
@@ -35,9 +44,6 @@ const inboxIcon = props => {
   return <Icon {...props} name="inbox-outline" fill="blue" />;
 };
 
-const todosApi =
-  'http://ec2-43-201-109-163.ap-northeast-2.compute.amazonaws.com:8000/todos/todo/';
-
 const TodoModal = ({
   item = null,
   isTodo = true,
@@ -50,21 +56,56 @@ const TodoModal = ({
   );
   const setModalVisible = useModalStore(state => state.setModalVisible);
   const setSelectedTodo = useTodoStore(state => state.setSelectedTodo);
-  const deleteTodo = useTodoStore(state => state.deleteTodo);
 
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [calendarModalVisible, setCalendarModalVisible] = useState(false);
-  const { userId, accessToken } = useContext(LoginContext);
+  const { accessToken } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
 
-  const { mutate: updateTodoDate } = useTodoUpdateMutation({
-    onSuccess: () => {
-      console.log('Todo date updated successfully');
-    },
-  });
+  const { mutate: updateTodoDate, isSuccess: updateTodoDateIsSuccess } =
+    useTodoUpdateMutation();
+  const { mutate: updateSubTodoDate, isSuccess: updateSubTodoDateIsSuccess } =
+    useSubTodoUpdateMutation();
+  const { mutate: deleteTodo, isSuccess: deleteTodoIsSuccess } =
+    useTodoDeleteMutation();
+  const { mutate: deleteSubTodo, isSuccess: deleteSubTodoIsSuccess } =
+    useSubTodoDeleteMutation();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (updateTodoDateIsSuccess) {
+      queryClient.invalidateQueries(TODO_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateTodoDateIsSuccess]);
+
+  useEffect(() => {
+    if (updateSubTodoDateIsSuccess) {
+      queryClient.invalidateQueries(TODO_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateSubTodoDateIsSuccess]);
+
+  useEffect(() => {
+    if (deleteTodoIsSuccess) {
+      queryClient.invalidateQueries(TODO_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteTodoIsSuccess]);
+
+  useEffect(() => {
+    if (deleteSubTodoIsSuccess) {
+      queryClient.invalidateQueries(TODO_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteSubTodoIsSuccess]);
 
   const handleDelete = async item_id => {
-    deleteTodo(item_id);
+    if (isTodo) {
+      deleteTodo({ accessToken: accessToken, todoId: item_id });
+    } else {
+      deleteSubTodo({ accessToken: accessToken, subTodoId: item_id });
+    }
     setVisible(false);
   };
 
@@ -83,35 +124,29 @@ const TodoModal = ({
     return null;
   }
 
-  const handleTodoDateUpdate = date => {
-    console.log('handleTodoDateUpdate called');
+  const handleDateUpdate = date => {
     const kstDate = convertGmtToKst(date).toISOString().split('T')[0];
-    // API 호출
-    // const updatedTodo = await fetchTodoDateUpdateApi(kstDate);
-    const result = updateTodoDate(accessToken, {
-      todo_id: item.id,
-      start_date: kstDate,
-      end_date: kstDate,
-      category_id: selectedCategory,
-    });
-    console.log('updatedTodo called', result);
-  };
-
-  const fetchTodoDateUpdateApi = async date => {
-    const bodyData = {
-      id: item.id,
-      start_date: date,
-      end_date: date,
-    };
-    const response = await fetch(todosApi, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify(bodyData),
-    });
-    const updatedTodo = await response.json();
-    return updatedTodo;
+    if (isTodo) {
+      const updatedTodo = {
+        start_date: kstDate,
+        end_date: kstDate,
+        todo_id: item.id,
+        category_id: selectedCategory,
+      };
+      updateTodoDate({
+        accessToken: accessToken,
+        updatedData: updatedTodo,
+      });
+    } else {
+      const updatedSubTodo = {
+        date: kstDate,
+        subtodoId: item.id,
+      };
+      updateSubTodoDate({
+        accessToken: accessToken,
+        updatedData: updatedSubTodo,
+      });
+    }
   };
 
   return (
@@ -205,7 +240,7 @@ const TodoModal = ({
         </Card>
         <Button
           onPress={() => {
-            handleTodoDateUpdate(calendarDate);
+            handleDateUpdate(calendarDate);
             setCalendarModalVisible(false);
           }}
         >

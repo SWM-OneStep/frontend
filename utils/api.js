@@ -14,15 +14,13 @@ const metadata = accessToken => {
     };
   }
 
-  console.log('metadata headers', headers);
-  // return headers;
   return { headers };
 };
 
 const handleRequest = async request => {
   try {
     const response = await request();
-    console.log(response);
+    // console.log(response);
     return response.data;
   } catch (err) {
     console.log(err);
@@ -58,7 +56,6 @@ export const Api = {
    * @throws {Error} 요청이 실패할 경우 에러를 던집니다.
    */
   addTodo: (accessToken, todoData) => {
-    console.log('addTodo todoData', todoData);
     return handleRequest(() =>
       axios.post(API_PATH.todos, todoData, metadata(accessToken)),
     );
@@ -165,7 +162,6 @@ export const Api = {
    * }
    */
   addCategory: (accessToken, categoryData) => {
-    console.log('metadata', metadata());
     return handleRequest(
       // () =>
       //   fetch(API_PATH.categories, {
@@ -181,6 +177,53 @@ export const Api = {
       // }),
       () =>
         axios.post(API_PATH.categories, categoryData, metadata(accessToken)),
+    );
+  },
+  /**
+   * 서버에 서브투두를 추가합니다.
+   *
+   * @example
+   * // subTodoData 예시:
+   * {
+   *   category_id: categoryId,
+   * }
+   */
+  addSubTodo: (accessToken, subTodoData) => {
+    return handleRequest(() =>
+      axios.post(API_PATH.subTodos, subTodoData, metadata(accessToken)),
+    );
+  },
+  /**
+   * 서버에 서브투두를 변경합니다.
+   *
+   * @example
+   * // subTodoData 예시:
+   * {
+   *   sub_id: subTodoId,
+   * }
+   */
+  updateSubTodo: ({ accessToken, updatedData }) => {
+    return handleRequest(() =>
+      axios.patch(API_PATH.subTodos, updatedData, metadata(accessToken)),
+    );
+  },
+  /**
+   * 서버에 서브투두를 삭제합니다.
+   *
+   * @example
+   * // subTodoData 예시:
+   * {
+   *   sub_id: subTodoId,
+   * }
+   */
+  deleteSubTodo: ({ accessToken, subTodoId }) => {
+    return handleRequest(() =>
+      axios.request({
+        url: API_PATH.subTodos,
+        method: 'DELETE',
+        headers: metadata(accessToken),
+        data: { subtodoId: subTodoId },
+      }),
     );
   },
 };
