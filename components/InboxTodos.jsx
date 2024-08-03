@@ -1,8 +1,9 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useTodoStore from '@/contexts/TodoStore';
-import { default as useTodosQuery } from '@/hooks/useTodoQuery';
-import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
+import useInboxTodoQuery from '@/hooks/useInboxTodoQuery';
+import { useTodoAddMutation } from '@/hooks/useTodoMutations';
+import { TODO_QUERY_KEY } from '@/hooks/useTodoQuery';
 import { useQueryClient } from '@tanstack/react-query';
 import { Input, List } from '@ui-kitten/components';
 import { LexoRank } from 'lexorank';
@@ -18,26 +19,27 @@ const InboxTodos = () => {
   const {
     isLoading,
     error,
-    data,
-    isSuccess: isTodosQuerySuccess,
-  } = useTodosQuery(accessToken, userId);
-  const currentTodos = useTodoStore(state => state.currentTodos);
+    data: inboxTodoData,
+    isSuccess: isInboxTodoQuerySuccess,
+  } = useInboxTodoQuery(accessToken, userId);
+  const { inboxTodos } = useTodoStore(state => state.inboxTodos);
+  const { setInboxTodos } = useTodoStore(state => state.setInboxTodos);
+  const { mutate: addInboxTodo, isSuccess: addInboxTodoIsSuccess } =
+    useTodoAddMutation();
 
   useEffect(() => {
-    if (isTodosQuerySuccess) {
-      useTodoStore.setState({ todos: data });
-      let filteredTodos = data.filter(
-        todo =>
-          todo.categoryId === selectedCategory &&
-          isTodoIncludedInTodayView(
-            todo.startDate,
-            todo.endDate,
-            selectedDate.format('YYYY-MM-DD'),
-          ),
-      );
-      useTodoStore.setState({ currentTodos: filteredTodos });
+    if (isInboxTodoQuerySuccess) {
+      setInboxTodos(inboxTodoData);
     }
-  }, [isTodosQuerySuccess, data, selectedCategory, selectedDate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isInboxTodoQuerySuccess, inboxTodoData]);
+
+  useEffect(() => {
+    if (addInboxTodoIsSuccess) {
+      queryClient.invalidateQueries(TODO_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addInboxTodoIsSuccess]);
 
   if (isLoading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
@@ -49,7 +51,6 @@ const InboxTodos = () => {
       </View>
     );
   };
-  // const { date } = useContext(DateContext);
   const handleSubmit = async () => {
     const todos = useTodoStore.getState().todos;
     const newTodoData = {
@@ -66,13 +67,13 @@ const InboxTodos = () => {
           : LexoRank.middle().toString(),
     };
 
-    addTodo({ accessToken, todoData: newTodoData });
+    addInboxTodo({ accessToken, todoData: newTodoData });
     setInput('');
   };
   return (
     <Fragment>
       <List
-        data={currentTodos}
+        data={inboxTodos}
         renderItem={renderTodo}
         ListFooterComponentStyle={{ paddingTop: 0, flex: 1 }}
       />
