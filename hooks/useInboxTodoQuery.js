@@ -18,7 +18,7 @@ const useInboxTodoQuery = (accessToken, userId, onSuccess) => {
     keepPreviousData: true,
     onSuccess: onSuccess,
     onError: error => {
-      console.log(error);
+      console.log('error', error);
     },
   });
 };

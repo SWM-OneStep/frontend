@@ -19,7 +19,6 @@ const useTodoStore = create((set, get) => ({
   setInboxTodos: todos => {
     set(state => ({ inboxTodos: todos }));
   },
-
   addTodo: async (startDate, endDate, content, categoryId) => {
     const apiData = {
       start_date: startDate,

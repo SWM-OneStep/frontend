@@ -22,8 +22,8 @@ const InboxTodos = () => {
     data: inboxTodoData,
     isSuccess: isInboxTodoQuerySuccess,
   } = useInboxTodoQuery(accessToken, userId);
-  const { inboxTodos } = useTodoStore(state => state.inboxTodos);
-  const { setInboxTodos } = useTodoStore(state => state.setInboxTodos);
+  const inboxTodos = useTodoStore(state => state.inboxTodos);
+  const setInboxTodos = useTodoStore(state => state.setInboxTodos);
   const { mutate: addInboxTodo, isSuccess: addInboxTodoIsSuccess } =
     useTodoAddMutation();
 
