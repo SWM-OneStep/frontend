@@ -14,7 +14,6 @@ const metadata = accessToken => {
     };
   }
 
-  // return headers;
   return { headers };
 };
 
@@ -178,6 +177,53 @@ export const Api = {
       // }),
       () =>
         axios.post(API_PATH.categories, categoryData, metadata(accessToken)),
+    );
+  },
+  /**
+   * 서버에 서브투두를 추가합니다.
+   *
+   * @example
+   * // subTodoData 예시:
+   * {
+   *   category_id: categoryId,
+   * }
+   */
+  addSubTodo: (accessToken, subTodoData) => {
+    return handleRequest(() =>
+      axios.post(API_PATH.subTodos, subTodoData, metadata(accessToken)),
+    );
+  },
+  /**
+   * 서버에 서브투두를 변경합니다.
+   *
+   * @example
+   * // subTodoData 예시:
+   * {
+   *   sub_id: subTodoId,
+   * }
+   */
+  updateSubTodo: ({ accessToken, updatedData }) => {
+    return handleRequest(() =>
+      axios.patch(API_PATH.subTodos, updatedData, metadata(accessToken)),
+    );
+  },
+  /**
+   * 서버에 서브투두를 삭제합니다.
+   *
+   * @example
+   * // subTodoData 예시:
+   * {
+   *   sub_id: subTodoId,
+   * }
+   */
+  deleteSubTodo: ({ accessToken, subTodoId }) => {
+    return handleRequest(() =>
+      axios.request({
+        url: API_PATH.subTodos,
+        method: 'DELETE',
+        headers: metadata(accessToken),
+        data: { subtodoId: subTodoId },
+      }),
     );
   },
 };

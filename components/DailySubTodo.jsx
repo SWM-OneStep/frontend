@@ -1,27 +1,53 @@
-import useModalStore from '@/contexts/ModalStore';
-import useTodoStore from '@/contexts/TodoStore';
+import { LoginContext } from '@/contexts/LoginContext';
+import {
+  SUBTODO_QUERY_KEY,
+  useSubTodoUpdateMutation,
+} from '@/hooks/useSubTodoMutations';
+import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Input, ListItem, Text, useTheme } from '@ui-kitten/components';
-import { useCallback, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import TodoModal from './TodoModal';
 
 const DailySubTodo = ({ item }) => {
   const [completed, setCompleted] = useState(item.isCompleted);
-  const openModal = useModalStore(state => state.openModal);
-  const selectedTodo = useTodoStore(state => state.selectedTodo);
-  const isEditing = useModalStore(state => state.isEditing);
-  const setIsEditing = useModalStore(state => state.setIsEditing);
+  const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
-  const editTodo = useTodoStore(state => state.editTodo);
-  const toggleTodo = useTodoStore(state => state.toggleTodo);
-
+  const { accessToken } = useContext(LoginContext);
   const [modalVisible, setModalVisible] = useState(false);
+  const queryClient = useQueryClient();
+  const { mutate: updateSubTodo, isSuccess: updateSubTodoIsSuccess } =
+    useSubTodoUpdateMutation();
 
-  const handleCheck = useCallback(() => {
+  useEffect(() => {
+    if (updateSubTodoIsSuccess) {
+      queryClient.invalidateQueries(SUBTODO_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateSubTodoIsSuccess]);
+
+  const handleCheck = () => {
     setCompleted(!completed);
-    toggleTodo({ ...item });
-  }, [completed, item, toggleTodo]);
+    const updatedData = {
+      subtodoId: item.id,
+      isCompleted: !item.isCompleted,
+    };
+    updateSubTodo({ accessToken: accessToken, updatedData: updatedData });
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setModalVisible(false);
+  };
+
+  const handleSubTodoUpdate = () => {
+    const updatedData = {
+      subtodoId: item.id,
+      content: content,
+    };
+    updateSubTodo({ accessToken: accessToken, updatedData: updatedData });
+  };
 
   const checkIcon = props => {
     return (
@@ -39,7 +65,7 @@ const DailySubTodo = ({ item }) => {
 
   const settingIcon = props => {
     return (
-      <TouchableOpacity onPress={() => openModal(item)}>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
         <Icon
           {...props}
           name="more-horizontal-outline"
@@ -54,15 +80,12 @@ const DailySubTodo = ({ item }) => {
     <>
       <ListItem
         title={
-          isEditing && selectedTodo != null && item.id === selectedTodo.id ? (
+          isEditing ? (
             <Input
               value={content}
               onChangeText={value => setContent(value)}
               onSubmitEditing={() => {
-                editTodo({
-                  ...item,
-                  content,
-                });
+                handleSubTodoUpdate();
                 setIsEditing(false);
               }}
               autoFocus={true}
@@ -74,7 +97,7 @@ const DailySubTodo = ({ item }) => {
         key={item.id}
         accessoryLeft={props => checkIcon(props)}
         accessoryRight={props => settingIcon(props)}
-        onPress={() => openModal(item)}
+        onPress={() => setModalVisible(true)}
         style={{ paddingLeft: 40 }}
       />
       <TodoModal
@@ -82,6 +105,7 @@ const DailySubTodo = ({ item }) => {
         isTodo={false}
         visible={modalVisible}
         setVisible={setModalVisible}
+        onEdit={handleEdit}
       />
     </>
   );
