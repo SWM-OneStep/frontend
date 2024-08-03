@@ -12,12 +12,16 @@ const useTodoStore = create((set, get) => ({
   todos: [],
   currentTodos: [],
   inboxTodos: [],
+  inboxCurrentTodos: [],
   selectedTodo: null,
   setSelectedTodo: todo => {
     set(state => ({ selectedTodo: todo }));
   },
   setInboxTodos: todos => {
     set(state => ({ inboxTodos: todos }));
+  },
+  setInboxCurrentTodos: todos => {
+    set(state => ({ inboxCurrentTodos: todos }));
   },
   addTodo: async (startDate, endDate, content, categoryId) => {
     const apiData = {

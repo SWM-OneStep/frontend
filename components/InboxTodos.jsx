@@ -24,12 +24,20 @@ const InboxTodos = () => {
   } = useInboxTodoQuery(accessToken, userId);
   const inboxTodos = useTodoStore(state => state.inboxTodos);
   const setInboxTodos = useTodoStore(state => state.setInboxTodos);
+  const inboxCurrentTodos = useTodoStore(state => state.inboxCurrentTodos);
+  const setInboxCurrentTodos = useTodoStore(
+    state => state.setInboxCurrentTodos,
+  );
   const { mutate: addInboxTodo, isSuccess: addInboxTodoIsSuccess } =
     useTodoAddMutation();
 
   useEffect(() => {
     if (isInboxTodoQuerySuccess) {
       setInboxTodos(inboxTodoData);
+      let filteredTodos = inboxTodoData.filter(
+        todo => todo.categoryId === selectedCategory,
+      );
+      setInboxCurrentTodos(filteredTodos);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isInboxTodoQuerySuccess, inboxTodoData]);
@@ -55,8 +63,6 @@ const InboxTodos = () => {
     const todos = useTodoStore.getState().todos;
     const newTodoData = {
       userId: parseInt(userId, 10),
-      startDate: null,
-      endDate: null,
       content: input,
       categoryId: selectedCategory,
       order:
@@ -73,7 +79,7 @@ const InboxTodos = () => {
   return (
     <Fragment>
       <List
-        data={inboxTodos}
+        data={inboxCurrentTodos}
         renderItem={renderTodo}
         ListFooterComponentStyle={{ paddingTop: 0, flex: 1 }}
       />
