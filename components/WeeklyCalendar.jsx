@@ -112,12 +112,13 @@ const WeeklyCalendar = () => {
             >
               <Text category="c1" style={{ color: theme['color-basic-800'] }}>
                 {
-                  todos.filter(todo =>
-                    isTodoIncludedInTodayView(
-                      todo.startDate,
-                      todo.endDate,
-                      date.format('YYYY-MM-DD'),
-                    ),
+                  todos.filter(
+                    todo =>
+                      isTodoIncludedInTodayView(
+                        todo.startDate,
+                        todo.endDate,
+                        date.format('YYYY-MM-DD'),
+                      ) && !todo.isCompleted,
                   ).length
                 }
               </Text>
