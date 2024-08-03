@@ -2,7 +2,7 @@
 import { Api } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
 
-export const QUERY_KEY = '/inbox';
+export const INBOX_QUERY_KEY = '/inbox';
 
 const fetcher = async (accessToken, userId) => {
   const data = await Api.getInboxTodo(accessToken, userId);
@@ -11,7 +11,7 @@ const fetcher = async (accessToken, userId) => {
 
 const useInboxTodoQuery = (accessToken, userId, onSuccess) => {
   return useQuery({
-    queryKey: [QUERY_KEY],
+    queryKey: [INBOX_QUERY_KEY],
     queryFn: () => fetcher(accessToken, userId),
     // refetchInterval: 30000,
     // refetchIntervalInBackground: true,
