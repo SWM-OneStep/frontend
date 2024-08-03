@@ -57,6 +57,13 @@ const InboxTodo = ({ item, drag, isActive }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteInboxTodoIsSuccess]);
 
+  useEffect(() => {
+    if (addInboxSubTodoIsSuccess) {
+      queryClient.invalidateQueries(INBOX_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addInboxSubTodoIsSuccess]);
+
   const handleTodoUpdate = () => {
     const updatedData = {
       todoId: item.id,
@@ -85,6 +92,11 @@ const InboxTodo = ({ item, drag, isActive }) => {
       setSubTodoInput('');
       setSubTodoInputActivated(false);
     }
+  };
+
+  const handleSubTodoCreate = () => {
+    setModalVisible(false);
+    setSubTodoInputActivated(true);
   };
 
   const renderSubTodo = ({ item, index }) => {
@@ -143,7 +155,7 @@ const InboxTodo = ({ item, drag, isActive }) => {
         isActive={isActive}
       />
       <List
-        data={item.subtodos}
+        data={item.children}
         renderItem={renderSubTodo}
         contentContainerStyle={{ marginLeft: 40, paddingLeft: 40 }}
         ListFooterComponent={
@@ -167,6 +179,7 @@ const InboxTodo = ({ item, drag, isActive }) => {
         visible={modalVisible}
         setVisible={setModalVisible}
         onEdit={handleEdit}
+        onSubTodoCreate={handleSubTodoCreate}
       />
     </>
   );
