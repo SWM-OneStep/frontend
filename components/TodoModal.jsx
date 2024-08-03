@@ -1,4 +1,5 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
+import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useModalStore from '@/contexts/ModalStore';
 import useTodoStore from '@/contexts/TodoStore';
@@ -49,15 +50,16 @@ const TodoModal = ({
   isTodo = true,
   visible = false,
   setVisible = () => {},
+  onEdit = () => {},
 }) => {
-  const openEditModal = useModalStore(state => state.openEditModal);
   const setSubTodoInputActivated = useModalStore(
     state => state.setSubTodoInputActivated,
   );
   const setModalVisible = useModalStore(state => state.setModalVisible);
   const setSelectedTodo = useTodoStore(state => state.setSelectedTodo);
+  const { selectedDate } = useContext(DateContext);
 
-  const [calendarDate, setCalendarDate] = useState(new Date());
+  const [calendarDate, setCalendarDate] = useState(selectedDate.toDate());
   const [calendarModalVisible, setCalendarModalVisible] = useState(false);
   const { accessToken } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
@@ -107,10 +109,6 @@ const TodoModal = ({
       deleteSubTodo({ accessToken: accessToken, subTodoId: item_id });
     }
     setVisible(false);
-  };
-
-  const handleEdit = async () => {
-    openEditModal();
   };
 
   const handleSubtodoCreateInitialize = todo => {
@@ -170,7 +168,7 @@ const TodoModal = ({
                 accessoryLeft={editIcon}
                 status="basic"
                 style={styles.button}
-                onPress={() => handleEdit()}
+                onPress={onEdit}
               >
                 <Text>수정하기</Text>
               </Button>
