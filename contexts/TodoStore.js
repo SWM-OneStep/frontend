@@ -12,8 +12,18 @@ const useTodoStore = create((set, get) => ({
   todos: [],
   currentTodos: [],
   selectedTodo: null,
+  ExistingOrders: [],
+
+  setExistingOrders: orders => {
+    set(() => ({ ExistingOrders: orders }));
+  },
+
   setSelectedTodo: todo => {
     set(state => ({ selectedTodo: todo }));
+  },
+
+  setCurrentTodos: todos => {
+    set(() => ({ currentTodos: todos }));
   },
 
   addTodo: async (startDate, endDate, content, categoryId) => {

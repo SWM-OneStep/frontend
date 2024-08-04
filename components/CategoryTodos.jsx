@@ -21,10 +21,12 @@ const CategoryTodos = () => {
   const modalVisible = useModalStore(state => state.modalVisible);
   const selectedTodo = useTodoStore(state => state.selectedTodo);
   const closeModal = useModalStore(state => state.closeModal);
+  const setExistingOrders = useTodoStore(state => state.setExistingOrders);
 
   useEffect(() => {
     if (isSuccess) {
       useTodoStore.setState({ todos: data });
+      setExistingOrders(data.map(todo => todo.order));
       let filteredTodos = data.filter(
         todo =>
           todo.categoryId === selectedCategory &&
@@ -36,6 +38,7 @@ const CategoryTodos = () => {
       );
       useTodoStore.setState({ currentTodos: filteredTodos });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess, data, selectedCategory, selectedDate]);
 
   // useEffect(() => {

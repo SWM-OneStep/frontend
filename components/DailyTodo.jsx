@@ -20,8 +20,6 @@ import TodoModal from './TodoModal';
 const todosApi = 'http://localhost:8000/todos/todo/';
 
 const DailyTodo = ({ item, drag, isActive }) => {
-  console.log('DailyTodo item: ', item);
-
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
   const { selectedDate } = useContext(DateContext);
@@ -34,6 +32,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const isEditing = useModalStore(state => state.isEditing);
   const setIsEditing = useModalStore(state => state.setIsEditing);
   const selectedTodo = useTodoStore(state => state.selectedTodo);
+
   const [subTodoInput, setSubtodoInput] = useState('');
   const subTodoInputActivated = useModalStore(
     state => state.subTodoInputActivated,

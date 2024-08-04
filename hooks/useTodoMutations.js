@@ -19,8 +19,15 @@ export const useTodoAddMutation = () => {
 };
 
 // 수정 (Update Todo)
-const updateTodoFetcher = async (accessToken, todoId, updatedData) => {
-  const data = await Api.updateTodo(accessToken, todoId, updatedData);
+const updateTodoFetcher = async ({ accessToken, updatedData }) => {
+  console.log('updateTodoFetcher updatedData', {
+    accessToken: accessToken,
+    updateData: updatedData,
+  });
+  const data = await Api.updateTodo({
+    accessToken: accessToken,
+    updateData: updatedData,
+  });
   return data;
 };
 
