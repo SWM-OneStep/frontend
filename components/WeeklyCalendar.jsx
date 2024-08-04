@@ -1,5 +1,6 @@
 import { DateContext } from '@/contexts/DateContext';
 import useTodoStore from '@/contexts/TodoStore';
+import { convertGmtToKst } from '@/utils/convertTimezone';
 import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
 import { Icon, Layout, Text, useTheme } from '@ui-kitten/components';
 import moment from 'moment';
@@ -14,7 +15,9 @@ const WeeklyCalendar = () => {
   const todos = useTodoStore(state => state.todos);
   const getWeekDates = date => {
     const start = date.clone().startOf('ISOWeek');
-    const r = Array.from({ length: 7 }, (_, i) => start.clone().add(i, 'days'));
+    const r = Array.from({ length: 7 }, (_, i) =>
+      moment(convertGmtToKst(new Date(start.clone().add(i, 'days')))),
+    );
     return r;
   };
   const [weekDates, setwWeekDates] = useState(getWeekDates(currentDate));
@@ -109,12 +112,13 @@ const WeeklyCalendar = () => {
             >
               <Text category="c1" style={{ color: theme['color-basic-800'] }}>
                 {
-                  todos.filter(todo =>
-                    isTodoIncludedInTodayView(
-                      todo.startDate,
-                      todo.endDate,
-                      date.format('YYYY-MM-DD'),
-                    ),
+                  todos.filter(
+                    todo =>
+                      isTodoIncludedInTodayView(
+                        todo.startDate,
+                        todo.endDate,
+                        date.format('YYYY-MM-DD'),
+                      ) && !todo.isCompleted,
                   ).length
                 }
               </Text>

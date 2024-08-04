@@ -1,6 +1,12 @@
 import { DateContext } from '@/contexts/DateContext';
-import useModalStore from '@/contexts/ModalStore';
-import useTodoStore from '@/contexts/TodoStore';
+import { LoginContext } from '@/contexts/LoginContext';
+import { QUERY_KEY } from '@/hooks/useCategoriesQuery';
+import {
+  SUBTODO_QUERY_KEY,
+  useSubTodoAddMutation,
+} from '@/hooks/useSubTodoMutations';
+import { useTodoUpdateMutation } from '@/hooks/useTodoMutations';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Icon,
   Input,
@@ -9,51 +15,57 @@ import {
   Text,
   useTheme,
 } from '@ui-kitten/components';
-import { useCallback, useContext, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import DailySubTodo from './DailySubTodo';
 import TodoModal from './TodoModal';
-
-// const todosApi =
-//   'http://ec2-54-180-249-86.ap-northeast-2.compute.amazonaws.com:8000/todos/';
-
-const todosApi = 'http://localhost:8000/todos/todo/';
 
 const DailyTodo = ({ item, drag, isActive }) => {
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
   const { selectedDate } = useContext(DateContext);
-  const editTodo = useTodoStore(state => state.editTodo);
-  const toggleTodo = useTodoStore(state => state.toggleTodo);
-  const addSubTodo = useTodoStore(state => state.addSubTodo);
   const [completed, setCompleted] = useState(item.isCompleted);
-  const openModal = useModalStore(state => state.openModal);
-  const closeModal = useModalStore(state => state.closeModal);
-  const isEditing = useModalStore(state => state.isEditing);
-  const setIsEditing = useModalStore(state => state.setIsEditing);
-  const selectedTodo = useTodoStore(state => state.selectedTodo);
-
+  const [isEditing, setIsEditing] = useState(false);
   const [subTodoInput, setSubtodoInput] = useState('');
-  const subTodoInputActivated = useModalStore(
-    state => state.subTodoInputActivated,
-  );
-  const setSubTodoInputActivated = useModalStore(
-    state => state.setSubTodoInputActivated,
-  );
-
-  const subtodoTextInputRef = useRef(null);
+  const { accessToken } = useContext(LoginContext);
+  const [subTodoInputActivated, setSubTodoInputActivated] = useState(false);
+  const queryClient = useQueryClient();
+  const { mutate: addSubTodo, isSuccess: addSubTodoIsSuccess } =
+    useSubTodoAddMutation();
+  const { mutate: updateTodo, isSuccess: updateTodoIsSuccess } =
+    useTodoUpdateMutation();
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleCheck = useCallback(() => {
-    setCompleted(!completed);
-    toggleTodo({ ...item });
-  }, [completed, item, toggleTodo]);
-
-  const focusSubtodoTextInput = () => {
-    if (subtodoTextInputRef.current) {
-      subtodoTextInputRef.current.focus();
+  useEffect(() => {
+    if (addSubTodoIsSuccess) {
+      queryClient.invalidateQueries(SUBTODO_QUERY_KEY);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addSubTodoIsSuccess]);
+
+  useEffect(() => {
+    if (updateTodoIsSuccess) {
+      queryClient.invalidateQueries(QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateTodoIsSuccess]);
+
+  const handleCheck = () => {
+    setCompleted(!completed);
+    const updatedData = {
+      todoId: item.id,
+      isCompleted: !item.isCompleted,
+    };
+    updateTodo({ accessToken: accessToken, updatedData: updatedData });
+  };
+
+  const handleTodoUpdate = () => {
+    const updatedData = {
+      todoId: item.id,
+      content: content,
+    };
+    updateTodo({ accessToken: accessToken, updatedData: updatedData });
   };
 
   const renderSubTodo = ({ item, index }) => {
@@ -76,7 +88,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
 
   const settingIcon = props => {
     return (
-      <TouchableOpacity onPress={() => openModal(item)}>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
         <Icon
           {...props}
           name="more-horizontal-outline"
@@ -94,10 +106,22 @@ const DailyTodo = ({ item, drag, isActive }) => {
     return unixTime.toString();
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+    setModalVisible(false);
+  };
+
   const handleSubtodoSubmit = () => {
     if (subTodoInput !== '') {
-      const modifiedDate = selectedDate.toISOString().split('T')[0];
-      addSubTodo(subTodoInput, item, modifiedDate, tmpOrder());
+      const modifiedDate = selectedDate.format('YYYY-MM-DD');
+      const subTodoData = {
+        todo: item.id,
+        content: subTodoInput,
+        date: modifiedDate,
+        isCompleted: false,
+        order: tmpOrder(),
+      };
+      addSubTodo({ accessToken: accessToken, todoData: subTodoData });
       setSubtodoInput('');
       setSubTodoInputActivated(false);
     }
@@ -107,16 +131,12 @@ const DailyTodo = ({ item, drag, isActive }) => {
     <>
       <ListItem
         title={
-          isEditing && selectedTodo != null && item.id === selectedTodo.id ? (
+          isEditing ? (
             <Input
               value={content}
               onChangeText={value => setContent(value)}
               onSubmitEditing={() => {
-                editTodo({
-                  ...item,
-                  content,
-                });
-                closeModal();
+                handleTodoUpdate();
                 setIsEditing(false);
               }}
               autoFocus={true}
@@ -137,9 +157,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
         renderItem={renderSubTodo}
         contentContainerStyle={{ marginLeft: 40, paddingLeft: 40 }}
         ListFooterComponent={
-          subTodoInputActivated &&
-          selectedTodo &&
-          item.id === selectedTodo.id ? (
+          subTodoInputActivated ? (
             <Input
               placeholder="Place your Text"
               style={styles.input}
@@ -158,6 +176,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
         isTodo={true}
         visible={modalVisible}
         setVisible={setModalVisible}
+        onEdit={handleEdit}
       />
     </>
   );
