@@ -68,6 +68,11 @@ const DailyTodo = ({ item, drag, isActive }) => {
     updateTodo({ accessToken: accessToken, updatedData: updatedData });
   };
 
+  const handleSubTodoCreate = () => {
+    setModalVisible(false);
+    setSubTodoInputActivated(true);
+  };
+
   const renderSubTodo = ({ item, index }) => {
     return <DailySubTodo item={item} key={index} />;
   };
@@ -153,7 +158,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
         isActive={isActive}
       />
       <List
-        data={item.subtodos}
+        data={item.children}
         renderItem={renderSubTodo}
         contentContainerStyle={{ marginLeft: 40, paddingLeft: 40 }}
         ListFooterComponent={
@@ -177,6 +182,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
         visible={modalVisible}
         setVisible={setModalVisible}
         onEdit={handleEdit}
+        onSubTodoCreate={handleSubTodoCreate}
       />
     </>
   );

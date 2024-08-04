@@ -40,7 +40,7 @@ const InboxTodos = () => {
       setInboxCurrentTodos(filteredTodos);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isInboxTodoQuerySuccess, inboxTodoData]);
+  }, [isInboxTodoQuerySuccess, inboxTodoData, selectedCategory]);
 
   useEffect(() => {
     if (addInboxTodoIsSuccess) {
