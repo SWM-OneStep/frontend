@@ -14,9 +14,20 @@ const useTodoStore = create((set, get) => ({
   inboxTodos: [],
   inboxCurrentTodos: [],
   selectedTodo: null,
+  ExistingOrders: [],
+
+  setExistingOrders: orders => {
+    set(() => ({ ExistingOrders: orders }));
+  },
+
   setSelectedTodo: todo => {
     set(state => ({ selectedTodo: todo }));
   },
+
+  setCurrentTodos: todos => {
+    set(() => ({ currentTodos: todos }));
+  },
+
   setInboxTodos: todos => {
     set(state => ({ inboxTodos: todos }));
   },

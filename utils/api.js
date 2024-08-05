@@ -20,11 +20,10 @@ const metadata = accessToken => {
 const handleRequest = async request => {
   try {
     const response = await request();
-    // const responseData = await response.json();
-    // console.log(response.constructor.name);
+
     return response.data;
   } catch (err) {
-    console.log(err);
+    console.log(JSON.stringify(err.response, null, 2));
     throw err; // Rethrow the error to handle it further if needed
   }
 };
