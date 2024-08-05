@@ -2,7 +2,6 @@ import { CategoryContext } from '@/contexts/CategoryContext';
 import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useModalStore from '@/contexts/ModalStore';
-import useTodoStore from '@/contexts/TodoStore';
 import {
   useSubTodoDeleteMutation,
   useSubTodoUpdateMutation,
@@ -51,12 +50,13 @@ const TodoModal = ({
   visible = false,
   setVisible = () => {},
   onEdit = () => {},
+  onSubTodoCreate = () => {},
 }) => {
-  const setSubTodoInputActivated = useModalStore(
-    state => state.setSubTodoInputActivated,
-  );
+  // const setSubTodoInputActivated = useModalStore(
+  //   state => state.setSubTodoInputActivated,
+  // );
   const setModalVisible = useModalStore(state => state.setModalVisible);
-  const setSelectedTodo = useTodoStore(state => state.setSelectedTodo);
+  // const setSelectedTodo = useTodoStore(state => state.setSelectedTodo);
   const { selectedDate } = useContext(DateContext);
 
   const [calendarDate, setCalendarDate] = useState(selectedDate.toDate());
@@ -111,12 +111,12 @@ const TodoModal = ({
     setVisible(false);
   };
 
-  const handleSubtodoCreateInitialize = todo => {
-    setModalVisible(false);
-    setVisible(false);
-    setSubTodoInputActivated(true);
-    setSelectedTodo(todo);
-  };
+  // const handleSubtodoCreateInitialize = todo => {
+  //   // setModalVisible(false);
+  //   setVisible(false);
+  //   setSubTodoInputActivated(true);
+  //   // setSelectedTodo(todo);
+  // };
 
   if (!item) {
     return null;
@@ -187,7 +187,8 @@ const TodoModal = ({
                   accessoryLeft={listIcon}
                   status="basic"
                   style={styles.button}
-                  onPress={() => handleSubtodoCreateInitialize(item)}
+                  // onPress={() => handleSubtodoCreateInitialize(item)}
+                  onPress={() => onSubTodoCreate()}
                 >
                   <Text>하위 투두 생성하기</Text>
                 </Button>

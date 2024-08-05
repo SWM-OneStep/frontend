@@ -20,7 +20,8 @@ const metadata = accessToken => {
 const handleRequest = async request => {
   try {
     const response = await request();
-    // console.log(response);
+    // const responseData = await response.json();
+    // console.log(response.constructor.name);
     return response.data;
   } catch (err) {
     console.log(err);
@@ -224,6 +225,20 @@ export const Api = {
         headers: metadata(accessToken),
         data: { subtodoId: subTodoId },
       }),
+    );
+  },
+  /**
+   * 서버에 인박스 투두를 추가합니다.
+   *
+   * @example
+   * // inboxTodoData 예시:
+   * {
+   *   category_id: categoryId,
+   * }
+   */
+  getInboxTodo: (accessToken, userId) => {
+    return handleRequest(() =>
+      axios.get(`${API_PATH.inbox}?user_id=${userId}`, metadata(accessToken)),
     );
   },
 };

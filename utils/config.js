@@ -12,4 +12,5 @@ export const API_PATH = {
   today: `${BASE_URL}/todos/today/`,
   login: `${BASE_URL}/auth/login/google/`,
   user: `${BASE_URL}/auth/user/`,
+  inbox: `${BASE_URL}/todos/inbox/`,
 };
