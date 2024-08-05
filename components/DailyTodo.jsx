@@ -14,11 +14,14 @@ import {
   ListItem,
   Text,
   useTheme,
+  Button,
 } from '@ui-kitten/components';
 import { useContext, useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import DailySubTodo from './DailySubTodo';
 import TodoModal from './TodoModal';
+import { Card, Layout, Modal } from 'react-native-ui-kitten';
+import SubTodoGenerateModal from './SubTodoGenerateModal';
 
 const DailyTodo = ({ item, drag, isActive }) => {
   const [content, setContent] = useState(item.content);
@@ -29,13 +32,25 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const [subTodoInput, setSubtodoInput] = useState('');
   const { accessToken } = useContext(LoginContext);
   const [subTodoInputActivated, setSubTodoInputActivated] = useState(false);
+  const [generatedSubTodos, setGeneratedSubTodos] = useState([]);
   const queryClient = useQueryClient();
   const { mutate: addSubTodo, isSuccess: addSubTodoIsSuccess } =
     useSubTodoAddMutation();
   const { mutate: updateTodo, isSuccess: updateTodoIsSuccess } =
     useTodoUpdateMutation();
-
   const [modalVisible, setModalVisible] = useState(false);
+  const [
+    subTodoGenerateAlertModalVisible,
+    setSubTodoGenerateAlertModalVisible,
+  ] = useState(false);
+
+  const [selectedSubTodos, setSelectedSubTodos] = useState({});
+  const handleSelectSubTodo = index => {
+    setSelectedSubTodos(prev => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
 
   useEffect(() => {
     if (addSubTodoIsSuccess) {
@@ -73,8 +88,23 @@ const DailyTodo = ({ item, drag, isActive }) => {
     setSubTodoInputActivated(true);
   };
 
+  const handleApplySelection = () => {};
+
   const renderSubTodo = ({ item, index }) => {
     return <DailySubTodo item={item} key={index} />;
+  };
+
+  const renderGeneratedTodo = ({ item, index }) => {
+    return (
+      <ListItem
+        title={item.content}
+        key={() => index.toString()}
+        style={{ paddingLeft: 40 }}
+        accessoryRight={props =>
+          generatedSubtodoAcceptIcon(props, index, item.isChecked)
+        }
+      />
+    );
   };
 
   const checkIcon = props => {
@@ -93,14 +123,88 @@ const DailyTodo = ({ item, drag, isActive }) => {
 
   const settingIcon = props => {
     return (
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <Icon
-          {...props}
-          name="more-horizontal-outline"
-          pack="eva"
-          fill={theme['text-basic-color']}
-        />
-      </TouchableOpacity>
+      <View
+        style={{
+          flexDirection: 'row',
+          padding: 10,
+          justifyContent: 'space-between',
+        }}
+      >
+        {!item.children.length && !generatedSubTodos.length && (
+          <TouchableOpacity
+            onPress={() => setSubTodoGenerateAlertModalVisible(true)}
+          >
+            <Icon
+              {...props}
+              name="flash-outline"
+              pack="eva"
+              fill={theme['text-basic-color']}
+            />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
+          <Icon
+            {...props}
+            name="more-horizontal-outline"
+            pack="eva"
+            fill={theme['text-basic-color']}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+  const generatedSubtodoAcceptIcon = (props, index, isChecked) => {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          padding: 10,
+          justifyContent: 'space-between',
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => {
+            setGeneratedSubTodos(prev => {
+              return prev.map((todo, i) => {
+                if (i === index) {
+                  return { ...todo, isChecked: false };
+                }
+                return todo;
+              });
+            });
+          }}
+        >
+          <Icon
+            {...props}
+            fill={
+              !isChecked
+                ? theme['color-primary-500']
+                : theme['text-basic-color']
+            }
+            name="close-outline"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            setGeneratedSubTodos(prev => {
+              return prev.map((todo, i) => {
+                if (i === index) {
+                  return { ...todo, isChecked: true };
+                }
+                return todo;
+              });
+            });
+          }}
+        >
+          <Icon
+            {...props}
+            fill={
+              isChecked ? theme['color-primary-500'] : theme['text-basic-color']
+            }
+            name="done-all-outline"
+          />
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -153,6 +257,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
         key={item.id}
         accessoryLeft={props => checkIcon(props)}
         accessoryRight={props => settingIcon(props)}
+        accesso
         onPress={() => setModalVisible(true)}
         onLongPress={drag}
         isActive={isActive}
@@ -176,6 +281,16 @@ const DailyTodo = ({ item, drag, isActive }) => {
           ) : null
         }
       />
+      {generatedSubTodos.length > 0 && (
+        <>
+          <List
+            data={generatedSubTodos}
+            renderItem={renderGeneratedTodo}
+            contentContainerStyle={{ marginLeft: 40, paddingLeft: 40 }}
+          />
+          <Button onPress={handleApplySelection}>반영하기</Button>
+        </>
+      )}
       <TodoModal
         item={item}
         isTodo={true}
@@ -184,6 +299,12 @@ const DailyTodo = ({ item, drag, isActive }) => {
         onEdit={handleEdit}
         onSubTodoCreate={handleSubTodoCreate}
       />
+      <SubTodoGenerateModal
+        modalVisible={subTodoGenerateAlertModalVisible}
+        setModalVisible={setSubTodoGenerateAlertModalVisible}
+        setGeneratedSubToDos={setGeneratedSubTodos}
+        todoContent={item.content}
+      />
     </>
   );
 };
@@ -191,6 +312,9 @@ const DailyTodo = ({ item, drag, isActive }) => {
 const styles = StyleSheet.create({
   input: {
     paddingLeft: 40,
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
 
