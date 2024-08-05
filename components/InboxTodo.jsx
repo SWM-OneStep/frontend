@@ -1,71 +1,97 @@
-import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
-import { QUERY_KEY } from '@/hooks/useCategoriesQuery';
+import { INBOX_QUERY_KEY } from '@/hooks/useInboxTodoQuery';
+import { useSubTodoAddMutation } from '@/hooks/useSubTodoMutations';
 import {
-  SUBTODO_QUERY_KEY,
-  useSubTodoAddMutation,
-} from '@/hooks/useSubTodoMutations';
-import { useTodoUpdateMutation } from '@/hooks/useTodoMutations';
+  useTodoAddMutation,
+  useTodoDeleteMutation,
+  useTodoUpdateMutation,
+} from '@/hooks/useTodoMutations';
 import { useQueryClient } from '@tanstack/react-query';
-import {
-  Icon,
-  Input,
-  List,
-  ListItem,
-  Text,
-  useTheme,
-} from '@ui-kitten/components';
+import { Icon, Input, List, ListItem, useTheme } from '@ui-kitten/components';
 import { useContext, useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
-import DailySubTodo from './DailySubTodo';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import InboxSubTodo from './InboxSubTodo';
 import TodoModal from './TodoModal';
 
-const DailyTodo = ({ item, drag, isActive }) => {
-  const [content, setContent] = useState(item.content);
+const InboxTodo = ({ item, drag, isActive }) => {
   const theme = useTheme();
-  const { selectedDate } = useContext(DateContext);
-  const [completed, setCompleted] = useState(item.isCompleted);
+  const [content, setContent] = useState(item.content);
   const [isEditing, setIsEditing] = useState(false);
-  const [subTodoInput, setSubtodoInput] = useState('');
+  const [subTodoInput, setSubTodoInput] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
   const { accessToken } = useContext(LoginContext);
   const [subTodoInputActivated, setSubTodoInputActivated] = useState(false);
   const queryClient = useQueryClient();
-  const { mutate: addSubTodo, isSuccess: addSubTodoIsSuccess } =
-    useSubTodoAddMutation();
-  const { mutate: updateTodo, isSuccess: updateTodoIsSuccess } =
+  const { mutate: addInboxTodo, isSuccess: addInboxTodoIsSuccess } =
+    useTodoAddMutation();
+  const { mutate: updateInboxTodo, isSuccess: updateInboxTodoIsSuccess } =
     useTodoUpdateMutation();
+  const { mutate: deleteInboxTodo, isSuccess: deleteInboxTodoIsSuccess } =
+    useTodoDeleteMutation();
+  const { mutate: addInboxSubTodo, isSuccess: addInboxSubTodoIsSuccess } =
+    useSubTodoAddMutation();
 
-  const [modalVisible, setModalVisible] = useState(false);
-
-  useEffect(() => {
-    if (addSubTodoIsSuccess) {
-      queryClient.invalidateQueries(SUBTODO_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addSubTodoIsSuccess]);
-
-  useEffect(() => {
-    if (updateTodoIsSuccess) {
-      queryClient.invalidateQueries(QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateTodoIsSuccess]);
-
-  const handleCheck = () => {
-    setCompleted(!completed);
-    const updatedData = {
-      todoId: item.id,
-      isCompleted: !item.isCompleted,
-    };
-    updateTodo({ accessToken: accessToken, updatedData: updatedData });
+  const handleEdit = () => {
+    setIsEditing(true);
+    setModalVisible(false);
   };
+
+  useEffect(() => {
+    if (addInboxTodoIsSuccess) {
+      queryClient.invalidateQueries(INBOX_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addInboxTodoIsSuccess]);
+
+  useEffect(() => {
+    if (updateInboxTodoIsSuccess) {
+      queryClient.invalidateQueries(INBOX_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateInboxTodoIsSuccess]);
+
+  useEffect(() => {
+    if (deleteInboxTodoIsSuccess) {
+      queryClient.invalidateQueries(INBOX_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteInboxTodoIsSuccess]);
+
+  useEffect(() => {
+    if (addInboxSubTodoIsSuccess) {
+      queryClient.invalidateQueries(INBOX_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addInboxSubTodoIsSuccess]);
 
   const handleTodoUpdate = () => {
     const updatedData = {
       todoId: item.id,
       content: content,
     };
-    updateTodo({ accessToken: accessToken, updatedData: updatedData });
+    updateInboxTodo({ accessToken: accessToken, updatedData: updatedData });
+  };
+
+  const tmpOrder = () => {
+    const now = new Date();
+    const milliseconds = now.getTime();
+    const unixTime = Math.floor(milliseconds / 1000);
+    return unixTime.toString();
+  };
+
+  const handleSubtodoSubmit = () => {
+    if (subTodoInput !== '') {
+      const subTodoData = {
+        todo: item.id,
+        content: subTodoInput,
+        date: null,
+        isCompleted: false,
+        order: tmpOrder(),
+      };
+      addInboxSubTodo({ accessToken: accessToken, todoData: subTodoData });
+      setSubTodoInput('');
+      setSubTodoInputActivated(false);
+    }
   };
 
   const handleSubTodoCreate = () => {
@@ -74,18 +100,17 @@ const DailyTodo = ({ item, drag, isActive }) => {
   };
 
   const renderSubTodo = ({ item, index }) => {
-    return <DailySubTodo item={item} key={index} />;
+    return <InboxSubTodo item={item} key={index} />;
   };
 
-  const checkIcon = props => {
+  const outlineIcon = props => {
     return (
-      <TouchableOpacity onPress={handleCheck}>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
         <Icon
           {...props}
-          name="checkmark-circle-2-outline"
-          fill={
-            completed ? theme['color-primary-500'] : theme['text-basic-color']
-          }
+          name="minus-outline"
+          pack="eva"
+          fill={theme['text-basic-color']}
         />
       </TouchableOpacity>
     );
@@ -102,34 +127,6 @@ const DailyTodo = ({ item, drag, isActive }) => {
         />
       </TouchableOpacity>
     );
-  };
-
-  const tmpOrder = () => {
-    const now = new Date();
-    const milliseconds = now.getTime();
-    const unixTime = Math.floor(milliseconds / 1000);
-    return unixTime.toString();
-  };
-
-  const handleEdit = () => {
-    setIsEditing(true);
-    setModalVisible(false);
-  };
-
-  const handleSubtodoSubmit = () => {
-    if (subTodoInput !== '') {
-      const modifiedDate = selectedDate.format('YYYY-MM-DD');
-      const subTodoData = {
-        todo: item.id,
-        content: subTodoInput,
-        date: modifiedDate,
-        isCompleted: false,
-        order: tmpOrder(),
-      };
-      addSubTodo({ accessToken: accessToken, todoData: subTodoData });
-      setSubtodoInput('');
-      setSubTodoInputActivated(false);
-    }
   };
 
   return (
@@ -151,7 +148,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
           )
         }
         key={item.id}
-        accessoryLeft={props => checkIcon(props)}
+        accessoryLeft={props => outlineIcon(props)}
         accessoryRight={props => settingIcon(props)}
         onPress={() => setModalVisible(true)}
         onLongPress={drag}
@@ -168,7 +165,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
               style={styles.input}
               value={subTodoInput}
               onChangeText={nextInput => {
-                setSubtodoInput(nextInput);
+                setSubTodoInput(nextInput);
               }}
               autoFocus={true}
               onSubmitEditing={handleSubtodoSubmit}
@@ -194,4 +191,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DailyTodo;
+export default InboxTodo;

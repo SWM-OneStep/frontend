@@ -226,4 +226,18 @@ export const Api = {
       }),
     );
   },
+  /**
+   * 서버에 인박스 투두를 추가합니다.
+   *
+   * @example
+   * // inboxTodoData 예시:
+   * {
+   *   category_id: categoryId,
+   * }
+   */
+  getInboxTodo: (accessToken, userId) => {
+    return handleRequest(() =>
+      axios.get(`${API_PATH.inbox}?user_id=${userId}`, metadata(accessToken)),
+    );
+  },
 };

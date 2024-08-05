@@ -11,6 +11,8 @@ const subTodosApi = 'http://10.0.2.2:8000/todos/sub/';
 const useTodoStore = create((set, get) => ({
   todos: [],
   currentTodos: [],
+  inboxTodos: [],
+  inboxCurrentTodos: [],
   selectedTodo: null,
   ExistingOrders: [],
 
@@ -26,6 +28,12 @@ const useTodoStore = create((set, get) => ({
     set(() => ({ currentTodos: todos }));
   },
 
+  setInboxTodos: todos => {
+    set(state => ({ inboxTodos: todos }));
+  },
+  setInboxCurrentTodos: todos => {
+    set(state => ({ inboxCurrentTodos: todos }));
+  },
   addTodo: async (startDate, endDate, content, categoryId) => {
     const apiData = {
       start_date: startDate,
