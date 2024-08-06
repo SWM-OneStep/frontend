@@ -128,6 +128,17 @@ export const Api = {
     return handleRequest(() => axios.post(API_PATH.verify, { token }));
   },
   /**
+   *
+   */
+  renewToken: (accessToken, refreshToken) => {
+    return handleRequest(() =>
+      axios.post(API_PATH.renew, {
+        refreshToken: refreshToken,
+        accessToken: accessToken,
+      }),
+    );
+  },
+  /**
    * Google 로그인 요청을 서버에 보냅니다.
    *
    * @param {Object} tokenData - 로그인에 필요한 토큰 데이터.
@@ -145,7 +156,10 @@ export const Api = {
 
   getCategory: (accessToken, userId) => {
     return handleRequest(() =>
-      axios.get(`${API_PATH.categories}?user_id=${userId}`, metadata()),
+      axios.get(
+        `${API_PATH.categories}?user_id=${userId}`,
+        metadata(accessToken),
+      ),
     );
   },
 
