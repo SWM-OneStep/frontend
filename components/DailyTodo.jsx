@@ -1,12 +1,7 @@
 import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
-import { QUERY_KEY } from '@/hooks/useCategoriesQuery';
-import {
-  SUBTODO_QUERY_KEY,
-  useSubTodoAddMutation,
-} from '@/hooks/useSubTodoMutations';
+import { useSubTodoAddMutation } from '@/hooks/useSubTodoMutations';
 import { useTodoUpdateMutation } from '@/hooks/useTodoMutations';
-import { useQueryClient } from '@tanstack/react-query';
 import {
   Icon,
   Input,
@@ -15,7 +10,7 @@ import {
   Text,
   useTheme,
 } from '@ui-kitten/components';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import DailySubTodo from './DailySubTodo';
 import TodoModal from './TodoModal';
@@ -29,27 +24,10 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const [subTodoInput, setSubtodoInput] = useState('');
   const { accessToken } = useContext(LoginContext);
   const [subTodoInputActivated, setSubTodoInputActivated] = useState(false);
-  const queryClient = useQueryClient();
-  const { mutate: addSubTodo, isSuccess: addSubTodoIsSuccess } =
-    useSubTodoAddMutation();
-  const { mutate: updateTodo, isSuccess: updateTodoIsSuccess } =
-    useTodoUpdateMutation();
+  const { mutate: addSubTodo } = useSubTodoAddMutation();
+  const { mutate: updateTodo } = useTodoUpdateMutation();
 
   const [modalVisible, setModalVisible] = useState(false);
-
-  useEffect(() => {
-    if (addSubTodoIsSuccess) {
-      queryClient.invalidateQueries(SUBTODO_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addSubTodoIsSuccess]);
-
-  useEffect(() => {
-    if (updateTodoIsSuccess) {
-      queryClient.invalidateQueries(QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateTodoIsSuccess]);
 
   const handleCheck = () => {
     setCompleted(!completed);

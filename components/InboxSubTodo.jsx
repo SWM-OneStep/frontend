@@ -1,11 +1,7 @@
 import { LoginContext } from '@/contexts/LoginContext';
-import {
-  SUBTODO_QUERY_KEY,
-  useSubTodoUpdateMutation,
-} from '@/hooks/useSubTodoMutations';
-import { useQueryClient } from '@tanstack/react-query';
+import { useSubTodoUpdateMutation } from '@/hooks/useSubTodoMutations';
 import { Icon, Input, ListItem } from '@ui-kitten/components';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import { useTheme } from 'react-native-elements';
 import TodoModal from './TodoModal';
@@ -16,16 +12,7 @@ const InboxSubTodo = ({ item }) => {
   const theme = useTheme();
   const { accessToken } = useContext(LoginContext);
   const [modalVisible, setModalVisible] = useState(false);
-  const queryClient = useQueryClient();
-  const { mutate: updateInboxSubTodo, isSuccess: updateInboxSubTodoIsSuccess } =
-    useSubTodoUpdateMutation();
-
-  useEffect(() => {
-    if (updateInboxSubTodoIsSuccess) {
-      queryClient.invalidateQueries(SUBTODO_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateInboxSubTodoIsSuccess]);
+  const { mutate: updateInboxSubTodo } = useSubTodoUpdateMutation();
 
   const handleEdit = () => {
     setIsEditing(true);

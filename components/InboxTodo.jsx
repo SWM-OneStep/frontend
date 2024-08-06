@@ -28,8 +28,7 @@ const InboxTodo = ({ item, drag, isActive }) => {
     useTodoUpdateMutation();
   const { mutate: deleteInboxTodo, isSuccess: deleteInboxTodoIsSuccess } =
     useTodoDeleteMutation();
-  const { mutate: addInboxSubTodo, isSuccess: addInboxSubTodoIsSuccess } =
-    useSubTodoAddMutation();
+  const { mutate: addInboxSubTodo } = useSubTodoAddMutation();
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -56,13 +55,6 @@ const InboxTodo = ({ item, drag, isActive }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteInboxTodoIsSuccess]);
-
-  useEffect(() => {
-    if (addInboxSubTodoIsSuccess) {
-      queryClient.invalidateQueries(INBOX_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addInboxSubTodoIsSuccess]);
 
   const handleTodoUpdate = () => {
     const updatedData = {

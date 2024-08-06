@@ -6,6 +6,7 @@ const LoginProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState();
   const [accessToken, setAccessToken] = useState();
+  const [refreshToken, setRefreshToken] = useState();
   return (
     <LoginContext.Provider
       value={{
@@ -15,6 +16,8 @@ const LoginProvider = ({ children }) => {
         setUserId,
         accessToken,
         setAccessToken,
+        refreshToken,
+        setRefreshToken,
       }}
     >
       {children}

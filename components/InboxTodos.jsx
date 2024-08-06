@@ -3,7 +3,6 @@ import { LoginContext } from '@/contexts/LoginContext';
 import useTodoStore from '@/contexts/TodoStore';
 import useInboxTodoQuery from '@/hooks/useInboxTodoQuery';
 import { useTodoAddMutation } from '@/hooks/useTodoMutations';
-import { TODO_QUERY_KEY } from '@/hooks/useTodoQuery';
 import { useQueryClient } from '@tanstack/react-query';
 import { Input, List } from '@ui-kitten/components';
 import { LexoRank } from 'lexorank';
@@ -22,14 +21,12 @@ const InboxTodos = () => {
     data: inboxTodoData,
     isSuccess: isInboxTodoQuerySuccess,
   } = useInboxTodoQuery(accessToken, userId);
-  const inboxTodos = useTodoStore(state => state.inboxTodos);
   const setInboxTodos = useTodoStore(state => state.setInboxTodos);
   const inboxCurrentTodos = useTodoStore(state => state.inboxCurrentTodos);
   const setInboxCurrentTodos = useTodoStore(
     state => state.setInboxCurrentTodos,
   );
-  const { mutate: addInboxTodo, isSuccess: addInboxTodoIsSuccess } =
-    useTodoAddMutation();
+  const { mutate: addInboxTodo } = useTodoAddMutation();
 
   useEffect(() => {
     if (isInboxTodoQuerySuccess) {
@@ -41,13 +38,6 @@ const InboxTodos = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isInboxTodoQuerySuccess, inboxTodoData, selectedCategory]);
-
-  useEffect(() => {
-    if (addInboxTodoIsSuccess) {
-      queryClient.invalidateQueries(TODO_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addInboxTodoIsSuccess]);
 
   if (isLoading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;

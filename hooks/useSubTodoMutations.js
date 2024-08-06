@@ -1,5 +1,6 @@
 import { Api } from '@/utils/api';
 import { useMutation } from '@tanstack/react-query';
+import { useQueryClient } from 'react-query';
 
 export const SUBTODO_QUERY_KEY = '/sub';
 
@@ -10,8 +11,10 @@ const addSubTodoFetcher = async ({ accessToken, todoData }) => {
 };
 
 export const useSubTodoAddMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: addSubTodoFetcher,
+    onSuccess: () => queryClient.invalidateQueries(SUBTODO_QUERY_KEY),
     onError: error => {
       console.error('Error adding todo:', error);
     },
@@ -28,8 +31,10 @@ const updateSubTodoFetcher = async ({ accessToken, updatedData }) => {
 };
 
 export const useSubTodoUpdateMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateSubTodoFetcher,
+    onSuccess: () => queryClient.invalidateQueries(SUBTODO_QUERY_KEY),
     onError: error => {
       console.error('Error editing todo:', error);
     },
@@ -46,8 +51,10 @@ const deleteSubTodoFetcher = async ({ accessToken, subTodoId }) => {
 };
 
 export const useSubTodoDeleteMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteSubTodoFetcher,
+    onSuccess: () => queryClient.invalidateQueries(SUBTODO_QUERY_KEY),
     onError: error => {
       console.error('Error deleting todo:', error);
     },
