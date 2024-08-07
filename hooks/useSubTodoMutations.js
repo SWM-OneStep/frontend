@@ -1,10 +1,8 @@
 import { Api } from '@/utils/api';
-import { useMutation } from '@tanstack/react-query';
-import { useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const SUBTODO_QUERY_KEY = '/sub';
 
-// 생성 (Add Todo)
 const addSubTodoFetcher = async ({ accessToken, todoData }) => {
   const data = await Api.addSubTodo(accessToken, todoData);
   return data;
@@ -21,7 +19,6 @@ export const useSubTodoAddMutation = () => {
   });
 };
 
-// 수정 (Update Todo)
 const updateSubTodoFetcher = async ({ accessToken, updatedData }) => {
   const data = await Api.updateSubTodo({
     accessToken: accessToken,
@@ -41,7 +38,6 @@ export const useSubTodoUpdateMutation = () => {
   });
 };
 
-// 삭제 (Delete Todo)
 const deleteSubTodoFetcher = async ({ accessToken, subTodoId }) => {
   const data = await Api.deleteSubTodo({
     accessToken: accessToken,
