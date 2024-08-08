@@ -3,6 +3,10 @@ import {
   SUBTODO_QUERY_KEY,
   useSubTodoUpdateMutation,
 } from '@/hooks/useSubTodoMutations';
+import {
+  DAILYTODO_SUBTODOCOMPLETE_CLICK_EVENT,
+  handleLogEvent,
+} from '@/utils/logEvent';
 import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Input, ListItem, Text, useTheme } from '@ui-kitten/components';
 import { useContext, useEffect, useState } from 'react';
@@ -19,6 +23,7 @@ const DailySubTodo = ({ item }) => {
   const queryClient = useQueryClient();
   const { mutate: updateSubTodo, isSuccess: updateSubTodoIsSuccess } =
     useSubTodoUpdateMutation();
+  const { userId } = useContext(LoginContext);
 
   useEffect(() => {
     if (updateSubTodoIsSuccess) {
@@ -51,7 +56,16 @@ const DailySubTodo = ({ item }) => {
 
   const checkIcon = props => {
     return (
-      <TouchableOpacity onPress={handleCheck}>
+      <TouchableOpacity
+        onPress={() => {
+          handleLogEvent(DAILYTODO_SUBTODOCOMPLETE_CLICK_EVENT, {
+            time: new Date().toISOString(),
+            userId: userId,
+            subtodoId: item.id,
+          });
+          handleCheck();
+        }}
+      >
         <Icon
           {...props}
           name="checkmark-circle-2-outline"
