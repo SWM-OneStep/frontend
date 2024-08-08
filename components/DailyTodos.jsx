@@ -15,7 +15,11 @@ import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
   handleScroll,
 } from '@/utils/handleScroll';
-import { TODAYVIEW_SCROLL_EVENT } from '@/utils/logEvent';
+import {
+  handleLogEvent,
+  TODAYVIEW_SCROLL_EVENT,
+  TODAYVIEW_TEXTINPUT_SUBMIT_EVENT,
+} from '@/utils/logEvent';
 import { useQueryClient } from '@tanstack/react-query';
 import { Input } from '@ui-kitten/components';
 import { LexoRank } from 'lexorank';
@@ -188,7 +192,13 @@ const DailyTodos = () => {
               placeholder="Add a new task"
               value={input}
               onChangeText={setInput}
-              onSubmitEditing={handleSubmit}
+              onSubmitEditing={() => {
+                handleLogEvent(TODAYVIEW_TEXTINPUT_SUBMIT_EVENT, {
+                  time: new Date().toISOString(),
+                  userId: userId,
+                });
+                handleSubmit();
+              }}
             />
           </View>
         </KeyboardAccessoryView>

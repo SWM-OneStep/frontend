@@ -1,9 +1,9 @@
-import analytics from '@react-native-firebase/analytics';
+import { firebase } from '@react-native-firebase/analytics';
 
-// export const cusutomAnalytics = analytics.analytics()
+export const cusutomAnalytics = firebase.analytics();
 
 export const handleLogEvent = async (eventName, eventData) => {
-  await analytics().logEvent(eventName, eventData);
+  await cusutomAnalytics.logEvent(eventName, eventData);
 };
 
 // Today View
@@ -35,6 +35,7 @@ export const TODOMODAL_CREATESUBTODO_CLICK_EVENT =
 export const TODOMODAL_CHANGEDATE_CLICK_EVENT = 'todoModal__changeDate__click';
 export const TODOMODAL_MOVETOINBOX_CLICK_EVENT =
   'todoModal__moveToInbox__click';
+export const TODAYVIEW_TEXTINPUT_SUBMIT_EVENT = 'todayView__textInput__submit';
 
 // Inbox View
 export const INBOXVIEW_VIEW_EVENT = 'inboxView__view';
