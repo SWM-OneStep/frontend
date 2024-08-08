@@ -12,7 +12,11 @@ const inboxIcon = ({ color, size }) => (
 
 const TabLayout = () => {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarHideOnKeyboard: true, // 키보드가 활성화될 때 탭 바 숨기기
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
