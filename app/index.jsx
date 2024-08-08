@@ -30,23 +30,8 @@ const Login = () => {
 
   const [request, response, promptAsync] = Google.useAuthRequest(config);
 
-  const handleLocalToken = async () => {
-    const token = await getAccessTokenFromLocal();
-    const user = await getUserInfoFromLocal();
-    if (token) {
-      Api.verifyToken(token)
-        .then(() => {
-          setAccessToken(token);
-          setUserId(user.userId);
-          router.replace('(tabs)');
-        })
-        .catch(e => {
-          console.log('error occurred');
-          console.log(e);
-          console.log('token expired');
-          router.replace('/');
-        });
-    }
+  const handleLocalToken = () => {
+    throw new Error('error!!');
   };
 
   const getDeviceToken = useCallback(async () => {
@@ -59,14 +44,9 @@ const Login = () => {
       }
       return token;
     } catch (error) {
-      try {
-        const token = await messaging().getToken();
-        await AsyncStorage.setItem('deviceToken', token);
-        return token;
-      } catch (e) {
-        router.replace('index');
-        return null;
-      }
+      const token = await messaging().getToken();
+      await AsyncStorage.setItem('deviceToken', token);
+      return token;
     }
   }, []);
 

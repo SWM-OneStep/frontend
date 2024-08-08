@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_PATH } from './config';
+import * as Sentry from '@sentry/react-native';
 
 const metadata = accessToken => {
   let headers = null;
@@ -23,8 +24,7 @@ const handleRequest = async request => {
 
     return response.data;
   } catch (err) {
-    console.log(JSON.stringify(err.response, null, 2));
-    throw err; // Rethrow the error to handle it further if needed
+    Sentry.captureException(err);
   }
 };
 

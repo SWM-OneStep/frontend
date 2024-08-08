@@ -32,6 +32,22 @@
     },
     "scheme": "onestep",
     "owner": "byungchanko",
-    "plugins": ["expo-router"]
+    "plugins": [
+      "expo-router",
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "react-native",
+          "organization": "ec5b082086ad"
+        }
+      ]
+    ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/63f6bbd9-1594-44b3-b161-0e0051413ef0"
+    }
   }
 }

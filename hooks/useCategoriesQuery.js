@@ -1,6 +1,7 @@
 // useCategoriesQuery.js
 import { Api } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
+import * as Sentry from '@sentry/react-native';
 
 export const QUERY_KEY = '/category';
 
@@ -18,7 +19,7 @@ const useCategoriesQuery = (accessToken, userId, onSuccess) => {
     keepPreviousData: true,
     onSuccess: onSuccess,
     onError: error => {
-      console.log(error);
+      Sentry.captureException(error);
     },
   });
 };

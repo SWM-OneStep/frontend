@@ -22,6 +22,7 @@ import DailySubTodo from './DailySubTodo';
 import TodoModal from './TodoModal';
 import { Card, Layout, Modal } from 'react-native-ui-kitten';
 import SubTodoGenerateModal from './SubTodoGenerateModal';
+import { sub } from 'date-fns';
 
 const DailyTodo = ({ item, drag, isActive }) => {
   const [content, setContent] = useState(item.content);
@@ -33,6 +34,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const { accessToken } = useContext(LoginContext);
   const [subTodoInputActivated, setSubTodoInputActivated] = useState(false);
   const [generatedSubTodos, setGeneratedSubTodos] = useState([]);
+  const [subTodoCandidatesIndexes, setSubTodoCandidatesIndexes] = useState([]);
   const queryClient = useQueryClient();
   const { mutate: addSubTodo, isSuccess: addSubTodoIsSuccess } =
     useSubTodoAddMutation();
@@ -75,6 +77,13 @@ const DailyTodo = ({ item, drag, isActive }) => {
     updateTodo({ accessToken: accessToken, updatedData: updatedData });
   };
 
+  const tmpOrder = (seed = 0) => {
+    const now = new Date();
+    const milliseconds = now.getTime();
+    const unixTime = Math.floor(milliseconds + (seed * 1000) / 1000);
+    return unixTime.toString();
+  };
+
   const handleTodoUpdate = () => {
     const updatedData = {
       todoId: item.id,
@@ -88,7 +97,17 @@ const DailyTodo = ({ item, drag, isActive }) => {
     setSubTodoInputActivated(true);
   };
 
-  const handleApplySelection = () => {};
+  const handleApplySelection = () => {
+    const newSubTodos = subTodoCandidatesIndexes.map(index => ({
+      content: generatedSubTodos[index].content,
+      date: generatedSubTodos[index].date,
+      todo: generatedSubTodos[index].todo,
+      order: tmpOrder(index),
+    }));
+    addSubTodo({ accessToken: accessToken, todoData: newSubTodos });
+    setGeneratedSubTodos([]);
+    setSubTodoCandidatesIndexes([]);
+  };
 
   const renderSubTodo = ({ item, index }) => {
     return <DailySubTodo item={item} key={index} />;
@@ -100,9 +119,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
         title={item.content}
         key={() => index.toString()}
         style={{ paddingLeft: 40 }}
-        accessoryRight={props =>
-          generatedSubtodoAcceptIcon(props, index, item.isChecked)
-        }
+        accessoryRight={props => generatedSubtodoAcceptIcon(props, index)}
       />
     );
   };
@@ -153,7 +170,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
       </View>
     );
   };
-  const generatedSubtodoAcceptIcon = (props, index, isChecked) => {
+  const generatedSubtodoAcceptIcon = (props, index) => {
     return (
       <View
         style={{
@@ -164,55 +181,29 @@ const DailyTodo = ({ item, drag, isActive }) => {
       >
         <TouchableOpacity
           onPress={() => {
-            setGeneratedSubTodos(prev => {
-              return prev.map((todo, i) => {
-                if (i === index) {
-                  return { ...todo, isChecked: false };
-                }
-                return todo;
+            if (subTodoCandidatesIndexes.includes(index)) {
+              setSubTodoCandidatesIndexes(prev => {
+                return prev.filter(candidate => candidate !== index);
               });
-            });
+            } else {
+              setSubTodoCandidatesIndexes(prev => {
+                return [...prev, index];
+              });
+            }
           }}
         >
           <Icon
             {...props}
             fill={
-              !isChecked
+              subTodoCandidatesIndexes.includes(index)
                 ? theme['color-primary-500']
                 : theme['text-basic-color']
-            }
-            name="close-outline"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            setGeneratedSubTodos(prev => {
-              return prev.map((todo, i) => {
-                if (i === index) {
-                  return { ...todo, isChecked: true };
-                }
-                return todo;
-              });
-            });
-          }}
-        >
-          <Icon
-            {...props}
-            fill={
-              isChecked ? theme['color-primary-500'] : theme['text-basic-color']
             }
             name="done-all-outline"
           />
         </TouchableOpacity>
       </View>
     );
-  };
-
-  const tmpOrder = () => {
-    const now = new Date();
-    const milliseconds = now.getTime();
-    const unixTime = Math.floor(milliseconds / 1000);
-    return unixTime.toString();
   };
 
   const handleEdit = () => {
@@ -303,7 +294,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
         modalVisible={subTodoGenerateAlertModalVisible}
         setModalVisible={setSubTodoGenerateAlertModalVisible}
         setGeneratedSubToDos={setGeneratedSubTodos}
-        todoContent={item.content}
+        todoId={item.id}
       />
     </>
   );

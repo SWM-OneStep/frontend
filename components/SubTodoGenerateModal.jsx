@@ -2,62 +2,28 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Modal, Card, Text, Button } from '@ui-kitten/components';
 import axios from 'axios';
+import { API_PATH } from '@/utils/config';
+import * as Sentry from '@sentry/react-native';
 
 const SubTodoGenerateModal = ({
   modalVisible,
   setModalVisible,
-  todoContent,
   setGeneratedSubToDos,
+  todoId,
 }) => {
   const handleAddToDo = () => {
     // LLM API 호출 로직 추가
     axios
-      .post(
-        'https://api.openai.com/v1/chat/completions',
-        {
-          model: 'gpt-3.5-turbo',
-          messages: [
-            {
-              role: 'system',
-              content:
-                'You are a helpful assistant that generates sub-tasks for a given task.',
-            },
-            {
-              role: 'user',
-              content: `Create sub-tasks for the task: "${todoContent}". 
-            List each sub-task on a new line. 
-            Example output:
-            Sub-task 1
-            Sub-task 2
-            Sub-task 3
-
-            instructions:
-            any explanation not needed
-            speack in Korean
-            please separate sub tasks only with new lines
-            `,
-            },
-          ],
-          max_tokens: 100,
-        },
-        {
-          headers: {
-            Authorization: `Bearer MY-API-KEY`,
-            'Content-Type': 'application/json',
-          },
-        },
-      )
+      .get(`${API_PATH.recommend}?todo_id=${todoId}`)
       .then(response => {
-        setGeneratedSubToDos(
-          response.data.choices[0].message.content.split('\n').map(subToDo => ({
-            content: subToDo,
-            isChecked: true,
-          })),
-        );
+        console.log('response', response.data);
+        setGeneratedSubToDos(response.data.children);
         setModalVisible(false);
       })
       .catch(error => {
-        console.error(error.response);
+        console.log(error.response);
+
+        Sentry.captureException(error);
       });
   };
 
