@@ -18,6 +18,7 @@ const TabLayout = () => {
         options={{
           title: 'Today',
           tabBarIcon: todayIcon,
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -25,6 +26,7 @@ const TabLayout = () => {
         options={{
           title: 'Inbox',
           tabBarIcon: inboxIcon,
+          headerShown: false,
         }}
       />
     </Tabs>
