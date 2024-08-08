@@ -1,9 +1,9 @@
 import { firebase } from '@react-native-firebase/analytics';
 
-export const analytics = firebase.analytics();
+export const cusutomAnalytics = firebase.analytics();
 
 export const handleLogEvent = async (eventName, eventData) => {
-  await analytics.logEvent(eventName, eventData);
+  await cusutomAnalytics.logEvent(eventName, eventData);
 };
 
 // Today View
@@ -16,7 +16,7 @@ export const WEEKLYCALENDAR_DAYITEM_CLICK_EVENT =
 export const CATEGORY_SCROLL_EVENT = 'category__scroll';
 export const CATEGORY_CATEGORY_CLICK_EVENT = 'category__category__click';
 export const CATEGORY_ADDCATEGORY_CLICK_EVENT = 'category__addCategory__Click';
-export const DAILYTODO_LIST_CLICK_EVENT = 'dailyTdoo__list__click';
+export const DAILYTODO_LIST_CLICK_EVENT = 'dailyTodo__list__click';
 export const DAILYTODO_LIST_DRAG_EVENT = 'dailyTodo__list__drag';
 export const DAILYTODO_MEATBALLMENU_CLICK_EVENT =
   'dailyTodo__meatballMenu__click';
@@ -35,6 +35,7 @@ export const TODOMODAL_CREATESUBTODO_CLICK_EVENT =
 export const TODOMODAL_CHANGEDATE_CLICK_EVENT = 'todoModal__changeDate__click';
 export const TODOMODAL_MOVETOINBOX_CLICK_EVENT =
   'todoModal__moveToInbox__click';
+export const TODAYVIEW_TEXTINPUT_SUBMIT_EVENT = 'todayView__textInput__submit';
 
 // Inbox View
 export const INBOXVIEW_VIEW_EVENT = 'inboxView__view';
