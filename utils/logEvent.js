@@ -18,6 +18,8 @@ export const CATEGORY_CATEGORY_CLICK_EVENT = 'category__category__click';
 export const CATEGORY_ADDCATEGORY_CLICK_EVENT = 'category__addCategory__Click';
 export const DAILYTODO_LIST_CLICK_EVENT = 'dailyTdoo__list__click';
 export const DAILYTODO_LIST_DRAG_EVENT = 'dailyTodo__list__drag';
+export const DAILYTODO_MEATBALLMENU_CLICK_EVENT =
+  'dailyTodo__meatballMenu__click';
 export const DAILYTODO_CREATEAITODO_CLICK_EVENT =
   'dailyTodo__createAITodo__click';
 export const DAILYTODO_CREATEAITODOMODAL_CLICK_EVENT =

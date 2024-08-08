@@ -12,6 +12,10 @@ import {
 } from '@/hooks/useTodoMutations';
 import TODO_QUERY_KEY from '@/hooks/useTodoQuery';
 import { convertGmtToKst } from '@/utils/convertTimezone';
+import {
+  DAILYTODO_CREATEAITODO_CLICK_EVENT,
+  handleLogEvent,
+} from '@/utils/logEvent';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
@@ -63,6 +67,7 @@ const TodoModal = ({
   const [calendarModalVisible, setCalendarModalVisible] = useState(false);
   const { accessToken } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
+  const { userId } = useContext(LoginContext);
 
   const { mutate: updateTodoDate, isSuccess: updateTodoDateIsSuccess } =
     useTodoUpdateMutation();
@@ -188,7 +193,14 @@ const TodoModal = ({
                   status="basic"
                   style={styles.button}
                   // onPress={() => handleSubtodoCreateInitialize(item)}
-                  onPress={() => onSubTodoCreate()}
+                  onPress={() => {
+                    handleLogEvent(DAILYTODO_CREATEAITODO_CLICK_EVENT, {
+                      time: new Date().toISOString(),
+                      userId: userId,
+                      todoId: item.id,
+                    });
+                    onSubTodoCreate();
+                  }}
                 >
                   <Text>하위 투두 생성하기</Text>
                 </Button>
