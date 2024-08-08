@@ -1,8 +1,10 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { router } from 'expo-router';
 import { API_PATH } from './config';
 import * as Sentry from '@sentry/react-native';
 
-const metadata = accessToken => {
+const metadata = async accessToken => {
   let headers = null;
   if (accessToken) {
     headers = {
@@ -10,21 +12,50 @@ const metadata = accessToken => {
       Authorization: `Bearer ${accessToken}`,
     };
   } else {
+    const recentAccessToken = await AsyncStorage.getItem('accessToken');
     headers = {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${recentAccessToken}`,
     };
   }
 
   return { headers };
 };
 
+const TOKEN_INVALID_OR_EXPIRED_MESSAGE = 'Token is invalid or expired';
+const TOKEN_INVALID_TYPE_MESSAGE = 'Given token not valid for any token type';
+
 const handleRequest = async request => {
   try {
     const response = await request();
-
     return response.data;
   } catch (err) {
     Sentry.captureException(err);
+    if (
+      (err.response.status === 401 &&
+        err.response.data.detail === TOKEN_INVALID_OR_EXPIRED_MESSAGE) ||
+      err.response.data.detail === TOKEN_INVALID_TYPE_MESSAGE
+    ) {
+      try {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        const refreshToken = await AsyncStorage.getItem('refreshToken');
+        const responseData = await axios.post(API_PATH.renew, {
+          refresh: refreshToken,
+          access: accessToken,
+        });
+        await AsyncStorage.setItem('accessToken', responseData.data.access);
+        const secondRequest = await request();
+        return secondRequest.data;
+      } catch (refreshError) {
+        if (refreshError.response.status === 401) {
+          router.replace('index');
+        } else {
+          throw refreshError;
+        }
+      }
+    } else {
+      throw err;
+    }
   }
 };
 
@@ -36,7 +67,7 @@ export const Api = {
    */
   fetchTodos: (accessToken, userId) => {
     return handleRequest(() =>
-      axios.get(`${API_PATH.todos}?user_id=${userId}`, metadata(accessToken)),
+      axios.get(`${API_PATH.todos}?user_id=${userId}`, metadata()),
     );
   },
   /**
@@ -57,7 +88,7 @@ export const Api = {
    */
   addTodo: (accessToken, todoData) => {
     return handleRequest(() =>
-      axios.post(API_PATH.todos, todoData, metadata(accessToken)),
+      axios.post(API_PATH.todos, todoData, metadata()),
     );
   },
   /**
@@ -82,7 +113,7 @@ export const Api = {
       axios.request({
         url: API_PATH.todos,
         method: 'DELETE',
-        headers: metadata(accessToken),
+        headers: metadata(),
         data: { todo_id: todoId },
       }),
     );
@@ -113,7 +144,7 @@ export const Api = {
    */
   updateTodo: ({ accessToken, updateData }) => {
     return handleRequest(() =>
-      axios.patch(API_PATH.todos, updateData, metadata(accessToken)),
+      axios.patch(API_PATH.todos, updateData, metadata()),
     );
   },
   /**
@@ -128,6 +159,17 @@ export const Api = {
     return handleRequest(() => axios.post(API_PATH.verify, { token }));
   },
   /**
+   *
+   */
+  renewToken: (accessToken, refreshToken) => {
+    return handleRequest(() =>
+      axios.post(API_PATH.renew, {
+        refresh: refreshToken,
+        access: accessToken,
+      }),
+    );
+  },
+  /**
    * Google 로그인 요청을 서버에 보냅니다.
    *
    * @param {Object} tokenData - 로그인에 필요한 토큰 데이터.
@@ -139,8 +181,12 @@ export const Api = {
     return handleRequest(() => axios.post(API_PATH.login, tokenData));
   },
 
-  getUserInfo: accessToken => {
-    return handleRequest(() => axios.get(API_PATH.user, metadata(accessToken)));
+  getUserInfo: async accessToken => {
+    const header = await metadata(accessToken);
+    const getUserInfoData = handleRequest(() =>
+      axios.get(API_PATH.user, header),
+    );
+    return getUserInfoData;
   },
 
   getCategory: (accessToken, userId) => {
@@ -175,8 +221,7 @@ export const Api = {
       //   url: API_PATH.categories,
       //   data: JSON.stringify(categoryData),
       // }),
-      () =>
-        axios.post(API_PATH.categories, categoryData, metadata(accessToken)),
+      () => axios.post(API_PATH.categories, categoryData, metadata()),
     );
   },
   /**
@@ -190,7 +235,7 @@ export const Api = {
    */
   addSubTodo: (accessToken, subTodoData) => {
     return handleRequest(() =>
-      axios.post(API_PATH.subTodos, subTodoData, metadata(accessToken)),
+      axios.post(API_PATH.subTodos, subTodoData, metadata()),
     );
   },
   /**
@@ -204,7 +249,7 @@ export const Api = {
    */
   updateSubTodo: ({ accessToken, updatedData }) => {
     return handleRequest(() =>
-      axios.patch(API_PATH.subTodos, updatedData, metadata(accessToken)),
+      axios.patch(API_PATH.subTodos, updatedData, metadata()),
     );
   },
   /**
@@ -221,7 +266,7 @@ export const Api = {
       axios.request({
         url: API_PATH.subTodos,
         method: 'DELETE',
-        headers: metadata(accessToken),
+        headers: metadata(),
         data: { subtodoId: subTodoId },
       }),
     );
@@ -237,7 +282,7 @@ export const Api = {
    */
   getInboxTodo: (accessToken, userId) => {
     return handleRequest(() =>
-      axios.get(`${API_PATH.inbox}?user_id=${userId}`, metadata(accessToken)),
+      axios.get(`${API_PATH.inbox}?user_id=${userId}`, metadata()),
     );
   },
 };

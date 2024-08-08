@@ -8,6 +8,7 @@ export const API_PATH = {
   subTodos: `${BASE_URL}/todos/sub/`,
   refresh: `${BASE_URL}/token/refresh/`,
   verify: `${BASE_URL}/auth/api/token/verify/`,
+  renew: `${BASE_URL}/auth/token/refresh/`,
   today: `${BASE_URL}/todos/today/`,
   login: `${BASE_URL}/auth/login/google/`,
   user: `${BASE_URL}/auth/user/`,

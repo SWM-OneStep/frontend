@@ -1,12 +1,13 @@
 import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
-import { QUERY_KEY } from '@/hooks/useCategoriesQuery';
-import {
-  SUBTODO_QUERY_KEY,
-  useSubTodoAddMutation,
-} from '@/hooks/useSubTodoMutations';
+import { useSubTodoAddMutation } from '@/hooks/useSubTodoMutations';
 import { useTodoUpdateMutation } from '@/hooks/useTodoMutations';
-import { useQueryClient } from '@tanstack/react-query';
+import {
+  DAILYTODO_LIST_CLICK_EVENT,
+  DAILYTODO_MEATBALLMENU_CLICK_EVENT,
+  DAILYTODO_TODOCOMPLETE_CLICK_EVENT,
+  handleLogEvent,
+} from '@/utils/logEvent';
 import {
   Icon,
   Input,
@@ -16,9 +17,10 @@ import {
   useTheme,
   Button,
 } from '@ui-kitten/components';
-import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useContext, useState } from 'react';
 import DailySubTodo from './DailySubTodo';
+
 import TodoModal from './TodoModal';
 import { Card, Layout, Modal } from 'react-native-ui-kitten';
 import SubTodoGenerateModal from './SubTodoGenerateModal';
@@ -35,11 +37,10 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const [subTodoInputActivated, setSubTodoInputActivated] = useState(false);
   const [generatedSubTodos, setGeneratedSubTodos] = useState([]);
   const [subTodoCandidatesIndexes, setSubTodoCandidatesIndexes] = useState([]);
-  const queryClient = useQueryClient();
-  const { mutate: addSubTodo, isSuccess: addSubTodoIsSuccess } =
-    useSubTodoAddMutation();
-  const { mutate: updateTodo, isSuccess: updateTodoIsSuccess } =
-    useTodoUpdateMutation();
+
+  const { mutate: addSubTodo } = useSubTodoAddMutation();
+  const { mutate: updateTodo } = useTodoUpdateMutation();
+  const { userId } = useContext(LoginContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [
     subTodoGenerateAlertModalVisible,
@@ -53,20 +54,6 @@ const DailyTodo = ({ item, drag, isActive }) => {
       [index]: !prev[index],
     }));
   };
-
-  useEffect(() => {
-    if (addSubTodoIsSuccess) {
-      queryClient.invalidateQueries(SUBTODO_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addSubTodoIsSuccess]);
-
-  useEffect(() => {
-    if (updateTodoIsSuccess) {
-      queryClient.invalidateQueries(QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateTodoIsSuccess]);
 
   const handleCheck = () => {
     setCompleted(!completed);
@@ -126,7 +113,16 @@ const DailyTodo = ({ item, drag, isActive }) => {
 
   const checkIcon = props => {
     return (
-      <TouchableOpacity onPress={handleCheck}>
+      <TouchableOpacity
+        onPress={() => {
+          handleLogEvent(DAILYTODO_TODOCOMPLETE_CLICK_EVENT, {
+            time: new Date().toISOString(),
+            userId: userId,
+            todoId: item.id,
+          });
+          handleCheck();
+        }}
+      >
         <Icon
           {...props}
           name="checkmark-circle-2-outline"
@@ -159,7 +155,17 @@ const DailyTodo = ({ item, drag, isActive }) => {
             />
           </TouchableOpacity>
         )}
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <TouchableOpacity
+          onPress={
+            (() =>
+              handleLogEvent(DAILYTODO_MEATBALLMENU_CLICK_EVENT, {
+                time: new Date().toISOString(),
+                userId: userId,
+                todoId: item.id,
+              }),
+            setModalVisible(true))
+          }
+        >
           <Icon
             {...props}
             name="more-horizontal-outline"
@@ -248,8 +254,14 @@ const DailyTodo = ({ item, drag, isActive }) => {
         key={item.id}
         accessoryLeft={props => checkIcon(props)}
         accessoryRight={props => settingIcon(props)}
-        accesso
-        onPress={() => setModalVisible(true)}
+        onPress={() => {
+          handleLogEvent(DAILYTODO_LIST_CLICK_EVENT, {
+            time: new Date().toISOString(),
+            userId: userId,
+            todoId: item.id,
+          });
+          setModalVisible(true);
+        }}
         onLongPress={drag}
         isActive={isActive}
       />

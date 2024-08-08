@@ -6,11 +6,17 @@ import {
   useTodoDeleteMutation,
   useTodoUpdateMutation,
 } from '@/hooks/useTodoMutations';
+import {
+  handleLogEvent,
+  INBOXTODO_LIST_CLICK_EVENT,
+  INBOXTODO_MEATBALLMENU_CLICK_EVENT,
+} from '@/utils/logEvent';
 import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Input, List, ListItem, useTheme } from '@ui-kitten/components';
 import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import InboxSubTodo from './InboxSubTodo';
+
 import TodoModal from './TodoModal';
 
 const InboxTodo = ({ item, drag, isActive }) => {
@@ -30,6 +36,7 @@ const InboxTodo = ({ item, drag, isActive }) => {
     useTodoDeleteMutation();
   const { mutate: addInboxSubTodo, isSuccess: addInboxSubTodoIsSuccess } =
     useSubTodoAddMutation();
+  const { userId } = useContext(LoginContext);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -56,13 +63,6 @@ const InboxTodo = ({ item, drag, isActive }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteInboxTodoIsSuccess]);
-
-  useEffect(() => {
-    if (addInboxSubTodoIsSuccess) {
-      queryClient.invalidateQueries(INBOX_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addInboxSubTodoIsSuccess]);
 
   const handleTodoUpdate = () => {
     const updatedData = {
@@ -118,7 +118,16 @@ const InboxTodo = ({ item, drag, isActive }) => {
 
   const settingIcon = props => {
     return (
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
+      <TouchableOpacity
+        onPress={() => {
+          handleLogEvent(INBOXTODO_MEATBALLMENU_CLICK_EVENT, {
+            time: new Date().toISOString(),
+            userId: userId,
+            todoId: item.id,
+          });
+          setModalVisible(true);
+        }}
+      >
         <Icon
           {...props}
           name="more-horizontal-outline"
@@ -150,7 +159,14 @@ const InboxTodo = ({ item, drag, isActive }) => {
         key={item.id}
         accessoryLeft={props => outlineIcon(props)}
         accessoryRight={props => settingIcon(props)}
-        onPress={() => setModalVisible(true)}
+        onPress={() => {
+          handleLogEvent(INBOXTODO_LIST_CLICK_EVENT, {
+            time: new Date().toISOString(),
+            userId: userId,
+            todoId: item.id,
+          });
+          setModalVisible(true);
+        }}
         onLongPress={drag}
         isActive={isActive}
       />
