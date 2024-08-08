@@ -1,8 +1,8 @@
 import { firebase } from '@react-native-firebase/analytics';
 
-const analytics = firebase.analytics();
+export const analytics = firebase.analytics();
 
-export const logEvent = async (eventName, eventData) => {
+export const handleLogEvent = async (eventName, eventData) => {
   await analytics.logEvent(eventName, eventData);
 };
 

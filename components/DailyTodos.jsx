@@ -11,10 +11,15 @@ import {
   default as useTodosQuery,
 } from '@/hooks/useTodoQuery';
 import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
+import {
+  DEFAULT_SCROLL_EVENT_THROTTLE,
+  handleScroll,
+} from '@/utils/handleScroll';
+import { TODAYVIEW_SCROLL_EVENT } from '@/utils/logEvent';
 import { useQueryClient } from '@tanstack/react-query';
 import { Input } from '@ui-kitten/components';
 import { LexoRank } from 'lexorank';
-import { Fragment, useContext, useEffect, useRef, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native';
 import DraggableFlatList, {
   ScaleDecorator,
@@ -39,7 +44,6 @@ const DailyTodos = () => {
     data,
     isSuccess: isTodosQuerySuccess,
   } = useTodosQuery(accessToken, userId);
-  const scrollViewRef = useRef(null);
   const currentTodos = useTodoStore(state => state.currentTodos);
 
   useEffect(() => {
@@ -171,6 +175,10 @@ const DailyTodos = () => {
             renderItem={renderTodo}
             onDragEnd={handleDragEnd}
             keyExtractor={item => item.id.toString()}
+            onScroll={event =>
+              handleScroll(TODAYVIEW_SCROLL_EVENT, userId, event)
+            }
+            scrollEventThrottle={DEFAULT_SCROLL_EVENT_THROTTLE}
           />
         </KeyboardAvoidingView>
         <KeyboardAccessoryView alwaysVisible androidAdjustResize>

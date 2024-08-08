@@ -1,6 +1,11 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useCategoriesQuery from '@/hooks/useCategoriesQuery';
+import {
+  DEFAULT_SCROLL_EVENT_THROTTLE,
+  handleScroll,
+} from '@/utils/handleScroll';
+import { CATEGORY_SCROLL_EVENT } from '@/utils/logEvent';
 import { Button, Icon, Layout, Text } from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
@@ -45,7 +50,12 @@ const CategoryScroll = () => {
   }
   return (
     <Layout>
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+      <ScrollView
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        onScroll={event => handleScroll(CATEGORY_SCROLL_EVENT, userId, event)}
+        scrollEventThrottle={DEFAULT_SCROLL_EVENT_THROTTLE}
+      >
         {orderedCategories &&
           orderedCategories.map((item, index) => (
             <Button
