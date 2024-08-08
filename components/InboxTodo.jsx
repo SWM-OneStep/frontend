@@ -11,6 +11,7 @@ import { Icon, Input, List, ListItem, useTheme } from '@ui-kitten/components';
 import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import InboxSubTodo from './InboxSubTodo';
+// eslint-disable-next-line import/namespace
 import TodoModal from './TodoModal';
 
 const InboxTodo = ({ item, drag, isActive }) => {

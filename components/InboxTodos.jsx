@@ -3,6 +3,11 @@ import { LoginContext } from '@/contexts/LoginContext';
 import useTodoStore from '@/contexts/TodoStore';
 import useInboxTodoQuery from '@/hooks/useInboxTodoQuery';
 import { useTodoAddMutation } from '@/hooks/useTodoMutations';
+import {
+  DEFAULT_SCROLL_EVENT_THROTTLE,
+  handleScroll,
+} from '@/utils/handleScroll';
+import { INBOXVIEW_SCROLL_EVENT } from '@/utils/logEvent';
 import { useQueryClient } from '@tanstack/react-query';
 import { Input, List } from '@ui-kitten/components';
 import { LexoRank } from 'lexorank';
@@ -72,6 +77,8 @@ const InboxTodos = () => {
         data={inboxCurrentTodos}
         renderItem={renderTodo}
         ListFooterComponentStyle={{ paddingTop: 0, flex: 1 }}
+        onScroll={event => handleScroll(INBOXVIEW_SCROLL_EVENT, userId, event)}
+        scrollEventThrottle={DEFAULT_SCROLL_EVENT_THROTTLE}
       />
       {/* <KeyboardAvoidingView> */}
       <Input

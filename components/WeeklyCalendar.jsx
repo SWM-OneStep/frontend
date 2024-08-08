@@ -1,7 +1,13 @@
 import { DateContext } from '@/contexts/DateContext';
+import { LoginContext } from '@/contexts/LoginContext';
 import useTodoStore from '@/contexts/TodoStore';
 import { convertGmtToKst } from '@/utils/convertTimezone';
 import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
+import {
+  handleLogEvent,
+  WEEKLYCALENDAR_DAYITEM_CLICK_EVENT,
+  WEEKLYCALENDAR_NAVIGATEWEEK_CLICK_EVENT,
+} from '@/utils/logEvent';
 import { Icon, Layout, Text, useTheme } from '@ui-kitten/components';
 import moment from 'moment';
 import 'moment/locale/ko';
@@ -12,6 +18,7 @@ const WeeklyCalendar = () => {
   const { selectedDate, setSelectedDate } = useContext(DateContext);
   const [currentDate, setcurrentDate] = useState(moment());
   const theme = useTheme();
+  const { userId } = useContext(LoginContext);
   const todos = useTodoStore(state => state.todos);
   const getWeekDates = date => {
     const start = date.clone().startOf('ISOWeek');
@@ -52,7 +59,17 @@ const WeeklyCalendar = () => {
           marginBottom: 16,
         }}
       >
-        <TouchableOpacity onPress={() => navigateWeek('prev')}>
+        <TouchableOpacity
+          onPress={() => {
+            handleLogEvent(WEEKLYCALENDAR_NAVIGATEWEEK_CLICK_EVENT, {
+              time: new Date().toISOString(),
+              userId: userId,
+              week: selectedDate.format('YYYY-MM-DD'),
+              direction: 'prev',
+            });
+            navigateWeek('prev');
+          }}
+        >
           <Icon
             name="arrow-ios-back-outline"
             fill={theme['text-basic-color']}
@@ -60,7 +77,17 @@ const WeeklyCalendar = () => {
           />
         </TouchableOpacity>
         <Text category="h6">{selectedDate.format('yyyy년 MM월')}</Text>
-        <TouchableOpacity onPress={() => navigateWeek('next')}>
+        <TouchableOpacity
+          onPress={() => {
+            navigateWeek('next');
+            handleLogEvent(WEEKLYCALENDAR_NAVIGATEWEEK_CLICK_EVENT, {
+              time: new Date().toISOString(),
+              userId: userId,
+              week: selectedDate.format('YYYY-MM-DD'),
+              direction: 'next',
+            });
+          }}
+        >
           <Icon
             name="arrow-ios-forward-outline"
             fill={theme['text-basic-color']}
@@ -72,7 +99,14 @@ const WeeklyCalendar = () => {
         {weekDates.map((date, index) => (
           <TouchableOpacity
             key={index}
-            onPress={() => handleDateSelect(date)}
+            onPress={() => {
+              handleLogEvent(WEEKLYCALENDAR_DAYITEM_CLICK_EVENT, {
+                time: new Date().toISOString(),
+                userId: userId,
+                day: date.format('YYYY-MM-DD'),
+              });
+              handleDateSelect(date);
+            }}
             style={{
               alignItems: 'center',
               padding: 8,

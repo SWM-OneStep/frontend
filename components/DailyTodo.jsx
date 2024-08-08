@@ -3,6 +3,12 @@ import { LoginContext } from '@/contexts/LoginContext';
 import { useSubTodoAddMutation } from '@/hooks/useSubTodoMutations';
 import { useTodoUpdateMutation } from '@/hooks/useTodoMutations';
 import {
+  DAILYTODO_LIST_CLICK_EVENT,
+  DAILYTODO_MEATBALLMENU_CLICK_EVENT,
+  DAILYTODO_TODOCOMPLETE_CLICK_EVENT,
+  handleLogEvent,
+} from '@/utils/logEvent';
+import {
   Icon,
   Input,
   List,
@@ -13,6 +19,7 @@ import {
 import { useContext, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import DailySubTodo from './DailySubTodo';
+// eslint-disable-next-line import/namespace
 import TodoModal from './TodoModal';
 
 const DailyTodo = ({ item, drag, isActive }) => {
@@ -26,6 +33,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const [subTodoInputActivated, setSubTodoInputActivated] = useState(false);
   const { mutate: addSubTodo } = useSubTodoAddMutation();
   const { mutate: updateTodo } = useTodoUpdateMutation();
+  const { userId } = useContext(LoginContext);
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -57,7 +65,16 @@ const DailyTodo = ({ item, drag, isActive }) => {
 
   const checkIcon = props => {
     return (
-      <TouchableOpacity onPress={handleCheck}>
+      <TouchableOpacity
+        onPress={() => {
+          handleLogEvent(DAILYTODO_TODOCOMPLETE_CLICK_EVENT, {
+            time: new Date().toISOString(),
+            userId: userId,
+            todoId: item.id,
+          });
+          handleCheck();
+        }}
+      >
         <Icon
           {...props}
           name="checkmark-circle-2-outline"
@@ -71,7 +88,16 @@ const DailyTodo = ({ item, drag, isActive }) => {
 
   const settingIcon = props => {
     return (
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
+      <TouchableOpacity
+        onPress={() => {
+          handleLogEvent(DAILYTODO_MEATBALLMENU_CLICK_EVENT, {
+            time: new Date().toISOString(),
+            userId: userId,
+            todoId: item.id,
+          });
+          setModalVisible(true);
+        }}
+      >
         <Icon
           {...props}
           name="more-horizontal-outline"
@@ -131,7 +157,14 @@ const DailyTodo = ({ item, drag, isActive }) => {
         key={item.id}
         accessoryLeft={props => checkIcon(props)}
         accessoryRight={props => settingIcon(props)}
-        onPress={() => setModalVisible(true)}
+        onPress={() => {
+          handleLogEvent(DAILYTODO_LIST_CLICK_EVENT, {
+            time: new Date().toISOString(),
+            userId: userId,
+            todoId: item.id,
+          });
+          setModalVisible(true);
+        }}
         onLongPress={drag}
         isActive={isActive}
       />

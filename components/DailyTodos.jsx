@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/namespace
+import DailyTodo from '@/components/DailyTodo';
 import { CategoryContext } from '@/contexts/CategoryContext';
 import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
@@ -8,14 +10,20 @@ import {
 } from '@/hooks/useTodoMutations';
 import { default as useTodosQuery } from '@/hooks/useTodoQuery';
 import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
+import {
+  DEFAULT_SCROLL_EVENT_THROTTLE,
+  handleScroll,
+} from '@/utils/handleScroll';
+import { TODAYVIEW_SCROLL_EVENT } from '@/utils/logEvent';
 import { Input } from '@ui-kitten/components';
 import { LexoRank } from 'lexorank';
 import { Fragment, useContext, useEffect, useState } from 'react';
-import { Text } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native';
 import DraggableFlatList, {
   ScaleDecorator,
 } from 'react-native-draggable-flatlist';
-import DailyTodo from './DailyTodo';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
 
 const DailyTodos = () => {
   const [input, setInput] = useState('');
@@ -148,27 +156,46 @@ const DailyTodos = () => {
   };
 
   return (
-    <Fragment>
-      <DraggableFlatList
-        data={currentTodos}
-        renderItem={renderTodo}
-        onDragEnd={handleDragEnd}
-        keyExtractor={item => item.id.toString()}
-        ListFooterComponentStyle={{ paddingTop: 0, flex: 1 }}
-      />
-      {/* <KeyboardAvoidingView> */}
-      <Input
-        placeholder="Place your Text"
-        value={input}
-        onChangeText={nextInput => {
-          setInput(nextInput);
-        }}
-        autoFocus={false}
-        onSubmitEditing={handleSubmit}
-      />
-      {/* </KeyboardAvoidingView> */}
-    </Fragment>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Fragment>
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+          <DraggableFlatList
+            data={currentTodos}
+            renderItem={renderTodo}
+            onDragEnd={handleDragEnd}
+            keyExtractor={item => item.id.toString()}
+            onScroll={event =>
+              handleScroll(TODAYVIEW_SCROLL_EVENT, userId, event)
+            }
+            scrollEventThrottle={DEFAULT_SCROLL_EVENT_THROTTLE}
+          />
+        </KeyboardAvoidingView>
+        <KeyboardAccessoryView alwaysVisible androidAdjustResize>
+          <View>
+            <Input
+              style={styles.input}
+              placeholder="Add a new task"
+              value={input}
+              onChangeText={setInput}
+              onSubmitEditing={handleSubmit}
+            />
+          </View>
+        </KeyboardAccessoryView>
+      </Fragment>
+    </GestureHandlerRootView>
   );
 };
+
+const styles = StyleSheet.create({
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    margin: 0,
+    padding: 0,
+  },
+});
 
 export default DailyTodos;

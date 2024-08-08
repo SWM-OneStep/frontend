@@ -12,6 +12,14 @@ import {
 } from '@/hooks/useTodoMutations';
 import { convertGmtToKst } from '@/utils/convertTimezone';
 import {
+  handleLogEvent,
+  TODOMODAL_CHANGEDATE_CLICK_EVENT,
+  TODOMODAL_CREATESUBTODO_CLICK_EVENT,
+  TODOMODAL_DELETE_CLICK_EVENT,
+  TODOMODAL_EDIT_CLICK_EVENT,
+  TODOMODAL_MOVETOINBOX_CLICK_EVENT,
+} from '@/utils/logEvent';
+import {
   Button,
   Calendar,
   Card,
@@ -61,6 +69,7 @@ const TodoModal = ({
   const [calendarModalVisible, setCalendarModalVisible] = useState(false);
   const { accessToken } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
+  const { userId } = useContext(LoginContext);
 
   const { mutate: updateTodoDate } = useTodoUpdateMutation();
   const { mutate: updateSubTodoDate } = useSubTodoUpdateMutation();
@@ -133,7 +142,14 @@ const TodoModal = ({
                 accessoryLeft={editIcon}
                 status="basic"
                 style={styles.button}
-                onPress={onEdit}
+                onPress={() => {
+                  handleLogEvent(TODOMODAL_EDIT_CLICK_EVENT, {
+                    time: new Date().toISOString(),
+                    userId: userId,
+                    todoId: item.id,
+                  });
+                  onEdit();
+                }}
               >
                 <Text>수정하기</Text>
               </Button>
@@ -141,7 +157,14 @@ const TodoModal = ({
                 accessoryLeft={deleteIcon}
                 status="basic"
                 style={styles.button}
-                onPress={() => handleDelete(item.id)}
+                onPress={() => {
+                  handleLogEvent(TODOMODAL_DELETE_CLICK_EVENT, {
+                    time: new Date().toISOString(),
+                    userId: userId,
+                    todoId: item.id,
+                  });
+                  handleDelete(item.id);
+                }}
               >
                 <Text>삭제하기</Text>
               </Button>
@@ -152,8 +175,14 @@ const TodoModal = ({
                   accessoryLeft={listIcon}
                   status="basic"
                   style={styles.button}
-                  // onPress={() => handleSubtodoCreateInitialize(item)}
-                  onPress={() => onSubTodoCreate()}
+                  onPress={() => {
+                    handleLogEvent(TODOMODAL_CREATESUBTODO_CLICK_EVENT, {
+                      time: new Date().toISOString(),
+                      userId: userId,
+                      todoId: item.id,
+                    });
+                    onSubTodoCreate();
+                  }}
                 >
                   <Text>하위 투두 생성하기</Text>
                 </Button>
@@ -165,6 +194,11 @@ const TodoModal = ({
                 status="basic"
                 style={styles.button}
                 onPress={() => {
+                  handleLogEvent(TODOMODAL_CHANGEDATE_CLICK_EVENT, {
+                    time: new Date().toISOString(),
+                    userId: userId,
+                    todoId: item.id,
+                  });
                   setVisible(false);
                   setCalendarModalVisible(true);
                 }}
@@ -177,9 +211,15 @@ const TodoModal = ({
                 accessoryLeft={inboxIcon}
                 status="basic"
                 style={styles.button}
-                onPress={() => {}}
+                onPress={() => {
+                  handleLogEvent(TODOMODAL_MOVETOINBOX_CLICK_EVENT, {
+                    time: new Date().toISOString(),
+                    userId: userId,
+                    todoId: item.id,
+                  });
+                }}
               >
-                <Text>보관함에 넣기</Text>
+                <Text>인박스에 넣기</Text>
               </Button>
             </View>
           </View>

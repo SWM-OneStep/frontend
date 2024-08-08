@@ -1,10 +1,18 @@
+// eslint-disable-next-line import/namespace
+import TodoModal from '@/components/TodoModal';
 import { LoginContext } from '@/contexts/LoginContext';
-import { useSubTodoUpdateMutation } from '@/hooks/useSubTodoMutations';
+import {
+  SUBTODO_QUERY_KEY,
+  useSubTodoUpdateMutation,
+} from '@/hooks/useSubTodoMutations';
+import {
+  DAILYTODO_SUBTODOCOMPLETE_CLICK_EVENT,
+  handleLogEvent,
+} from '@/utils/logEvent';
 import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Input, ListItem, Text, useTheme } from '@ui-kitten/components';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
-import TodoModal from './TodoModal';
 
 const DailySubTodo = ({ item }) => {
   const [completed, setCompleted] = useState(item.isCompleted);
@@ -14,7 +22,16 @@ const DailySubTodo = ({ item }) => {
   const { accessToken } = useContext(LoginContext);
   const [modalVisible, setModalVisible] = useState(false);
   const queryClient = useQueryClient();
-  const { mutate: updateSubTodo } = useSubTodoUpdateMutation();
+  const { mutate: updateSubTodo, isSuccess: updateSubTodoIsSuccess } =
+    useSubTodoUpdateMutation();
+  const { userId } = useContext(LoginContext);
+
+  useEffect(() => {
+    if (updateSubTodoIsSuccess) {
+      queryClient.invalidateQueries(SUBTODO_QUERY_KEY);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateSubTodoIsSuccess]);
 
   const handleCheck = () => {
     setCompleted(!completed);
@@ -40,7 +57,16 @@ const DailySubTodo = ({ item }) => {
 
   const checkIcon = props => {
     return (
-      <TouchableOpacity onPress={handleCheck}>
+      <TouchableOpacity
+        onPress={() => {
+          handleLogEvent(DAILYTODO_SUBTODOCOMPLETE_CLICK_EVENT, {
+            time: new Date().toISOString(),
+            userId: userId,
+            subtodoId: item.id,
+          });
+          handleCheck();
+        }}
+      >
         <Icon
           {...props}
           name="checkmark-circle-2-outline"
