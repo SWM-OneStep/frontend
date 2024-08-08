@@ -5,7 +5,12 @@ import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
   handleScroll,
 } from '@/utils/handleScroll';
-import { CATEGORY_SCROLL_EVENT } from '@/utils/logEvent';
+import {
+  CATEGORY_ADDCATEGORY_CLICK_EVENT,
+  CATEGORY_CATEGORY_CLICK_EVENT,
+  CATEGORY_SCROLL_EVENT,
+  handleLogEvent,
+} from '@/utils/logEvent';
 import { Button, Icon, Layout, Text } from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
@@ -62,7 +67,14 @@ const CategoryScroll = () => {
               accessoryLeft={starIcon}
               style={styles.button}
               status={(selectedCategory === item.id && 'primary') || 'basic'}
-              onPress={() => handlePress(item.id)}
+              onPress={() => {
+                handleLogEvent(CATEGORY_CATEGORY_CLICK_EVENT, {
+                  time: new Date().toISOString(),
+                  userId: userId,
+                  categoryId: item.id,
+                });
+                handlePress(item.id);
+              }}
               key={index}
             >
               <Text>{item.title}</Text>
@@ -70,7 +82,13 @@ const CategoryScroll = () => {
           ))}
         <Button
           style={styles.button}
-          onPress={() => router.push('/categoryAddView')}
+          onPress={() => {
+            handleLogEvent(CATEGORY_ADDCATEGORY_CLICK_EVENT, {
+              time: new Date().toISOString(),
+              userId: userId,
+            });
+            router.push('/categoryAddView');
+          }}
         >
           <Text> + </Text>
         </Button>
