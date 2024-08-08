@@ -16,6 +16,7 @@ import { Icon, Input, List, ListItem, useTheme } from '@ui-kitten/components';
 import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import InboxSubTodo from './InboxSubTodo';
+
 import TodoModal from './TodoModal';
 
 const InboxTodo = ({ item, drag, isActive }) => {
@@ -62,13 +63,6 @@ const InboxTodo = ({ item, drag, isActive }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteInboxTodoIsSuccess]);
-
-  useEffect(() => {
-    if (addInboxSubTodoIsSuccess) {
-      queryClient.invalidateQueries(INBOX_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addInboxSubTodoIsSuccess]);
 
   const handleTodoUpdate = () => {
     const updatedData = {

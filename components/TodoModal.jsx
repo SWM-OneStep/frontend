@@ -10,7 +10,6 @@ import {
   useTodoDeleteMutation,
   useTodoUpdateMutation,
 } from '@/hooks/useTodoMutations';
-import TODO_QUERY_KEY from '@/hooks/useTodoQuery';
 import { convertGmtToKst } from '@/utils/convertTimezone';
 import {
   handleLogEvent,
@@ -20,7 +19,6 @@ import {
   TODOMODAL_EDIT_CLICK_EVENT,
   TODOMODAL_MOVETOINBOX_CLICK_EVENT,
 } from '@/utils/logEvent';
-import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   Calendar,
@@ -29,7 +27,7 @@ import {
   Modal,
   Text,
 } from '@ui-kitten/components';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 const editIcon = props => {
@@ -73,43 +71,10 @@ const TodoModal = ({
   const { selectedCategory } = useContext(CategoryContext);
   const { userId } = useContext(LoginContext);
 
-  const { mutate: updateTodoDate, isSuccess: updateTodoDateIsSuccess } =
-    useTodoUpdateMutation();
-  const { mutate: updateSubTodoDate, isSuccess: updateSubTodoDateIsSuccess } =
-    useSubTodoUpdateMutation();
-  const { mutate: deleteTodo, isSuccess: deleteTodoIsSuccess } =
-    useTodoDeleteMutation();
-  const { mutate: deleteSubTodo, isSuccess: deleteSubTodoIsSuccess } =
-    useSubTodoDeleteMutation();
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    if (updateTodoDateIsSuccess) {
-      queryClient.invalidateQueries(TODO_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateTodoDateIsSuccess]);
-
-  useEffect(() => {
-    if (updateSubTodoDateIsSuccess) {
-      queryClient.invalidateQueries(TODO_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateSubTodoDateIsSuccess]);
-
-  useEffect(() => {
-    if (deleteTodoIsSuccess) {
-      queryClient.invalidateQueries(TODO_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deleteTodoIsSuccess]);
-
-  useEffect(() => {
-    if (deleteSubTodoIsSuccess) {
-      queryClient.invalidateQueries(TODO_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deleteSubTodoIsSuccess]);
+  const { mutate: updateTodoDate } = useTodoUpdateMutation();
+  const { mutate: updateSubTodoDate } = useSubTodoUpdateMutation();
+  const { mutate: deleteTodo } = useTodoDeleteMutation();
+  const { mutate: deleteSubTodo } = useSubTodoDeleteMutation();
 
   const handleDelete = async item_id => {
     if (isTodo) {

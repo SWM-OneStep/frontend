@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/namespace
+import TodoModal from '@/components/TodoModal';
 import { LoginContext } from '@/contexts/LoginContext';
 import {
   SUBTODO_QUERY_KEY,
@@ -11,7 +13,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Input, ListItem, Text, useTheme } from '@ui-kitten/components';
 import { useContext, useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
-import TodoModal from './TodoModal';
 
 const DailySubTodo = ({ item }) => {
   const [completed, setCompleted] = useState(item.isCompleted);

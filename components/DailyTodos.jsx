@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/namespace
+import DailyTodo from '@/components/DailyTodo';
 import { CategoryContext } from '@/contexts/CategoryContext';
 import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
@@ -6,10 +8,7 @@ import {
   useTodoAddMutation,
   useTodoUpdateMutation,
 } from '@/hooks/useTodoMutations';
-import {
-  default as TODO_QUERY_KEY,
-  default as useTodosQuery,
-} from '@/hooks/useTodoQuery';
+import { default as useTodosQuery } from '@/hooks/useTodoQuery';
 import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
@@ -20,7 +19,6 @@ import {
   TODAYVIEW_SCROLL_EVENT,
   TODAYVIEW_TEXTINPUT_SUBMIT_EVENT,
 } from '@/utils/logEvent';
-import { useQueryClient } from '@tanstack/react-query';
 import { Input } from '@ui-kitten/components';
 import { LexoRank } from 'lexorank';
 import { Fragment, useContext, useEffect, useState } from 'react';
@@ -30,17 +28,15 @@ import DraggableFlatList, {
 } from 'react-native-draggable-flatlist';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
-import DailyTodo from './DailyTodo';
 
 const DailyTodos = () => {
-  const queryClient = useQueryClient();
   const [input, setInput] = useState('');
   const { userId, accessToken } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
   const { mutate: updateTodo } = useTodoUpdateMutation();
   const setCurrentTodos = useTodoStore(state => state.setCurrentTodos);
   const ExistingOrders = useTodoStore(state => state.ExistingOrders);
-  const { mutate: addTodo, isSuccess: addTodoIsSuccess } = useTodoAddMutation();
+  const { mutate: addTodo } = useTodoAddMutation();
   const { selectedDate } = useContext(DateContext);
   const {
     isLoading,
@@ -65,13 +61,6 @@ const DailyTodos = () => {
       useTodoStore.setState({ currentTodos: filteredTodos });
     }
   }, [isTodosQuerySuccess, data, selectedCategory, selectedDate]);
-
-  useEffect(() => {
-    if (addTodoIsSuccess) {
-      queryClient.invalidateQueries(TODO_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addTodoIsSuccess]);
 
   if (isLoading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;

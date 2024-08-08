@@ -22,7 +22,7 @@ const CategoryAddView = () => {
   const [categoryName, setCategoryName] = useState('');
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const bottomSheetRef = useRef(null);
-  const { userId, accessToken } = useContext(LoginContext);
+  const { userId, accessToken, refreshToken } = useContext(LoginContext);
 
   const { mutate: addCategory, isSuccess } = useCategoryAddMutation();
 

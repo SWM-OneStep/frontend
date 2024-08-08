@@ -1,5 +1,6 @@
 import { Api } from '@/utils/api';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { TODO_QUERY_KEY } from './useTodoQuery';
 
 // 생성 (Add Todo)
 const addTodoFetcher = async ({ accessToken, todoData }) => {
@@ -8,8 +9,12 @@ const addTodoFetcher = async ({ accessToken, todoData }) => {
 };
 
 export const useTodoAddMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: addTodoFetcher,
+    onSuccess: () => {
+      queryClient.invalidateQueries(TODO_QUERY_KEY);
+    },
     onError: error => {
       console.error('Error adding todo:', error);
     },
@@ -26,8 +31,12 @@ const updateTodoFetcher = async ({ accessToken, updatedData }) => {
 };
 
 export const useTodoUpdateMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateTodoFetcher,
+    onSuccess: () => {
+      queryClient.invalidateQueries(TODO_QUERY_KEY);
+    },
     onError: error => {
       console.error('Error editing todo:', error);
     },
@@ -41,8 +50,10 @@ const deleteTodoFetcher = async ({ accessToken, todoId }) => {
 };
 
 export const useTodoDeleteMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteTodoFetcher,
+    onSuccess: () => queryClient.invalidateQueries(TODO_QUERY_KEY),
     onError: error => {
       console.error('Error deleting todo:', error);
     },
