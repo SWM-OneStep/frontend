@@ -27,11 +27,8 @@ jobs:
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v2
-    
-    - name: Create google-services.json
-      run: cat /home/runner/work/frontend/frontend > google-services.json
 
-    - name: put secret data into google-services.json
+    - name: create google-services.json
       env:
         GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
       run: |
