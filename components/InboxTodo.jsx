@@ -11,6 +11,7 @@ import { Icon, Input, List, ListItem, useTheme } from '@ui-kitten/components';
 import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import InboxSubTodo from './InboxSubTodo';
+// eslint-disable-next-line import/namespace
 import TodoModal from './TodoModal';
 
 const InboxTodo = ({ item, drag, isActive }) => {
@@ -28,8 +29,7 @@ const InboxTodo = ({ item, drag, isActive }) => {
     useTodoUpdateMutation();
   const { mutate: deleteInboxTodo, isSuccess: deleteInboxTodoIsSuccess } =
     useTodoDeleteMutation();
-  const { mutate: addInboxSubTodo, isSuccess: addInboxSubTodoIsSuccess } =
-    useSubTodoAddMutation();
+  const { mutate: addInboxSubTodo } = useSubTodoAddMutation();
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -56,13 +56,6 @@ const InboxTodo = ({ item, drag, isActive }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteInboxTodoIsSuccess]);
-
-  useEffect(() => {
-    if (addInboxSubTodoIsSuccess) {
-      queryClient.invalidateQueries(INBOX_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addInboxSubTodoIsSuccess]);
 
   const handleTodoUpdate = () => {
     const updatedData = {

@@ -30,6 +30,10 @@ const Login = () => {
 
   const [request, response, promptAsync] = Google.useAuthRequest(config);
 
+  useEffect(() => {
+    handleLocalToken();
+  });
+
   const handleLocalToken = async () => {
     const token = await getAccessTokenFromLocal();
     const user = await getUserInfoFromLocal();
@@ -64,6 +68,7 @@ const Login = () => {
         await AsyncStorage.setItem('deviceToken', token);
         return token;
       } catch (e) {
+        console.log(e);
         router.replace('index');
         return null;
       }
