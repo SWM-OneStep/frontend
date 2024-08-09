@@ -20,6 +20,7 @@
     "@react-native-firebase/auth": "^20.3.0",
     "@react-native-firebase/crashlytics": "^20.3.0",
     "@react-native-firebase/messaging": "^20.2.1",
+    "@sentry/react-native": "^5.27.0",
     "@tanstack/react-query-devtools": "^5.51.15",
     "@ui-kitten/components": "^5.3.1",
     "@ui-kitten/eva-icons": "^5.3.1",
@@ -37,6 +38,7 @@
     "lexorank": "^1.0.5",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.45",
+    "openai": "^4.54.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.2",
@@ -53,7 +55,9 @@
     "react-native-web": "~0.19.10",
     "react-query": "^3.39.3",
     "react-window": "^1.8.10",
-    "zustand": "^4.5.4"
+    "zustand": "^4.5.4",
+    "expo-system-ui": "~3.0.7",
+    "expo-updates": "~0.25.22"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

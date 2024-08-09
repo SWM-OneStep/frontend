@@ -13,9 +13,6 @@ export const useSubTodoAddMutation = () => {
   return useMutation({
     mutationFn: addSubTodoFetcher,
     onSuccess: () => queryClient.invalidateQueries(SUBTODO_QUERY_KEY),
-    onError: error => {
-      console.error('Error adding todo:', error);
-    },
   });
 };
 
@@ -32,9 +29,6 @@ export const useSubTodoUpdateMutation = () => {
   return useMutation({
     mutationFn: updateSubTodoFetcher,
     onSuccess: () => queryClient.invalidateQueries(SUBTODO_QUERY_KEY),
-    onError: error => {
-      console.error('Error editing todo:', error);
-    },
   });
 };
 
@@ -51,8 +45,5 @@ export const useSubTodoDeleteMutation = () => {
   return useMutation({
     mutationFn: deleteSubTodoFetcher,
     onSuccess: () => queryClient.invalidateQueries(SUBTODO_QUERY_KEY),
-    onError: error => {
-      console.error('Error deleting todo:', error);
-    },
   });
 };

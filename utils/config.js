@@ -1,6 +1,6 @@
-const BASE_URL = 'https://dev.stepby.one';
+// const BASE_URL = 'https://dev.stepby.one';
 
-// const BASE_URL = 'http://10.0.2.2:8000';
+const BASE_URL = 'http://10.0.2.2:8000';
 
 export const API_PATH = {
   categories: `${BASE_URL}/todos/category/`,
@@ -13,4 +13,5 @@ export const API_PATH = {
   login: `${BASE_URL}/auth/login/google/`,
   user: `${BASE_URL}/auth/user/`,
   inbox: `${BASE_URL}/todos/inbox/`,
+  recommend: `${BASE_URL}/todos/recommend/`,
 };

@@ -15,9 +15,6 @@ export const useTodoAddMutation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(TODO_QUERY_KEY);
     },
-    onError: error => {
-      console.error('Error adding todo:', error);
-    },
   });
 };
 
@@ -37,9 +34,6 @@ export const useTodoUpdateMutation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(TODO_QUERY_KEY);
     },
-    onError: error => {
-      console.error('Error editing todo:', error);
-    },
   });
 };
 
@@ -54,8 +48,5 @@ export const useTodoDeleteMutation = () => {
   return useMutation({
     mutationFn: deleteTodoFetcher,
     onSuccess: () => queryClient.invalidateQueries(TODO_QUERY_KEY),
-    onError: error => {
-      console.error('Error deleting todo:', error);
-    },
   });
 };

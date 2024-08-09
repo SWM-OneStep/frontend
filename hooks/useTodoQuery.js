@@ -17,9 +17,6 @@ const useTodosQuery = (accessToken, userId, onSuccess) => {
     refetchIntervalInBackground: true,
     keepPreviousData: true,
     onSuccess: onSuccess,
-    onError: error => {
-      console.error('Error fetching todos:', error);
-    },
   });
 };
 

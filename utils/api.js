@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { API_PATH } from './config';
+import * as Sentry from '@sentry/react-native';
 
 const metadata = async accessToken => {
   let headers = null;
@@ -29,6 +30,7 @@ const handleRequest = async request => {
     const response = await request();
     return response.data;
   } catch (err) {
+    Sentry.captureException(err);
     if (
       (err.response.status === 401 &&
         err.response.data.detail === TOKEN_INVALID_OR_EXPIRED_MESSAGE) ||
