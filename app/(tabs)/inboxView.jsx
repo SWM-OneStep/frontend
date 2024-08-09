@@ -1,5 +1,4 @@
 import CategoryScroll from '@/components/CategoryScroll';
-// eslint-disable-next-line import/namespace
 import InboxTodos from '@/components/InboxTodos';
 import CategoryProvider from '@/contexts/CategoryContext';
 import DateProvider from '@/contexts/DateContext';

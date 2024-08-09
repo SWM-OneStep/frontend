@@ -22,9 +22,7 @@ import { useContext, useState } from 'react';
 import DailySubTodo from './DailySubTodo';
 
 import TodoModal from './TodoModal';
-import { Card, Layout, Modal } from 'react-native-ui-kitten';
 import SubTodoGenerateModal from './SubTodoGenerateModal';
-import { sub } from 'date-fns';
 
 const DailyTodo = ({ item, drag, isActive }) => {
   const [content, setContent] = useState(item.content);
@@ -46,14 +44,6 @@ const DailyTodo = ({ item, drag, isActive }) => {
     subTodoGenerateAlertModalVisible,
     setSubTodoGenerateAlertModalVisible,
   ] = useState(false);
-
-  const [selectedSubTodos, setSelectedSubTodos] = useState({});
-  const handleSelectSubTodo = index => {
-    setSelectedSubTodos(prev => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
-  };
 
   const handleCheck = () => {
     setCompleted(!completed);

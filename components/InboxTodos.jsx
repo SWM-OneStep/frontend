@@ -8,7 +8,6 @@ import {
   handleScroll,
 } from '@/utils/handleScroll';
 import { INBOXVIEW_SCROLL_EVENT } from '@/utils/logEvent';
-import { useQueryClient } from '@tanstack/react-query';
 import { Input, List } from '@ui-kitten/components';
 import { LexoRank } from 'lexorank';
 import { Fragment, useContext, useEffect, useState } from 'react';
@@ -16,7 +15,6 @@ import { Text, View } from 'react-native';
 import InboxTodo from './InboxTodo';
 
 const InboxTodos = () => {
-  const queryClient = useQueryClient();
   const [input, setInput] = useState('');
   const { userId, accessToken } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);

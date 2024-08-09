@@ -27,42 +27,17 @@ const InboxTodo = ({ item, drag, isActive }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const { accessToken } = useContext(LoginContext);
   const [subTodoInputActivated, setSubTodoInputActivated] = useState(false);
-  const queryClient = useQueryClient();
   const { mutate: addInboxTodo, isSuccess: addInboxTodoIsSuccess } =
     useTodoAddMutation();
-  const { mutate: updateInboxTodo, isSuccess: updateInboxTodoIsSuccess } =
-    useTodoUpdateMutation();
-  const { mutate: deleteInboxTodo, isSuccess: deleteInboxTodoIsSuccess } =
-    useTodoDeleteMutation();
-  const { mutate: addInboxSubTodo, isSuccess: addInboxSubTodoIsSuccess } =
-    useSubTodoAddMutation();
+  const { mutate: updateInboxTodo } = useTodoUpdateMutation();
+  const { mutate: deleteInboxTodo } = useTodoDeleteMutation();
+  const { mutate: addInboxSubTodo } = useSubTodoAddMutation();
   const { userId } = useContext(LoginContext);
 
   const handleEdit = () => {
     setIsEditing(true);
     setModalVisible(false);
   };
-
-  useEffect(() => {
-    if (addInboxTodoIsSuccess) {
-      queryClient.invalidateQueries(INBOX_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addInboxTodoIsSuccess]);
-
-  useEffect(() => {
-    if (updateInboxTodoIsSuccess) {
-      queryClient.invalidateQueries(INBOX_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateInboxTodoIsSuccess]);
-
-  useEffect(() => {
-    if (deleteInboxTodoIsSuccess) {
-      queryClient.invalidateQueries(INBOX_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deleteInboxTodoIsSuccess]);
 
   const handleTodoUpdate = () => {
     const updatedData = {

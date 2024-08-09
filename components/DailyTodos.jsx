@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/namespace
 import DailyTodo from '@/components/DailyTodo';
 import { CategoryContext } from '@/contexts/CategoryContext';
 import { DateContext } from '@/contexts/DateContext';

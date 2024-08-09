@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/namespace
 import TodoModal from '@/components/TodoModal';
 import { LoginContext } from '@/contexts/LoginContext';
 import {
