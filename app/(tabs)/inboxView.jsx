@@ -5,7 +5,17 @@ import DateProvider from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import { handleLogEvent, INBOXVIEW_VIEW_EVENT } from '@/utils/logEvent';
 import React, { useContext } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  StatusBar,
+  Platform,
+} from 'react-native';
+
+const getStatusBarHeight = () => {
+  return Platform.OS === 'android' ? StatusBar.currentHeight : 0;
+};
 
 const InboxView = () => {
   const { userId } = useContext(LoginContext);
@@ -13,12 +23,19 @@ const InboxView = () => {
     time: new Date().toISOString(),
     userId: userId,
   });
+
   return (
     <CategoryProvider>
       <DateProvider>
         <SafeAreaView style={styles.container}>
-          <CategoryScroll />
-          <InboxTodos />
+          <StatusBar
+            backgroundColor="#FFFFFF" // 원하는 배경색으로 변경하세요
+            barStyle="dark-content" // 또는 "light-content"
+          />
+          <View style={[styles.content, { paddingTop: getStatusBarHeight() }]}>
+            <CategoryScroll />
+            <InboxTodos />
+          </View>
         </SafeAreaView>
       </DateProvider>
     </CategoryProvider>
@@ -28,5 +45,10 @@ const InboxView = () => {
 export default InboxView;
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+  },
 });

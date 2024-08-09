@@ -176,7 +176,6 @@ const DailyTodos = () => {
         <KeyboardAccessoryView alwaysVisible androidAdjustResize>
           <View>
             <Input
-              style={styles.input}
               placeholder="새로운 할 일을 입력해주세요"
               value={input}
               onChangeText={setInput}
@@ -194,9 +193,5 @@ const DailyTodos = () => {
     </GestureHandlerRootView>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {},
-});
 
 export default DailyTodos;

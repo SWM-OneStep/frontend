@@ -11,7 +11,7 @@ import { INBOXVIEW_SCROLL_EVENT } from '@/utils/logEvent';
 import { Input, List } from '@ui-kitten/components';
 import { LexoRank } from 'lexorank';
 import { Fragment, useContext, useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import InboxTodo from './InboxTodo';
 
 const InboxTodos = () => {
@@ -70,15 +70,14 @@ const InboxTodos = () => {
     setInput('');
   };
   return (
-    <Fragment>
+    <View style={styles.container}>
       <List
+        style={{ backgroundColor: 'white' }}
         data={inboxCurrentTodos}
         renderItem={renderTodo}
-        ListFooterComponentStyle={{ paddingTop: 0, flex: 1 }}
         onScroll={event => handleScroll(INBOXVIEW_SCROLL_EVENT, userId, event)}
         scrollEventThrottle={DEFAULT_SCROLL_EVENT_THROTTLE}
       />
-      {/* <KeyboardAvoidingView> */}
       <Input
         placeholder="새로운 할 일을 입력해주세요"
         value={input}
@@ -88,9 +87,16 @@ const InboxTodos = () => {
         autoFocus={false}
         onSubmitEditing={handleSubmit}
       />
-      {/* </KeyboardAvoidingView> */}
-    </Fragment>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+  },
+});
 
 export default InboxTodos;
