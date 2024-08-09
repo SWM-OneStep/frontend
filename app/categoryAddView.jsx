@@ -75,7 +75,7 @@ const CategoryAddView = () => {
         <Layout style={{ flex: 1, padding: 16 }}>
           <Input
             label="카테고리 입력"
-            placeholder="카테고리 입력"
+            placeholder="카테고리를 입력해주세요"
             value={categoryName}
             onChangeText={setCategoryName}
             style={{ marginBottom: 16 }}

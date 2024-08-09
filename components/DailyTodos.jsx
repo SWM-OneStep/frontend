@@ -177,7 +177,7 @@ const DailyTodos = () => {
           <View>
             <Input
               style={styles.input}
-              placeholder="Add a new task"
+              placeholder="새로운 할 일을 입력해주세요"
               value={input}
               onChangeText={setInput}
               onSubmitEditing={() => {
@@ -196,15 +196,7 @@ const DailyTodos = () => {
 };
 
 const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    margin: 0,
-    padding: 0,
-  },
+  input: {},
 });
 
 export default DailyTodos;

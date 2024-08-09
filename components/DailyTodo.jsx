@@ -261,7 +261,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
         ListFooterComponent={
           subTodoInputActivated ? (
             <Input
-              placeholder="Place your Text"
+              placeholder="새로운 할 일을 입력해주세요"
               style={styles.input}
               value={subTodoInput}
               onChangeText={nextInput => {
