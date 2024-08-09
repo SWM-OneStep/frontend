@@ -1,5 +1,4 @@
 import { LoginContext } from '@/contexts/LoginContext';
-import { INBOX_QUERY_KEY } from '@/hooks/useInboxTodoQuery';
 import { useSubTodoAddMutation } from '@/hooks/useSubTodoMutations';
 import {
   useTodoAddMutation,
@@ -11,9 +10,8 @@ import {
   INBOXTODO_LIST_CLICK_EVENT,
   INBOXTODO_MEATBALLMENU_CLICK_EVENT,
 } from '@/utils/logEvent';
-import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Input, List, ListItem, useTheme } from '@ui-kitten/components';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import InboxSubTodo from './InboxSubTodo';
 

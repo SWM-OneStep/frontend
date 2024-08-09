@@ -8,9 +8,8 @@ import {
   DAILYTODO_SUBTODOCOMPLETE_CLICK_EVENT,
   handleLogEvent,
 } from '@/utils/logEvent';
-import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Input, ListItem, Text, useTheme } from '@ui-kitten/components';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 const DailySubTodo = ({ item }) => {
@@ -20,17 +19,8 @@ const DailySubTodo = ({ item }) => {
   const theme = useTheme();
   const { accessToken } = useContext(LoginContext);
   const [modalVisible, setModalVisible] = useState(false);
-  const queryClient = useQueryClient();
-  const { mutate: updateSubTodo, isSuccess: updateSubTodoIsSuccess } =
-    useSubTodoUpdateMutation();
+  const { mutate: updateSubTodo } = useSubTodoUpdateMutation();
   const { userId } = useContext(LoginContext);
-
-  useEffect(() => {
-    if (updateSubTodoIsSuccess) {
-      queryClient.invalidateQueries(SUBTODO_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateSubTodoIsSuccess]);
 
   const handleCheck = () => {
     setCompleted(!completed);
