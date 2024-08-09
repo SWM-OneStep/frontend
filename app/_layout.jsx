@@ -18,7 +18,15 @@ Sentry.init({
     // profilesSampleRate is relative to tracesSampleRate.
     // Here, we'll capture profiles for 100% of transactions.
     profilesSampleRate: 1.0,
+    replaysSessionSampleRate: 1.0,
+    replaysOnErrorSampleRate: 1.0,
   },
+  integrations: [
+    Sentry.mobileReplayIntegration({
+      maskAllText: true,
+      maskAllImages: true,
+    }),
+  ],
 });
 
 const queryClient = new QueryClient();
