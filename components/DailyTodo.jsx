@@ -146,15 +146,14 @@ const DailyTodo = ({ item, drag, isActive }) => {
           </TouchableOpacity>
         )}
         <TouchableOpacity
-          onPress={
-            (() =>
-              handleLogEvent(DAILYTODO_MEATBALLMENU_CLICK_EVENT, {
-                time: new Date().toISOString(),
-                userId: userId,
-                todoId: item.id,
-              }),
-            setModalVisible(true))
-          }
+          onPress={() => {
+            handleLogEvent(DAILYTODO_MEATBALLMENU_CLICK_EVENT, {
+              time: new Date().toISOString(),
+              userId: userId,
+              todoId: item.id,
+            });
+            setModalVisible(true);
+          }}
         >
           <Icon
             {...props}
