@@ -30,7 +30,6 @@ const handleRequest = async request => {
     const response = await request();
     return response.data;
   } catch (err) {
-    Sentry.captureException(err);
     if (
       (err.response.status === 401 &&
         err.response.data.detail === TOKEN_INVALID_OR_EXPIRED_MESSAGE) ||
@@ -47,15 +46,16 @@ const handleRequest = async request => {
         const secondRequest = await request();
         return secondRequest.data;
       } catch (refreshError) {
+        Sentry.captureException(err);
+
         if (refreshError.response.status === 401) {
           router.replace('index');
         } else {
           throw refreshError;
         }
       }
-    } else {
-      throw err;
     }
+    Sentry.captureException(err);
   }
 };
 

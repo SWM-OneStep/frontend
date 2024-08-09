@@ -13,6 +13,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useCallback, useContext, useEffect, useRef } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { GoogleIcon } from './../components/GoogleIcon';
+import * as Sentry from '@sentry/react-native';
 
 const androidClientId =
   '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
@@ -40,7 +41,9 @@ const Login = () => {
           setUserId(user.userId);
           router.replace('(tabs)');
         })
-        .catch(e => {});
+        .catch(e => {
+          Sentry.captureException(e);
+        });
     }
   };
 
@@ -66,9 +69,12 @@ const Login = () => {
   }, []);
 
   const getUserInfo = useCallback(async () => {
-    const localResponse = await Api.getUserInfo(accessTokenRef.current);
-
-    return localResponse;
+    try {
+      const localResponse = await Api.getUserInfo(accessTokenRef.current);
+      return localResponse;
+    } catch (e) {
+      Sentry.captureException(e);
+    }
   }, []);
 
   const handleToken = useCallback(async () => {
@@ -78,14 +84,18 @@ const Login = () => {
         token: token,
         deviceToken: deviceToken,
       };
-      const localResponse = await Api.googleLogin(tokenData);
+      try {
+        const localResponse = await Api.googleLogin(tokenData);
 
-      if (localResponse) {
-        await AsyncStorage.setItem('accessToken', localResponse.access);
-        await AsyncStorage.setItem('refreshToken', localResponse.refresh);
-        accessTokenRef.current = localResponse.access;
-        setAccessToken(localResponse.access);
-        setIsLoggedIn(true);
+        if (localResponse) {
+          await AsyncStorage.setItem('accessToken', localResponse.access);
+          await AsyncStorage.setItem('refreshToken', localResponse.refresh);
+          accessTokenRef.current = localResponse.access;
+          setAccessToken(localResponse.access);
+          setIsLoggedIn(true);
+        }
+      } catch (e) {
+        Sentry.captureException(e);
       }
     };
 
