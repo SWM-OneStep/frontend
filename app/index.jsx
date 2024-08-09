@@ -30,10 +30,6 @@ const Login = () => {
 
   const [request, response, promptAsync] = Google.useAuthRequest(config);
 
-  useEffect(() => {
-    handleLocalToken();
-  });
-
   const handleLocalToken = async () => {
     const token = await getAccessTokenFromLocal();
     const user = await getUserInfoFromLocal();
@@ -44,9 +40,7 @@ const Login = () => {
           setUserId(user.userId);
           router.replace('(tabs)');
         })
-        .catch(e => {
-          router.replace('/');
-        });
+        .catch(e => {});
     }
   };
 
@@ -122,7 +116,13 @@ const Login = () => {
 
   useEffect(() => {
     handleToken();
-  }, [handleToken]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [response]);
+
+  useEffect(() => {
+    handleLocalToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <View style={styles.container}>
