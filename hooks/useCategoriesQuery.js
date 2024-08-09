@@ -19,10 +19,6 @@ const useCategoriesQuery = (accessToken, userId, onSuccess) => {
     refetchIntervalInBackground: true,
     keepPreviousData: true,
     onSuccess: onSuccess,
-    onError: async error => {
-      queryClient.invalidateQueries(QUERY_KEY);
-      Sentry.captureException(error);
-    },
   });
 };
 
