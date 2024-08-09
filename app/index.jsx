@@ -145,7 +145,6 @@ const Login = () => {
         <Button accessoryLeft={GoogleIcon} onPress={() => promptAsync()}>
           Sign in with Google
         </Button>
-        <Button onPress={() => handleLocalToken()}>Check Local Token</Button>
       </View>
     </View>
   );
