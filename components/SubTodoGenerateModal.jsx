@@ -16,13 +16,10 @@ const SubTodoGenerateModal = ({
     axios
       .get(`${API_PATH.recommend}?todo_id=${todoId}`)
       .then(response => {
-        console.log('response', response.data);
         setGeneratedSubToDos(response.data.children);
         setModalVisible(false);
       })
       .catch(error => {
-        console.log(error.response);
-
         Sentry.captureException(error);
       });
   };
