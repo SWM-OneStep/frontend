@@ -1,8 +1,6 @@
 import { LoginContext } from '@/contexts/LoginContext';
-import { QUERY_KEY as categoryQueryKey } from '@/hooks/useCategoriesQuery';
 import * as eva from '@eva-design/eva';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import { useQueryClient } from '@tanstack/react-query';
 import {
   ApplicationProvider,
   Button,
@@ -13,7 +11,7 @@ import {
 import { useRouter } from 'expo-router';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { FlatList, SafeAreaView, TouchableOpacity, View } from 'react-native';
-import useCategoryAddMutation from '../hooks/useCategoryAddMutation';
+import useCategoryAddMutation from '@/hooks/useCategoryAddMutation';
 
 const colors = ['#FF3D71', '#FF7E29', '#FFC233', '#4CAF50', '#00BCD4'];
 
@@ -26,11 +24,8 @@ const CategoryAddView = () => {
 
   const { mutate: addCategory, isSuccess } = useCategoryAddMutation();
 
-  const queryClient = useQueryClient();
-
   useEffect(() => {
     if (isSuccess) {
-      queryClient.invalidateQueries(categoryQueryKey);
       setCategoryName('');
       router.back();
     }
