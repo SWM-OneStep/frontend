@@ -21,7 +21,7 @@ import {
 import { Input } from '@ui-kitten/components';
 import { LexoRank } from 'lexorank';
 import { Fragment, useContext, useEffect, useState } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Text, View } from 'react-native';
 import DraggableFlatList, {
   ScaleDecorator,
 } from 'react-native-draggable-flatlist';
@@ -161,7 +161,10 @@ const DailyTodos = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Fragment>
-        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          behavior="padding"
+          style={{ flex: 1, backgroundColor: 'white' }}
+        >
           <DraggableFlatList
             data={currentTodos}
             renderItem={renderTodo}
