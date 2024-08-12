@@ -10,7 +10,6 @@ import * as Sentry from '@sentry/react-native';
 import { env } from '@/constants/env';
 
 const SENTRY_MODE = env.SENTRY_MODE;
-console.log('env', env);
 
 Sentry.init({
   environment: SENTRY_MODE,

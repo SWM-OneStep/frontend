@@ -8,5 +8,3 @@ export const env = {
 };
 
 console.log('env in env.js ', env);
-console.log('test constnts in env.js ', Constants);
-console.log('manifest  ', Constants.manifest2);

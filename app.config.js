@@ -9,7 +9,7 @@ if (process.env.APP_MODE === 'production') {
 } else if (process.env.APP_MODE === 'development') {
   Config.BASE_URL = 'https://dev.stepby.one';
 }
-module.export = {
+module.exports = {
   expo: {
     name: 'onestep',
     slug: 'onestep',
