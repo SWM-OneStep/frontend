@@ -2,52 +2,42 @@ name: React Native Expo Android Build Check
 
 on:
   pull_request:
-    branches: [ dev ]
+    branches: [dev]
 
 jobs:
   check-android-build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
-    - name: Install dependencies
-      run: |
-        npm ci
-        npm install expo
-        
-    - name: Setup Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install expo
 
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v2
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    - name: Checkout repository
-      uses: actions/checkout@v2
-  
-    - name: Set up Google services file
-      run: |
-        mkdir -p /home/runner/work/frontend/frontend/android/app
-        echo "$GOOGLE_SERVICES_JSON" > /home/runner/work/frontend/frontend/android/app/google-services.json
-        
-    - name: Check Android build
-      run: |
-        APP_MODE=development npx expo prebuild --platform android
-        cd android
-        ./gradlew assembleDebug --dry-run
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
 
-    - name: Check build result
-      run: |
-        if [ $? -eq 0 ]; then
-          echo "Build check passed successfully"
-        else
-          echo "Build check failed"
-          exit 1
-        fi
+      - name: Set up Google services file
+        run: |
+          mkdir -p /home/runner/work/frontend/frontend/android/app
+          echo "$GOOGLE_SERVICES_JSON" > /home/runner/work/frontend/frontend/android/app/google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+
+      - name: Check Android build
+        run: |
+          APP_MODE=development npx expo prebuild --platform android
+          cd android
+          ./gradlew assembleDebug --dry-run
