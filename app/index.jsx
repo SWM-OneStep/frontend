@@ -1,5 +1,5 @@
 import { LoginContext } from '@/contexts/LoginContext';
-import { Api } from '@/utils/api';
+import useApi from '@/utils/api';
 import {
   getAccessTokenFromLocal,
   getUserInfoFromLocal,
@@ -32,6 +32,8 @@ const Login = () => {
     setRefreshToken,
   } = useContext(LoginContext);
 
+  const { useVerifyToken, useGetUserInfo, useGoogleLogin } = useApi();
+
   let accessTokenRef = useRef(null);
 
   const [request, response, promptAsync] = Google.useAuthRequest(config);
@@ -40,20 +42,24 @@ const Login = () => {
     handleLocalToken();
   });
 
-  const handleLocalToken = async () => {
+  const handleLocalToken = useCallback(useHandleLocalToken, [
+    setAccessToken,
+    setUserId,
+    useVerifyToken,
+  ]);
+
+  const useHandleLocalToken = async () => {
     const token = await getAccessTokenFromLocal();
     const user = await getUserInfoFromLocal();
-    if (token) {
-      Api.verifyToken(token)
-        .then(() => {
-          setAccessToken(token);
-          setUserId(user.userId);
-          router.replace('(tabs)');
-        })
-        .catch(e => {
-          router.replace('/');
-        });
-    }
+    useVerifyToken(token)
+      .then(() => {
+        setAccessToken(token);
+        setUserId(user.userId);
+        router.replace('(tabs)');
+      })
+      .catch(e => {
+        router.replace('/');
+      });
   };
 
   const getDeviceToken = useCallback(async () => {
@@ -77,38 +83,46 @@ const Login = () => {
     }
   }, []);
 
-  const getUserInfo = useCallback(async () => {
-    const localResponse = await Api.getUserInfo(accessTokenRef.current);
+  const getUserInfo = useCallback(useHandleGetUserInfo, [useGetUserInfo]);
 
-    return localResponse;
-  }, []);
+  const useHandleGetUserInfo = () => {
+    return useGetUserInfo(accessTokenRef.current);
+  };
+
+  const useGetToken = async ({ token }) => {
+    const deviceToken = await getDeviceToken();
+    const tokenData = {
+      token: token,
+      deviceToken: deviceToken,
+    };
+    const localResponse = await useGoogleLogin(tokenData);
+
+    if (localResponse) {
+      await AsyncStorage.setItem('accessToken', localResponse.access);
+      await AsyncStorage.setItem('refreshToken', localResponse.refresh);
+      accessTokenRef.current = localResponse.access;
+      setAccessToken(localResponse.access);
+      setRefreshToken(localResponse.refresh);
+      setIsLoggedIn(true);
+    }
+  };
+
+  const handleuseGetToken = useCallback(useGetToken, [
+    getDeviceToken,
+    setAccessToken,
+    setIsLoggedIn,
+    setRefreshToken,
+    useGoogleLogin,
+  ]);
 
   const handleToken = useCallback(async () => {
-    const getToken = async ({ token }) => {
-      const deviceToken = await getDeviceToken();
-      const tokenData = {
-        token: token,
-        deviceToken: deviceToken,
-      };
-      const localResponse = await Api.googleLogin(tokenData);
-
-      if (localResponse) {
-        await AsyncStorage.setItem('accessToken', localResponse.access);
-        await AsyncStorage.setItem('refreshToken', localResponse.refresh);
-        accessTokenRef.current = localResponse.access;
-        setAccessToken(localResponse.access);
-        setRefreshToken(localResponse.refresh);
-        setIsLoggedIn(true);
-      }
-    };
-
     if (response?.type === 'success') {
       const token = response.authentication?.idToken;
       if (token) {
         // 여기서 토큰을 사용하여 추가 작업을 수행할 수 있습니다.
         // 예: 상태 업데이트, API 호출 등
         // 이때 로딩화면 출력
-        await getToken({ token });
+        await handleuseGetToken({ token });
         const user = await getUserInfo();
 
         // id, name 따로 저장하길래 한번에 해보았음
@@ -118,15 +132,7 @@ const Login = () => {
         router.replace('(tabs)');
       }
     }
-  }, [
-    response,
-    getDeviceToken,
-    setAccessToken,
-    setIsLoggedIn,
-    getUserInfo,
-    setUserId,
-    setRefreshToken,
-  ]);
+  }, [response, getUserInfo, setUserId, handleuseGetToken]);
 
   useEffect(() => {
     handleToken();

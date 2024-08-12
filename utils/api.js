@@ -21,7 +21,6 @@ const useApi = () => {
   };
 
   const useHandleRequest = async request => {
-    let headers = useMetadata();
     try {
       const response = await request();
       return response.data;
@@ -219,7 +218,9 @@ const useApi = () => {
   //   return getUserInfoData;
   // },
   const useGetUserInfo = async accessToken => {
-    const getUserInfoData = useHandleRequest(() => axios.get(API_PATH.user));
+    const getUserInfoData = await useHandleRequest(() =>
+      axios.get(API_PATH.user),
+    );
     return getUserInfoData;
   };
 
