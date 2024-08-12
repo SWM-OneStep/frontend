@@ -24,7 +24,13 @@ const config = {
 };
 
 const Login = () => {
-  const { setIsLoggedIn, setUserId, setAccessToken } = useContext(LoginContext);
+  const {
+    setIsLoggedIn,
+    setUserId,
+    setAccessToken,
+    refreshToken,
+    setRefreshToken,
+  } = useContext(LoginContext);
 
   let accessTokenRef = useRef(null);
 
@@ -91,6 +97,7 @@ const Login = () => {
         await AsyncStorage.setItem('refreshToken', localResponse.refresh);
         accessTokenRef.current = localResponse.access;
         setAccessToken(localResponse.access);
+        setRefreshToken(localResponse.refresh);
         setIsLoggedIn(true);
       }
     };
@@ -118,6 +125,7 @@ const Login = () => {
     setIsLoggedIn,
     getUserInfo,
     setUserId,
+    setRefreshToken,
   ]);
 
   useEffect(() => {

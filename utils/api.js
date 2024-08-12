@@ -1,23 +1,17 @@
+import { LoginContext } from '@/contexts/LoginContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Sentry from '@sentry/react-native';
 import axios from 'axios';
 import { router } from 'expo-router';
+import { useContext } from 'react';
 import { API_PATH } from './config';
-import * as Sentry from '@sentry/react-native';
 
-const metadata = async accessToken => {
-  let headers = null;
-  if (accessToken) {
-    headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    };
-  } else {
-    const recentAccessToken = await AsyncStorage.getItem('accessToken');
-    headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${recentAccessToken}`,
-    };
-  }
+const useMetadata = () => {
+  const { accessToken } = useContext(LoginContext);
+  let headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${accessToken}`,
+  };
 
   return { headers };
 };
@@ -30,6 +24,7 @@ const handleRequest = async request => {
     const response = await request();
     return response.data;
   } catch (err) {
+    console.log('err', err);
     Sentry.captureException(err);
     if (
       (err.response.status === 401 &&
@@ -67,7 +62,7 @@ export const Api = {
    */
   fetchTodos: (accessToken, userId) => {
     return handleRequest(() =>
-      axios.get(`${API_PATH.todos}?user_id=${userId}`, metadata()),
+      axios.get(`${API_PATH.todos}?user_id=${userId}`, useMetadata()),
     );
   },
   /**
@@ -88,7 +83,7 @@ export const Api = {
    */
   addTodo: (accessToken, todoData) => {
     return handleRequest(() =>
-      axios.post(API_PATH.todos, todoData, metadata()),
+      axios.post(API_PATH.todos, todoData, useMetadata()),
     );
   },
   /**
@@ -113,7 +108,7 @@ export const Api = {
       axios.request({
         url: API_PATH.todos,
         method: 'DELETE',
-        headers: metadata(),
+        headers: useMetadata(),
         data: { todo_id: todoId },
       }),
     );
@@ -144,7 +139,7 @@ export const Api = {
    */
   updateTodo: ({ accessToken, updateData }) => {
     return handleRequest(() =>
-      axios.patch(API_PATH.todos, updateData, metadata()),
+      axios.patch(API_PATH.todos, updateData, useMetadata()),
     );
   },
   /**
@@ -182,16 +177,15 @@ export const Api = {
   },
 
   getUserInfo: async accessToken => {
-    const header = await metadata(accessToken);
     const getUserInfoData = handleRequest(() =>
-      axios.get(API_PATH.user, header),
+      axios.get(API_PATH.user, useMetadata()),
     );
     return getUserInfoData;
   },
 
   getCategory: (accessToken, userId) => {
     return handleRequest(() =>
-      axios.get(`${API_PATH.categories}?user_id=${userId}`, metadata()),
+      axios.get(`${API_PATH.categories}?user_id=${userId}`, useMetadata()),
     );
   },
 
@@ -221,7 +215,7 @@ export const Api = {
       //   url: API_PATH.categories,
       //   data: JSON.stringify(categoryData),
       // }),
-      () => axios.post(API_PATH.categories, categoryData, metadata()),
+      () => axios.post(API_PATH.categories, categoryData, useMetadata()),
     );
   },
   /**
@@ -235,7 +229,7 @@ export const Api = {
    */
   addSubTodo: (accessToken, subTodoData) => {
     return handleRequest(() =>
-      axios.post(API_PATH.subTodos, subTodoData, metadata()),
+      axios.post(API_PATH.subTodos, subTodoData, useMetadata()),
     );
   },
   /**
@@ -249,7 +243,7 @@ export const Api = {
    */
   updateSubTodo: ({ accessToken, updatedData }) => {
     return handleRequest(() =>
-      axios.patch(API_PATH.subTodos, updatedData, metadata()),
+      axios.patch(API_PATH.subTodos, updatedData, useMetadata()),
     );
   },
   /**
@@ -266,7 +260,7 @@ export const Api = {
       axios.request({
         url: API_PATH.subTodos,
         method: 'DELETE',
-        headers: metadata(),
+        headers: useMetadata(),
         data: { subtodoId: subTodoId },
       }),
     );
@@ -282,7 +276,7 @@ export const Api = {
    */
   getInboxTodo: (accessToken, userId) => {
     return handleRequest(() =>
-      axios.get(`${API_PATH.inbox}?user_id=${userId}`, metadata()),
+      axios.get(`${API_PATH.inbox}?user_id=${userId}`, useMetadata()),
     );
   },
 };
