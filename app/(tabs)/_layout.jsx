@@ -20,7 +20,7 @@ const TabLayout = () => {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Today',
+          title: '투데이',
           tabBarIcon: todayIcon,
           headerShown: false,
         }}
@@ -28,7 +28,7 @@ const TabLayout = () => {
       <Tabs.Screen
         name="inboxView"
         options={{
-          title: 'Inbox',
+          title: '인박스',
           tabBarIcon: inboxIcon,
           headerShown: false,
         }}

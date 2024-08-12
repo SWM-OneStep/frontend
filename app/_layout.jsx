@@ -6,11 +6,13 @@ import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as Sentry from '@sentry/react-native';
+import { env } from '@/constants/env';
+
+const SENTRY_MODE = env.SENTRY_MODE;
 
 Sentry.init({
-  environment: 'development',
+  environment: SENTRY_MODE,
   dsn: 'https://f71f6726967afe21cd8a551da024d5be@o4507736964136960.ingest.us.sentry.io/4507736971739136',
   // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
   // We recommend adjusting this value in production.
@@ -19,7 +21,15 @@ Sentry.init({
     // profilesSampleRate is relative to tracesSampleRate.
     // Here, we'll capture profiles for 100% of transactions.
     profilesSampleRate: 1.0,
+    replaysSessionSampleRate: 1.0,
+    replaysOnErrorSampleRate: 1.0,
   },
+  integrations: [
+    Sentry.mobileReplayIntegration({
+      maskAllText: true,
+      maskAllImages: true,
+    }),
+  ],
 });
 
 const queryClient = new QueryClient();

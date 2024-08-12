@@ -22,9 +22,7 @@ import { useContext, useState } from 'react';
 import DailySubTodo from './DailySubTodo';
 
 import TodoModal from './TodoModal';
-import { Card, Layout, Modal } from 'react-native-ui-kitten';
 import SubTodoGenerateModal from './SubTodoGenerateModal';
-import { sub } from 'date-fns';
 
 const DailyTodo = ({ item, drag, isActive }) => {
   const [content, setContent] = useState(item.content);
@@ -46,14 +44,6 @@ const DailyTodo = ({ item, drag, isActive }) => {
     subTodoGenerateAlertModalVisible,
     setSubTodoGenerateAlertModalVisible,
   ] = useState(false);
-
-  const [selectedSubTodos, setSelectedSubTodos] = useState({});
-  const handleSelectSubTodo = index => {
-    setSelectedSubTodos(prev => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
-  };
 
   const handleCheck = () => {
     setCompleted(!completed);
@@ -156,15 +146,14 @@ const DailyTodo = ({ item, drag, isActive }) => {
           </TouchableOpacity>
         )}
         <TouchableOpacity
-          onPress={
-            (() =>
-              handleLogEvent(DAILYTODO_MEATBALLMENU_CLICK_EVENT, {
-                time: new Date().toISOString(),
-                userId: userId,
-                todoId: item.id,
-              }),
-            setModalVisible(true))
-          }
+          onPress={() => {
+            handleLogEvent(DAILYTODO_MEATBALLMENU_CLICK_EVENT, {
+              time: new Date().toISOString(),
+              userId: userId,
+              todoId: item.id,
+            });
+            setModalVisible(true);
+          }}
         >
           <Icon
             {...props}
@@ -272,7 +261,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
         ListFooterComponent={
           subTodoInputActivated ? (
             <Input
-              placeholder="Place your Text"
+              placeholder="새로운 할 일을 입력해주세요"
               style={styles.input}
               value={subTodoInput}
               onChangeText={nextInput => {

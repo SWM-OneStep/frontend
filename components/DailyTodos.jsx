@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/namespace
 import DailyTodo from '@/components/DailyTodo';
 import { CategoryContext } from '@/contexts/CategoryContext';
 import { DateContext } from '@/contexts/DateContext';
@@ -22,7 +21,7 @@ import {
 import { Input } from '@ui-kitten/components';
 import { LexoRank } from 'lexorank';
 import { Fragment, useContext, useEffect, useState } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Text, View } from 'react-native';
 import DraggableFlatList, {
   ScaleDecorator,
 } from 'react-native-draggable-flatlist';
@@ -162,7 +161,10 @@ const DailyTodos = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Fragment>
-        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          behavior="padding"
+          style={{ flex: 1, backgroundColor: 'white' }}
+        >
           <DraggableFlatList
             data={currentTodos}
             renderItem={renderTodo}
@@ -177,8 +179,7 @@ const DailyTodos = () => {
         <KeyboardAccessoryView alwaysVisible androidAdjustResize>
           <View>
             <Input
-              style={styles.input}
-              placeholder="Add a new task"
+              placeholder="새로운 할 일을 입력해주세요"
               value={input}
               onChangeText={setInput}
               onSubmitEditing={() => {
@@ -195,17 +196,5 @@ const DailyTodos = () => {
     </GestureHandlerRootView>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    margin: 0,
-    padding: 0,
-  },
-});
 
 export default DailyTodos;

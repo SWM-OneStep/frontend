@@ -1,5 +1,4 @@
 import { LoginContext } from '@/contexts/LoginContext';
-import { INBOX_QUERY_KEY } from '@/hooks/useInboxTodoQuery';
 import { useSubTodoAddMutation } from '@/hooks/useSubTodoMutations';
 import {
   useTodoAddMutation,
@@ -11,9 +10,8 @@ import {
   INBOXTODO_LIST_CLICK_EVENT,
   INBOXTODO_MEATBALLMENU_CLICK_EVENT,
 } from '@/utils/logEvent';
-import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Input, List, ListItem, useTheme } from '@ui-kitten/components';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import InboxSubTodo from './InboxSubTodo';
 
@@ -27,42 +25,17 @@ const InboxTodo = ({ item, drag, isActive }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const { accessToken } = useContext(LoginContext);
   const [subTodoInputActivated, setSubTodoInputActivated] = useState(false);
-  const queryClient = useQueryClient();
   const { mutate: addInboxTodo, isSuccess: addInboxTodoIsSuccess } =
     useTodoAddMutation();
-  const { mutate: updateInboxTodo, isSuccess: updateInboxTodoIsSuccess } =
-    useTodoUpdateMutation();
-  const { mutate: deleteInboxTodo, isSuccess: deleteInboxTodoIsSuccess } =
-    useTodoDeleteMutation();
-  const { mutate: addInboxSubTodo, isSuccess: addInboxSubTodoIsSuccess } =
-    useSubTodoAddMutation();
+  const { mutate: updateInboxTodo } = useTodoUpdateMutation();
+  const { mutate: deleteInboxTodo } = useTodoDeleteMutation();
+  const { mutate: addInboxSubTodo } = useSubTodoAddMutation();
   const { userId } = useContext(LoginContext);
 
   const handleEdit = () => {
     setIsEditing(true);
     setModalVisible(false);
   };
-
-  useEffect(() => {
-    if (addInboxTodoIsSuccess) {
-      queryClient.invalidateQueries(INBOX_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addInboxTodoIsSuccess]);
-
-  useEffect(() => {
-    if (updateInboxTodoIsSuccess) {
-      queryClient.invalidateQueries(INBOX_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateInboxTodoIsSuccess]);
-
-  useEffect(() => {
-    if (deleteInboxTodoIsSuccess) {
-      queryClient.invalidateQueries(INBOX_QUERY_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deleteInboxTodoIsSuccess]);
 
   const handleTodoUpdate = () => {
     const updatedData = {
@@ -177,7 +150,7 @@ const InboxTodo = ({ item, drag, isActive }) => {
         ListFooterComponent={
           subTodoInputActivated ? (
             <Input
-              placeholder="Place your Text"
+              placeholder="새로운 할 일을 입력해주세요"
               style={styles.input}
               value={subTodoInput}
               onChangeText={nextInput => {

@@ -1,6 +1,6 @@
-// const BASE_URL = 'https://dev.stepby.one';
+import { env } from '@/constants/env';
 
-const BASE_URL = 'http://10.0.2.2:8000';
+const BASE_URL = env.BASE_URL;
 
 export const API_PATH = {
   categories: `${BASE_URL}/todos/category/`,
