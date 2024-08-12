@@ -28,10 +28,12 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v2
 
-    - name: create google-services.json
-      env:
-        GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+    - name: Checkout repository
+      uses: actions/checkout@v2
+  
+    - name: Set up Google services file
       run: |
+        mkdir -p /home/runner/work/frontend/frontend/android/app
         echo "$GOOGLE_SERVICES_JSON" > /home/runner/work/frontend/frontend/android/app/google-services.json
         
     - name: Check Android build
