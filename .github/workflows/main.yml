@@ -36,7 +36,7 @@ jobs:
         
     - name: Check Android build
       run: |
-        npx expo prebuild --platform android
+        APP_MODE=development npx expo prebuild --platform android
         cd android
         ./gradlew assembleDebug --dry-run
 
