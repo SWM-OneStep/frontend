@@ -285,4 +285,7 @@ export const Api = {
       axios.get(`${API_PATH.inbox}?user_id=${userId}`, metadata()),
     );
   },
+  getAndroidClientId: () => {
+    return handleRequest(() => axios.get(API_PATH.android));
+  },
 };

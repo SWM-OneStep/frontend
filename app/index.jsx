@@ -10,27 +10,25 @@ import { Button, Text } from '@ui-kitten/components';
 import * as Google from 'expo-auth-session/providers/google';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useContext, useEffect, useRef } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { GoogleIcon } from './../components/GoogleIcon';
 import * as Sentry from '@sentry/react-native';
 
-const androidClientId =
-  '156298722864-8d78oc16uvniu6k2c7l2fh1dc60qoq3i.apps.googleusercontent.com';
-
 const imageSource = require('../assets/todo_logo.png');
-
-const config = {
-  androidClientId,
-};
 
 const Login = () => {
   const { setIsLoggedIn, setUserId, setAccessToken } = useContext(LoginContext);
-
+  const [androidClientId, setAndroidClientId] = useState('');
   let accessTokenRef = useRef(null);
-
+  const config = {
+    androidClientId,
+  };
   const [request, response, promptAsync] = Google.useAuthRequest(config);
 
+  const getAndroidClientId = async () => {
+    setAndroidClientId(await Api.getAndroidClientId());
+  };
   const handleLocalToken = async () => {
     const token = await getAccessTokenFromLocal();
     const user = await getUserInfoFromLocal();
@@ -39,6 +37,7 @@ const Login = () => {
         .then(() => {
           setAccessToken(token);
           setUserId(user.userId);
+          setAndroidClientId('');
           router.replace('(tabs)');
         })
         .catch(e => {
@@ -112,6 +111,7 @@ const Login = () => {
         await AsyncStorage.setItem('userId', user.id.toString());
         await AsyncStorage.setItem('userName', user.username);
         setUserId(user.id);
+        setAndroidClientId('');
         router.replace('(tabs)');
       }
     }
@@ -133,6 +133,9 @@ const Login = () => {
     handleLocalToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    getAndroidClientId();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -142,7 +145,10 @@ const Login = () => {
       </View>
       <View style={styles.buttonContainer}>
         <Text category="h2">OneStep</Text>
-        <Button accessoryLeft={GoogleIcon} onPress={() => promptAsync()}>
+        <Button
+          accessoryLeft={GoogleIcon}
+          onPress={androidClientId === '' ? () => {} : () => promptAsync()}
+        >
           Sign in with Google
         </Button>
       </View>

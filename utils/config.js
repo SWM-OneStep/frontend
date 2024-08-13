@@ -14,4 +14,5 @@ export const API_PATH = {
   user: `${BASE_URL}/auth/user/`,
   inbox: `${BASE_URL}/todos/inbox/`,
   recommend: `${BASE_URL}/todos/recommend/`,
+  android: `${BASE_URL}/auth/android/`,
 };
