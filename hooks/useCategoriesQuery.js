@@ -1,20 +1,20 @@
 // useCategoriesQuery.js
-import { Api } from '@/utils/api';
-import * as Sentry from '@sentry/react-native';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import useApi from '@/utils/useApi';
+import { useQuery } from '@tanstack/react-query';
+import { useCallback } from 'react';
 
 export const QUERY_KEY = '/category';
 
-const fetcher = async (accessToken, userId) => {
-  const data = await Api.getCategory(accessToken, userId);
-  return data;
+const useFetcher = async (accessToken, userId) => {
+  const { useGetCategory } = useApi();
+  return useGetCategory(accessToken, userId);
 };
 
 const useCategoriesQuery = (accessToken, userId, onSuccess) => {
-  const queryClient = useQueryClient();
+  const handleUseFetcher = useCallback(useFetcher, [useFetcher]);
   return useQuery({
     queryKey: [QUERY_KEY],
-    queryFn: () => fetcher(accessToken, userId),
+    queryFn: () => handleUseFetcher(),
     refetchInterval: 60000,
     refetchIntervalInBackground: true,
     keepPreviousData: true,
