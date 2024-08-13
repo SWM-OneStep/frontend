@@ -1,3 +1,5 @@
+const { version } = require('joi');
+
 let Config = {
   BASE_URL: 'https://10.0.0.2:8000',
   SENTRY_MODE: 'development',
@@ -35,6 +37,7 @@ module.exports = {
         backgroundColor: '#ffffff',
       },
       package: 'com.safezone.onestep',
+      versionCode: 1,
     },
     web: {
       favicon: './assets/favicon.png',
