@@ -30,7 +30,8 @@
       "channel": "preview4"
     },
     "production": {
-      "channel": "production"
+      "channel": "production",
+      "node": "20.15.0"
     }
   },
   "submit": {
