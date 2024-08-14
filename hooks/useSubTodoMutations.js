@@ -1,4 +1,4 @@
-import { default as Api } from '@/utils/Api';
+import { default as Api } from '@/utils/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const SUBTODO_QUERY_KEY = '/sub';

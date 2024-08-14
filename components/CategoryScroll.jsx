@@ -1,7 +1,7 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useCategoriesQuery from '@/hooks/useCategoriesQuery';
-import Api from '@/utils/Api';
+import Api from '@/utils/api';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
   handleScroll,

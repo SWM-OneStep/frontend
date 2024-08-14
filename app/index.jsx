@@ -1,5 +1,5 @@
 import { LoginContext } from '@/contexts/LoginContext';
-import useApi from '@/utils/Api';
+import useApi from '@/utils/api';
 import {
   getAccessTokenFromLocal,
   getUserInfoFromLocal,

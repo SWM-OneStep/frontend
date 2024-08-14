@@ -1,4 +1,4 @@
-import Api from '@/utils/Api';
+import Api from '@/utils/api';
 import { useMutation } from '@tanstack/react-query';
 import { useQueryClient } from 'react-query';
 import { QUERY_KEY } from './useCategoriesQuery';

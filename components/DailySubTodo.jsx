@@ -4,7 +4,7 @@ import {
   SUBTODO_QUERY_KEY,
   useSubTodoUpdateMutation,
 } from '@/hooks/useSubTodoMutations';
-import Api from '@/utils/Api';
+import Api from '@/utils/api';
 import {
   DAILYTODO_SUBTODOCOMPLETE_CLICK_EVENT,
   handleLogEvent,

@@ -1,6 +1,6 @@
 import { LoginContext } from '@/contexts/LoginContext';
 import { QUERY_KEY as categoryQueryKey } from '@/hooks/useCategoriesQuery';
-import Api from '@/utils/Api';
+import Api from '@/utils/api';
 import * as eva from '@eva-design/eva';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useQueryClient } from '@tanstack/react-query';

@@ -10,7 +10,7 @@ import {
   useTodoDeleteMutation,
   useTodoUpdateMutation,
 } from '@/hooks/useTodoMutations';
-import Api from '@/utils/Api';
+import Api from '@/utils/api';
 import { convertGmtToKst } from '@/utils/convertTimezone';
 import {
   handleLogEvent,

@@ -21,7 +21,7 @@ import { useContext, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import DailySubTodo from './DailySubTodo';
 
-import Api from '@/utils/Api';
+import Api from '@/utils/api';
 import SubTodoGenerateModal from './SubTodoGenerateModal';
 import TodoModal from './TodoModal';
 
