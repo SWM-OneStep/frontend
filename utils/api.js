@@ -1,23 +1,99 @@
+import { LoginContext } from '@/contexts/LoginContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
 import axios from 'axios';
 import { router } from 'expo-router';
+import { useContext } from 'react';
 import { API_PATH } from './config';
 
 const TOKEN_INVALID_OR_EXPIRED_MESSAGE = 'Token is invalid or expired';
 const TOKEN_INVALID_TYPE_MESSAGE = 'Given token not valid for any token type';
 
-const retrieveRecentAccessToken = async () => {
-  return await AsyncStorage.getItem('accessToken');
-};
+// 1. 최초 import 한 번 일때만 실행됨
+// 2. token이 만료됐을 때 처리할 수 있는 방법이 없음
 
-let recentAccessToken = retrieveRecentAccessToken();
+let accessToken = '';
+AsyncStorage.getItem('accessToken').then(token => {
+  accessToken = token;
+});
+
+// Api -> context(React)
+
+// 1. Component <- context(React)
+// 2. Component -> Api
+
+// Component.tsx
+
+/**
+ * const { accessToken } = useContext(LoginContext)
+ *
+ * const metadata = generateMetadata(accessToken)
+ * handleRequest('/api/todos', metadata)
+ */
+
+/**
+ * Api 객체
+ *
+ * 1. headers를 매번 content-type, Authroization을 매번 사용처에서 넣어주지 않고 자동으로 관리하고 싶음
+ * 2. 401 에러가 발생했을 때 에러를 공통으로 처리하고 싶음
+ */
+
+// /utils/api.js
+class Api {
+  constructor() {
+    const init = async () => {
+      this.accessToken = await AsyncStorage.getItem('accessToken');
+      this.refreshToken = await AsyncStorage.getItem('refreshToken');
+    };
+
+    init();
+  }
+
+  get(url, options) {
+    try {
+      return axios.get(url, {
+        ...options,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.accessToken}`,
+      });
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (
+          (err.response.status === 401 &&
+            err.response.data.detail === TOKEN_INVALID_OR_EXPIRED_MESSAGE) ||
+          err.response.data.detail === TOKEN_INVALID_TYPE_MESSAGE
+        ) {
+          // Access Token 재발급
+
+          this.accessToken = accessToken;
+        }
+      }
+    }
+  }
+
+  // static getInstance() {
+  //   if (!Api.~~~) {
+  //     Api.instance = new Api()
+  //   }
+  //   return Api.instance
+  // }
+}
+
+// export default new Api();
+
+// 사용처1
+import API from 'utils/apis.js';
+
+API.get('/utils').then(data => res.data);
+
+// 사용처2
 
 const Api = () => {
   const useMetadata = () => {
+    const { accessToken } = useContext(LoginContext);
     let headers = {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${recentAccessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     };
 
     return { headers };
@@ -42,8 +118,7 @@ const Api = () => {
             access: accessToken,
           });
           await AsyncStorage.setItem('accessToken', responseData.data.access);
-          recentAccessToken = responseData.data.access;
-
+          accessToken = responseData.data.access;
           const secondRequest = await request(headerFunction());
           return secondRequest.data;
         } catch (refreshError) {
