@@ -1,10 +1,10 @@
-// eslint-disable-next-line import/namespace
 import TodoModal from '@/components/TodoModal';
 import { LoginContext } from '@/contexts/LoginContext';
 import {
   SUBTODO_QUERY_KEY,
   useSubTodoUpdateMutation,
 } from '@/hooks/useSubTodoMutations';
+import Api from '@/utils/Api';
 import {
   DAILYTODO_SUBTODOCOMPLETE_CLICK_EVENT,
   handleLogEvent,
@@ -25,6 +25,7 @@ const DailySubTodo = ({ item }) => {
   const { mutate: updateSubTodo, isSuccess: updateSubTodoIsSuccess } =
     useSubTodoUpdateMutation();
   const { userId } = useContext(LoginContext);
+  const { useMetadata } = Api();
 
   useEffect(() => {
     if (updateSubTodoIsSuccess) {
@@ -39,7 +40,7 @@ const DailySubTodo = ({ item }) => {
       subtodoId: item.id,
       isCompleted: !item.isCompleted,
     };
-    updateSubTodo({ accessToken: accessToken, updatedData: updatedData });
+    updateSubTodo(updatedData, useMetadata);
   };
 
   const handleEdit = () => {
@@ -52,7 +53,7 @@ const DailySubTodo = ({ item }) => {
       subtodoId: item.id,
       content: content,
     };
-    updateSubTodo({ accessToken: accessToken, updatedData: updatedData });
+    updateSubTodo(updatedData, useMetadata);
   };
 
   const checkIcon = props => {

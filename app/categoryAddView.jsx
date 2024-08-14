@@ -1,5 +1,6 @@
 import { LoginContext } from '@/contexts/LoginContext';
 import { QUERY_KEY as categoryQueryKey } from '@/hooks/useCategoriesQuery';
+import Api from '@/utils/Api';
 import * as eva from '@eva-design/eva';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useQueryClient } from '@tanstack/react-query';
@@ -19,6 +20,7 @@ const colors = ['#FF3D71', '#FF7E29', '#FFC233', '#4CAF50', '#00BCD4'];
 
 const CategoryAddView = () => {
   const router = useRouter();
+  const { useMetadata } = Api();
   const [categoryName, setCategoryName] = useState('');
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const bottomSheetRef = useRef(null);
@@ -55,7 +57,7 @@ const CategoryAddView = () => {
       color: selectedColor,
       order: tmpOrder(),
     };
-    addCategory({ accessToken, addCategoryData });
+    addCategory({ addCategoryData, useMetadata });
   };
 
   const renderColorItem = ({ item }) => (

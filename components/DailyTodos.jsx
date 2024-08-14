@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/namespace
 import DailyTodo from '@/components/DailyTodo';
 import { CategoryContext } from '@/contexts/CategoryContext';
 import { DateContext } from '@/contexts/DateContext';
@@ -9,6 +8,7 @@ import {
   useTodoUpdateMutation,
 } from '@/hooks/useTodoMutations';
 import { default as useTodosQuery } from '@/hooks/useTodoQuery';
+import Api from '@/utils/Api';
 import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
@@ -43,8 +43,9 @@ const DailyTodos = () => {
     error,
     data,
     isSuccess: isTodosQuerySuccess,
-  } = useTodosQuery(accessToken, userId);
+  } = useTodosQuery(userId, useMetadata);
   const currentTodos = useTodoStore(state => state.currentTodos);
+  const { useMetadata } = Api();
 
   useEffect(() => {
     if (isTodosQuerySuccess) {
@@ -136,7 +137,7 @@ const DailyTodos = () => {
         updated_order: updatedOrder,
       },
     };
-    updateTodo({ accessToken, updatedData });
+    updateTodo(updatedData, useMetadata);
   };
 
   const handleSubmit = async () => {
@@ -155,7 +156,7 @@ const DailyTodos = () => {
           : LexoRank.middle().toString(),
     };
 
-    addTodo({ accessToken, todoData: newTodoData });
+    addTodo(newTodoData, useMetadata);
     setInput('');
   };
 

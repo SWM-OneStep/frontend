@@ -1,6 +1,7 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useCategoriesQuery from '@/hooks/useCategoriesQuery';
+import Api from '@/utils/Api';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
   handleScroll,
@@ -22,10 +23,12 @@ const CategoryScroll = () => {
   const { selectedCategory, setSelectedCategory } = useContext(CategoryContext);
   const [orderedCategories, setOrderedCategories] = useState([]);
   const { userId, accessToken } = useContext(LoginContext);
+  const { useMetadata } = Api();
 
   const { isLoading, error, data, isSuccess } = useCategoriesQuery(
-    accessToken,
     userId,
+    useMetadata,
+    () => {},
   );
 
   useEffect(() => {

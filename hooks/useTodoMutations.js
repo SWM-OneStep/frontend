@@ -1,11 +1,11 @@
-import { default as Api } from '@/utils/useApi';
+import { default as Api } from '@/utils/Api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TODO_QUERY_KEY } from './useTodoQuery';
 
 // 생성 (Add Todo)
-const addTodoFetcher = async ({ accessToken, todoData }) => {
+const addTodoFetcher = async (todoData, headerFunction) => {
   const { addTodo } = Api();
-  return addTodo(accessToken, todoData);
+  return addTodo(todoData, headerFunction);
 };
 
 export const useTodoAddMutation = () => {
@@ -19,9 +19,9 @@ export const useTodoAddMutation = () => {
 };
 
 // 수정 (Update Todo)
-const updateTodoFetcher = async ({ accessToken, updatedData }) => {
+const updateTodoFetcher = async (updatedData, headerFunction) => {
   const { updateTodo } = Api();
-  return updateTodo({ accessToken: accessToken, updateData: updatedData });
+  return updateTodo(updatedData, headerFunction);
 };
 
 export const useTodoUpdateMutation = () => {
@@ -35,9 +35,9 @@ export const useTodoUpdateMutation = () => {
 };
 
 // 삭제 (Delete Todo)
-const deleteTodoFetcher = async ({ accessToken, todoId }) => {
+const deleteTodoFetcher = async (todoId, headerFunction) => {
   const { deleteTodo } = Api();
-  return deleteTodo({ accessToken: accessToken, todoId: todoId });
+  return deleteTodo(todoId, headerFunction);
 };
 
 export const useTodoDeleteMutation = () => {
