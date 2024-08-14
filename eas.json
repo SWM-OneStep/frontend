@@ -9,11 +9,15 @@
       "channel": "development"
     },
     "preview": {
+      "extends": "production",
       "distribution": "internal",
       "android": {
         "buildType": "apk"
       },
-      "channel": "preview"
+      "channel": "preview",
+      "env": {
+        "EXPO_PUBLIC_APP_MODE": "development"
+      }
     },
     "preview2": {
       "android": {

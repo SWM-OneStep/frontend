@@ -27,7 +27,8 @@ const Login = () => {
   const [request, response, promptAsync] = Google.useAuthRequest(config);
 
   const getAndroidClientId = async () => {
-    setAndroidClientId(await Api.getAndroidClientId());
+    const response = await Api.getAndroidClientId();
+    setAndroidClientId(response.androidClientId);
   };
   const handleLocalToken = async () => {
     const token = await getAccessTokenFromLocal();
