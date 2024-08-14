@@ -57,7 +57,7 @@ const CategoryAddView = () => {
       color: selectedColor,
       order: tmpOrder(),
     };
-    addCategory({ addCategoryData, useMetadata });
+    addCategory(addCategoryData, useMetadata);
   };
 
   const renderColorItem = ({ item }) => (
