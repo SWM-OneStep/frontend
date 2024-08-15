@@ -4,7 +4,13 @@ import { router } from 'expo-router';
 import { API_PATH } from './config';
 import * as Sentry from '@sentry/react-native';
 
-const metadata = async accessToken => {
+let recentAccessToken;
+
+AsyncStorage.getItem('accessToken').then(response => {
+  recentAccessToken = response;
+});
+
+const metadata = accessToken => {
   let headers = null;
   if (accessToken) {
     headers = {
@@ -12,7 +18,6 @@ const metadata = async accessToken => {
       Authorization: `Bearer ${accessToken}`,
     };
   } else {
-    const recentAccessToken = await AsyncStorage.getItem('accessToken');
     headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${recentAccessToken}`,
@@ -43,6 +48,7 @@ const handleRequest = async request => {
           access: accessToken,
         });
         await AsyncStorage.setItem('accessToken', responseData.data.access);
+        recentAccessToken = responseData.data.access;
         const secondRequest = await request();
         return secondRequest.data;
       } catch (refreshError) {
@@ -66,7 +72,7 @@ export const Api = {
    *
    */
   fetchTodos: (accessToken, userId) => {
-    return handleRequest(() =>
+    return handleRequest(
       axios.get(`${API_PATH.todos}?user_id=${userId}`, metadata()),
     );
   },
