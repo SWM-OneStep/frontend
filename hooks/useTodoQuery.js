@@ -5,15 +5,16 @@ import { useQuery } from '@tanstack/react-query';
 
 export const TODO_QUERY_KEY = '/todos';
 
-const fetcher = async (userId, headerFunction) => {
-  const { fetchTodos } = Api();
-  return fetchTodos(userId, headerFunction);
+const api = Api.getInstance();
+
+const fetcher = async userId => {
+  return api.fetchTodos(userId);
 };
 
-const useTodosQuery = (userId, headerFunction) => {
+const useTodosQuery = userId => {
   return useQuery({
     queryKey: [TODO_QUERY_KEY],
-    queryFn: () => fetcher(userId, headerFunction),
+    queryFn: () => fetcher(userId),
     refetchInterval: 60000,
     refetchIntervalInBackground: true,
     keepPreviousData: true,

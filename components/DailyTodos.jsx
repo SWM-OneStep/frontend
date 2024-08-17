@@ -8,7 +8,6 @@ import {
   useTodoUpdateMutation,
 } from '@/hooks/useTodoMutations';
 import { default as useTodosQuery } from '@/hooks/useTodoQuery';
-import Api from '@/utils/api';
 import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
@@ -43,9 +42,8 @@ const DailyTodos = () => {
     error,
     data,
     isSuccess: isTodosQuerySuccess,
-  } = useTodosQuery(userId, useMetadata);
+  } = useTodosQuery(userId);
   const currentTodos = useTodoStore(state => state.currentTodos);
-  const { useMetadata } = Api();
 
   useEffect(() => {
     if (isTodosQuerySuccess) {
@@ -137,7 +135,7 @@ const DailyTodos = () => {
         updated_order: updatedOrder,
       },
     };
-    updateTodo(updatedData, useMetadata);
+    updateTodo(updatedData);
   };
 
   const handleSubmit = async () => {
@@ -156,7 +154,7 @@ const DailyTodos = () => {
           : LexoRank.middle().toString(),
     };
 
-    addTodo(newTodoData, useMetadata);
+    addTodo(newTodoData);
     setInput('');
   };
 

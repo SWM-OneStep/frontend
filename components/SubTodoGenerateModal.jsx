@@ -1,9 +1,9 @@
+import Api from '@/utils/api';
+import { Button, Card, Modal, Text } from '@ui-kitten/components';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Modal, Card, Text, Button } from '@ui-kitten/components';
-import axios from 'axios';
-import { API_PATH } from '@/utils/config';
-import * as Sentry from '@sentry/react-native';
+
+const api = Api.getInstance();
 
 const SubTodoGenerateModal = ({
   modalVisible,
@@ -13,15 +13,10 @@ const SubTodoGenerateModal = ({
 }) => {
   const handleAddToDo = () => {
     // LLM API 호출 로직 추가
-    axios
-      .get(`${API_PATH.recommend}?todo_id=${todoId}`)
-      .then(response => {
-        setGeneratedSubToDos(response.data.children);
-        setModalVisible(false);
-      })
-      .catch(error => {
-        Sentry.captureException(error);
-      });
+    api.recommendSubTodo(todoId, response => {
+      setGeneratedSubToDos(response.data.children);
+      setModalVisible(false);
+    });
   };
 
   return (

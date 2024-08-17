@@ -4,15 +4,16 @@ import { useQuery } from '@tanstack/react-query';
 
 export const INBOX_QUERY_KEY = '/inbox';
 
-const fetcher = async (userId, headerFunction) => {
-  const { getInboxTodo } = Api();
-  return getInboxTodo(userId, headerFunction);
+const api = Api.getInstance();
+
+const fetcher = async userId => {
+  return api.getInboxTodo(userId);
 };
 
-const useInboxTodoQuery = (userId, headerFunction) => {
+const useInboxTodoQuery = userId => {
   return useQuery({
     queryKey: [INBOX_QUERY_KEY],
-    queryFn: () => fetcher(userId, headerFunction),
+    queryFn: () => fetcher(userId),
     // refetchInterval: 30000,
     // refetchIntervalInBackground: true,
     keepPreviousData: true,

@@ -4,19 +4,19 @@ import { useQuery } from '@tanstack/react-query';
 
 export const QUERY_KEY = '/category';
 
-const fetcher = async (userId, headerFunction) => {
-  const { getCategory } = Api();
-  return getCategory(userId, headerFunction);
+const api = Api.getInstance();
+
+const fetcher = async userId => {
+  return api.getCategory(userId);
 };
 
-const useCategoriesQuery = (userId, headerFunction, onSuccess) => {
+const useCategoriesQuery = userId => {
   return useQuery({
     queryKey: [QUERY_KEY],
-    queryFn: () => fetcher(userId, headerFunction),
+    queryFn: () => fetcher(userId),
     refetchInterval: 60000,
     refetchIntervalInBackground: true,
     keepPreviousData: true,
-    onSuccess: onSuccess,
   });
 };
 

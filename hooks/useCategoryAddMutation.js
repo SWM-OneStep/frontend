@@ -3,9 +3,10 @@ import { useMutation } from '@tanstack/react-query';
 import { useQueryClient } from 'react-query';
 import { QUERY_KEY } from './useCategoriesQuery';
 
-const fetcher = ({ addCategoryData, headerFunction }) => {
-  const { addCategory } = Api();
-  return addCategory(addCategoryData, headerFunction);
+const api = Api.getInstance();
+
+const fetcher = addCategoryData => {
+  return api.addCategory(addCategoryData);
 };
 
 const useCategoryAddMutation = () => {

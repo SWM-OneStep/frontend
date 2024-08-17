@@ -1,5 +1,5 @@
 import { LoginContext } from '@/contexts/LoginContext';
-import useApi from '@/utils/api';
+import Api from '@/utils/api';
 import {
   getAccessTokenFromLocal,
   getUserInfoFromLocal,
@@ -32,16 +32,16 @@ const Login = () => {
     setRefreshToken,
   } = useContext(LoginContext);
 
+  const api = Api.getInstance();
+
   const handleLocalToken = async () => {
     const token = await getAccessTokenFromLocal();
     const user = await getUserInfoFromLocal();
-    verifyToken(token, useMetadata);
+    api.verifyToken(token);
     setAccessToken(token);
     setUserId(user.userId);
     router.replace('(tabs)');
   };
-
-  const { useMetadata, verifyToken, getUserInfo, googleLogin } = useApi();
 
   let accessTokenRef = useRef(null);
 
@@ -78,7 +78,7 @@ const Login = () => {
         token: token,
         deviceToken: deviceToken,
       };
-      const localResponse = await googleLogin(tokenData, useMetadata);
+      const localResponse = await api.googleLogin(tokenData);
 
       if (localResponse) {
         await AsyncStorage.setItem('accessToken', localResponse.access);
@@ -89,14 +89,7 @@ const Login = () => {
         setIsLoggedIn(true);
       }
     },
-    [
-      getDeviceToken,
-      googleLogin,
-      setAccessToken,
-      setIsLoggedIn,
-      setRefreshToken,
-      useMetadata,
-    ],
+    [getDeviceToken, setAccessToken, setIsLoggedIn, setRefreshToken, api],
   );
 
   const handleToken = useCallback(async () => {
@@ -107,7 +100,7 @@ const Login = () => {
         // 예: 상태 업데이트, API 호출 등
         // 이때 로딩화면 출력
         await getToken({ token });
-        const user = await getUserInfo(useMetadata);
+        const user = await api.getUserInfo();
 
         // id, name 따로 저장하길래 한번에 해보았음
         await AsyncStorage.setItem('userId', user.id.toString());
@@ -116,7 +109,7 @@ const Login = () => {
         router.replace('(tabs)');
       }
     }
-  }, [response, getUserInfo, setUserId, getToken, useMetadata]);
+  }, [response, setUserId, getToken, api]);
 
   useEffect(() => {
     handleToken();

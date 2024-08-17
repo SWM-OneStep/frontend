@@ -21,7 +21,6 @@ import { useContext, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import DailySubTodo from './DailySubTodo';
 
-import Api from '@/utils/api';
 import SubTodoGenerateModal from './SubTodoGenerateModal';
 import TodoModal from './TodoModal';
 
@@ -45,7 +44,6 @@ const DailyTodo = ({ item, drag, isActive }) => {
     subTodoGenerateAlertModalVisible,
     setSubTodoGenerateAlertModalVisible,
   ] = useState(false);
-  const { useMetadata } = Api();
 
   const [selectedSubTodos, setSelectedSubTodos] = useState({});
   const handleSelectSubTodo = index => {
@@ -61,7 +59,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
       todoId: item.id,
       isCompleted: !item.isCompleted,
     };
-    updateTodo(updatedData, useMetadata);
+    updateTodo(updatedData);
   };
 
   const tmpOrder = (seed = 0) => {
@@ -76,7 +74,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
       todoId: item.id,
       content: content,
     };
-    updateTodo(updatedData, useMetadata);
+    updateTodo(updatedData);
   };
 
   const handleSubTodoCreate = () => {

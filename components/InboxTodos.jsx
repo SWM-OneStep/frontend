@@ -3,7 +3,6 @@ import { LoginContext } from '@/contexts/LoginContext';
 import useTodoStore from '@/contexts/TodoStore';
 import useInboxTodoQuery from '@/hooks/useInboxTodoQuery';
 import { useTodoAddMutation } from '@/hooks/useTodoMutations';
-import Api from '@/utils/api';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
   handleScroll,
@@ -19,15 +18,14 @@ import InboxTodo from './InboxTodo';
 const InboxTodos = () => {
   const queryClient = useQueryClient();
   const [input, setInput] = useState('');
-  const { userId, accessToken } = useContext(LoginContext);
+  const { userId } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
-  const { useMetadata } = Api();
   const {
     isLoading,
     error,
     data: inboxTodoData,
     isSuccess: isInboxTodoQuerySuccess,
-  } = useInboxTodoQuery(userId, useMetadata);
+  } = useInboxTodoQuery(userId);
   const setInboxTodos = useTodoStore(state => state.setInboxTodos);
   const inboxCurrentTodos = useTodoStore(state => state.inboxCurrentTodos);
   const setInboxCurrentTodos = useTodoStore(
@@ -70,7 +68,7 @@ const InboxTodos = () => {
           : LexoRank.middle().toString(),
     };
 
-    addInboxTodo(newTodoData, useMetadata);
+    addInboxTodo(newTodoData);
     setInput('');
   };
   return (
