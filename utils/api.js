@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
 import axios from 'axios';
-import { API_PATH } from './config';
+import { API_PATH, BASE_URL } from './config';
 
 const TOKEN_INVALID_OR_EXPIRED_MESSAGE = 'Token is invalid or expired';
 const TOKEN_INVALID_TYPE_MESSAGE = 'Given token not valid for any token type';
@@ -16,6 +16,46 @@ class Api {
     if (Api.instance) {
       throw new Error('You can only create one instance!');
     }
+
+    this.init();
+
+    // Axios 인스턴스 생성 및 인터셉터 적용
+    this.axiosInstance = axios.create({
+      baseURL: BASE_URL, // API 기본 경로 설정
+      timeout: 10000, // 타임아웃 설정
+    });
+
+    this.axiosInstance.interceptors.response.use(
+      response => response,
+      async error => {
+        const originalRequest = error.config;
+
+        if (error.response.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+
+          try {
+            // 토큰 갱신 로직
+            const responseData = await this.axiosInstance.post(API_PATH.renew, {
+              refresh: this.refreshToken,
+            });
+
+            const newAccessToken = responseData.data.access;
+            await AsyncStorage.setItem('accessToken', newAccessToken);
+            this.accessToken = newAccessToken;
+
+            // 기존 요청에 새로운 토큰 적용
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            return this.axiosInstance(originalRequest);
+          } catch (refreshError) {
+            Sentry.captureException(refreshError);
+            return Promise.reject(refreshError);
+          }
+        }
+
+        Sentry.captureException(error);
+        return Promise.reject(error);
+      },
+    );
   }
 
   static getInstance() {
@@ -27,36 +67,18 @@ class Api {
 
   async request(url, options) {
     try {
-      return axios.request(url, {
+      const response = await this.axiosInstance.request({
+        url,
         ...options,
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.accessToken}`,
+        headers: {
+          ...options.headers,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.accessToken}`,
+        },
       });
+      return response.data;
     } catch (e) {
-      Sentry.captureException(e);
-      if (axios.isAxiosError(e)) {
-        if (
-          (e.response.status === 401 &&
-            e.response.data.detail === TOKEN_INVALID_OR_EXPIRED_MESSAGE) ||
-          e.response.data.detail === TOKEN_INVALID_TYPE_MESSAGE
-        ) {
-          // access token 재발급
-          const responseData = await axios.post(API_PATH.renew, {
-            refresh: this.refreshToken,
-            access: this.accessToken,
-          });
-          const newAccessToken = responseData.data.access;
-          await AsyncStorage.setItem('accessToken', newAccessToken);
-          this.accessToken = newAccessToken;
-
-          // 다시 요청
-          return axios.request(url, {
-            ...options,
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${this.accessToken}`,
-          });
-        }
-      }
+      throw e;
     }
   }
 

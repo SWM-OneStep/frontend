@@ -1,4 +1,4 @@
-const BASE_URL = 'https://dev.stepby.one';
+export const BASE_URL = 'https://dev.stepby.one';
 
 // const BASE_URL = 'http://10.0.2.2:8000';
 
