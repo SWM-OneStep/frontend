@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { API_PATH } from './config';
 import * as Sentry from '@sentry/react-native';
 
-let recentAccessToken;
+let recentAccessToken = null;
 
 AsyncStorage.getItem('accessToken').then(response => {
   recentAccessToken = response;
@@ -12,6 +12,11 @@ AsyncStorage.getItem('accessToken').then(response => {
 
 const metadata = accessToken => {
   let headers = null;
+  if (recentAccessToken === null) {
+    AsyncStorage.getItem('accessToken').then(response => {
+      recentAccessToken = response;
+    });
+  }
   if (accessToken) {
     headers = {
       'Content-Type': 'application/json',
@@ -55,7 +60,11 @@ const handleRequest = async request => {
         Sentry.captureException(err);
 
         if (refreshError.response.status === 401) {
-          router.replace('index');
+          await AsyncStorage.removeItem('accessToken');
+          await AsyncStorage.removeItem('refreshToken');
+          await AsyncStorage.removeItem('userId');
+          await AsyncStorage.removeItem('deviceName');
+          router.replace('');
         } else {
           throw refreshError;
         }
@@ -72,7 +81,7 @@ export const Api = {
    *
    */
   fetchTodos: (accessToken, userId) => {
-    return handleRequest(
+    return handleRequest(() =>
       axios.get(`${API_PATH.todos}?user_id=${userId}`, metadata()),
     );
   },
