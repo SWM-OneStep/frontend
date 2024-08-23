@@ -62,18 +62,9 @@ const Login = () => {
         await AsyncStorage.setItem('deviceToken', token);
         return token;
       } catch (e) {
-        router.replace('index');
+        router.replace('');
         return null;
       }
-    }
-  }, []);
-
-  const getUserInfo = useCallback(async () => {
-    try {
-      const localResponse = await Api.getUserInfo(accessTokenRef.current);
-      return localResponse;
-    } catch (e) {
-      Sentry.captureException(e);
     }
   }, []);
 
@@ -106,8 +97,8 @@ const Login = () => {
         // 예: 상태 업데이트, API 호출 등
         // 이때 로딩화면 출력
         await getToken({ token });
-        const user = await getUserInfo();
-
+        const user = await Api.getUserInfo(accessTokenRef.current);
+        console.log(user);
         // id, name 따로 저장하길래 한번에 해보았음
         await AsyncStorage.setItem('userId', user.id.toString());
         await AsyncStorage.setItem('userName', user.username);
@@ -116,24 +107,17 @@ const Login = () => {
         router.replace('(tabs)');
       }
     }
-  }, [
-    response,
-    getDeviceToken,
-    setAccessToken,
-    setIsLoggedIn,
-    getUserInfo,
-    setUserId,
-  ]);
+  }, [response, getDeviceToken, setAccessToken, setIsLoggedIn, setUserId]);
 
   useEffect(() => {
     handleToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response]);
 
-  useEffect(() => {
-    handleLocalToken();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   handleLocalToken();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
   useEffect(() => {
     getAndroidClientId();
   }, []);
