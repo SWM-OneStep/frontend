@@ -40,8 +40,6 @@ class Api {
       },
       async function (error) {
         const originalRequest = error.config;
-        console.log('error', error.response);
-
         if (originalRequest.url === API_PATH.renew) {
           await AsyncStorage.removeItem('accessToken');
           await AsyncStorage.removeItem('refreshToken');
@@ -75,46 +73,6 @@ class Api {
         return Promise.reject(error);
       },
     );
-
-    // this.axiosInstance.interceptors.response.use(
-    //   response => response,
-    //   async error => {
-    //     const originalRequest = error.config;
-    //     console.log('error', error);
-
-    //     if (originalRequest.url === API_PATH.renew) {
-    //       await AsyncStorage.removeItem('accessToken');
-    //       await AsyncStorage.removeItem('refreshToken');
-    //       await AsyncStorage.removeItem('userId');
-    //       await AsyncStorage.removeItem('userName');
-    //       router.replace('');
-    //       return Promise.reject(error);
-    //     }
-
-    //     if (error.response.status === 401 && !originalRequest._retry) {
-    //       originalRequest._retry = true;
-
-    //       try {
-    //         const responseData = await this.axiosInstance.post(API_PATH.renew, {
-    //           refresh: this.refreshToken,
-    //         });
-    //         const newAccessToken = responseData.data.access;
-    //         await AsyncStorage.setItem('accessToken', newAccessToken);
-    //         this.accessToken = newAccessToken;
-
-    //         // 기존 요청에 새로운 토큰 적용
-    //         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-    //         return this.axiosInstance(originalRequest);
-    //       } catch (e) {
-    //         Sentry.captureException(e);
-    //         return Promise.reject(e);
-    //       }
-    //     }
-
-    //     Sentry.captureException(error);
-    //     return Promise.reject(error);
-    //   },
-    // );
   }
 
   static getInstance() {
