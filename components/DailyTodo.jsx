@@ -110,17 +110,17 @@ const DailyTodo = ({ item, drag, isActive }) => {
   };
 
   const checkIcon = props => {
+    const handleOnPress = () => {
+      handleLogEvent(DAILYTODO_TODOCOMPLETE_CLICK_EVENT, {
+        time: new Date().toISOString(),
+        userId: userId,
+        todoId: item.id,
+      });
+      handleCheck();
+    };
+
     return (
-      <TouchableOpacity
-        onPress={() => {
-          handleLogEvent(DAILYTODO_TODOCOMPLETE_CLICK_EVENT, {
-            time: new Date().toISOString(),
-            userId: userId,
-            todoId: item.id,
-          });
-          handleCheck();
-        }}
-      >
+      <TouchableOpacity onPress={handleOnPress}>
         <Icon
           {...props}
           name="checkmark-circle-2-outline"
