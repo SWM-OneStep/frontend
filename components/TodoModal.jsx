@@ -82,13 +82,6 @@ const TodoModal = ({
     setVisible(false);
   };
 
-  // const handleSubtodoCreateInitialize = todo => {
-  //   // setModalVisible(false);
-  //   setVisible(false);
-  //   setSubTodoInputActivated(true);
-  //   // setSelectedTodo(todo);
-  // };
-
   if (!item) {
     return null;
   }
@@ -115,6 +108,51 @@ const TodoModal = ({
     }
   };
 
+  const handleSubTodoCreate = () => {
+    handleLogEvent(TODOMODAL_CREATESUBTODO_CLICK_EVENT, {
+      time: new Date().toISOString(),
+      userId: userId,
+      todoId: item.id,
+    });
+    onSubTodoCreate();
+  };
+
+  const handleTodoDateUpdate = () => {
+    handleLogEvent(TODOMODAL_CHANGEDATE_CLICK_EVENT, {
+      time: new Date().toISOString(),
+      userId: userId,
+      todoId: item.id,
+    });
+    setVisible(false);
+    setCalendarModalVisible(true);
+  };
+
+  const handleTodoInboxCreate = () => {
+    handleLogEvent(TODOMODAL_MOVETOINBOX_CLICK_EVENT, {
+      time: new Date().toISOString(),
+      userId: userId,
+      todoId: item.id,
+    });
+  };
+
+  const handleTodoUpdate = () => {
+    handleLogEvent(TODOMODAL_EDIT_CLICK_EVENT, {
+      time: new Date().toISOString(),
+      userId: userId,
+      todoId: item.id,
+    });
+    onEdit();
+  };
+
+  const handleTodoDelete = () => {
+    handleLogEvent(TODOMODAL_DELETE_CLICK_EVENT, {
+      time: new Date().toISOString(),
+      userId: userId,
+      todoId: item.id,
+    });
+    handleDelete(item.id);
+  };
+
   return (
     <>
       <Modal
@@ -136,14 +174,7 @@ const TodoModal = ({
                 accessoryLeft={editIcon}
                 status="basic"
                 style={styles.button}
-                onPress={() => {
-                  handleLogEvent(TODOMODAL_EDIT_CLICK_EVENT, {
-                    time: new Date().toISOString(),
-                    userId: userId,
-                    todoId: item.id,
-                  });
-                  onEdit();
-                }}
+                onPress={handleTodoUpdate}
               >
                 <Text>수정하기</Text>
               </Button>
@@ -151,14 +182,7 @@ const TodoModal = ({
                 accessoryLeft={deleteIcon}
                 status="basic"
                 style={styles.button}
-                onPress={() => {
-                  handleLogEvent(TODOMODAL_DELETE_CLICK_EVENT, {
-                    time: new Date().toISOString(),
-                    userId: userId,
-                    todoId: item.id,
-                  });
-                  handleDelete(item.id);
-                }}
+                onPress={handleTodoDelete}
               >
                 <Text>삭제하기</Text>
               </Button>
@@ -169,14 +193,7 @@ const TodoModal = ({
                   accessoryLeft={listIcon}
                   status="basic"
                   style={styles.button}
-                  onPress={() => {
-                    handleLogEvent(TODOMODAL_CREATESUBTODO_CLICK_EVENT, {
-                      time: new Date().toISOString(),
-                      userId: userId,
-                      todoId: item.id,
-                    });
-                    onSubTodoCreate();
-                  }}
+                  onPress={handleSubTodoCreate}
                 >
                   <Text>하위 투두 생성하기</Text>
                 </Button>
@@ -187,15 +204,7 @@ const TodoModal = ({
                 accessoryLeft={calendarIcon}
                 status="basic"
                 style={styles.button}
-                onPress={() => {
-                  handleLogEvent(TODOMODAL_CHANGEDATE_CLICK_EVENT, {
-                    time: new Date().toISOString(),
-                    userId: userId,
-                    todoId: item.id,
-                  });
-                  setVisible(false);
-                  setCalendarModalVisible(true);
-                }}
+                onPress={handleTodoDateUpdate}
               >
                 <Text>날짜 바꾸기</Text>
               </Button>
@@ -205,13 +214,7 @@ const TodoModal = ({
                 accessoryLeft={inboxIcon}
                 status="basic"
                 style={styles.button}
-                onPress={() => {
-                  handleLogEvent(TODOMODAL_MOVETOINBOX_CLICK_EVENT, {
-                    time: new Date().toISOString(),
-                    userId: userId,
-                    todoId: item.id,
-                  });
-                }}
+                onPress={handleTodoInboxCreate}
               >
                 <Text>인박스에 넣기</Text>
               </Button>
