@@ -35,10 +35,10 @@ class Api {
     });
 
     this.axiosInstance.interceptors.response.use(
-      function (response) {
+      response => {
         return response;
       },
-      async function (error) {
+      async error => {
         const originalRequest = error.config;
         if (originalRequest.url === API_PATH.renew) {
           await AsyncStorage.removeItem('accessToken');
