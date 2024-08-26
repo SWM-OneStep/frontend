@@ -209,13 +209,15 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const handleSubtodoSubmit = () => {
     if (subTodoInput !== '') {
       const modifiedDate = selectedDate.format('YYYY-MM-DD');
-      const subTodoData = {
-        todo: item.id,
-        content: subTodoInput,
-        date: modifiedDate,
-        isCompleted: false,
-        order: tmpOrder(),
-      };
+      const subTodoData = [
+        {
+          todo: item.id,
+          content: subTodoInput,
+          date: modifiedDate,
+          isCompleted: false,
+          order: tmpOrder(),
+        },
+      ];
       addSubTodo({ accessToken: accessToken, todoData: subTodoData });
       setSubtodoInput('');
       setSubTodoInputActivated(false);
