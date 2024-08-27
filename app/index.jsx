@@ -1,12 +1,11 @@
 import { LoginContext } from '@/contexts/LoginContext';
-import { Api } from '@/utils/api';
+import useApi from '@/utils/api';
 import {
   getAccessTokenFromLocal,
   getUserInfoFromLocal,
 } from '@/utils/asyncStorageUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
-import * as Sentry from '@sentry/react-native';
 import { Button, Text } from '@ui-kitten/components';
 import * as Google from 'expo-auth-session/providers/google';
 import { router } from 'expo-router';
@@ -18,33 +17,49 @@ import { GoogleIcon } from './../components/GoogleIcon';
 const imageSource = require('../assets/todo_logo.png');
 
 const Login = () => {
-  const { setIsLoggedIn, setUserId, setAccessToken } = useContext(LoginContext);
   const [androidClientId, setAndroidClientId] = useState('');
+  const {
+    setIsLoggedIn,
+    setUserId,
+    setAccessToken,
+    refreshToken,
+    setRefreshToken,
+  } = useContext(LoginContext);
+
+  const { useVerifyToken, useGetUserInfo, useGoogleLogin, getAndroidClientId } =
+    useApi();
   let accessTokenRef = useRef(null);
   const config = {
     androidClientId,
   };
   const [request, response, promptAsync] = Google.useAuthRequest(config);
 
-  const getAndroidClientId = async () => {
-    const response = await Api.getAndroidClientId();
-    setAndroidClientId(response.androidClientId);
+  const handleGetAndroidClientId = async () => {
+    const apiResponse = await getAndroidClientId();
+    setAndroidClientId(apiResponse.androidClientId);
   };
-  const handleLocalToken = async () => {
+  useEffect(() => {
+    handleLocalToken();
+  });
+
+  const handleLocalToken = useCallback(useHandleLocalToken, [
+    setAccessToken,
+    setUserId,
+    useVerifyToken,
+  ]);
+
+  const useHandleLocalToken = async () => {
     const token = await getAccessTokenFromLocal();
     const user = await getUserInfoFromLocal();
-    if (token) {
-      Api.verifyToken(token)
-        .then(() => {
-          setAccessToken(token);
-          setUserId(user.userId);
-          setAndroidClientId('');
-          router.replace('(tabs)');
-        })
-        .catch(e => {
-          Sentry.captureException(e);
-        });
-    }
+    useVerifyToken(token)
+      .then(() => {
+        setAccessToken(token);
+        setUserId(user.userId);
+        router.replace('(tabs)');
+      })
+      .catch(e => {
+        router.replace('/');
+      });
   };
 
   const getDeviceToken = useCallback(async () => {
@@ -68,44 +83,46 @@ const Login = () => {
     }
   }, []);
 
-  const getUserInfo = useCallback(async () => {
-    try {
-      const localResponse = await Api.getUserInfo(accessTokenRef.current);
-      return localResponse;
-    } catch (e) {
-      Sentry.captureException(e);
+  const getUserInfo = useCallback(useHandleGetUserInfo, [useGetUserInfo]);
+
+  const useHandleGetUserInfo = () => {
+    return useGetUserInfo(accessTokenRef.current);
+  };
+
+  const useGetToken = async ({ token }) => {
+    const deviceToken = await getDeviceToken();
+    const tokenData = {
+      token: token,
+      deviceToken: deviceToken,
+    };
+    const localResponse = await useGoogleLogin(tokenData);
+
+    if (localResponse) {
+      await AsyncStorage.setItem('accessToken', localResponse.access);
+      await AsyncStorage.setItem('refreshToken', localResponse.refresh);
+      accessTokenRef.current = localResponse.access;
+      setAccessToken(localResponse.access);
+      setRefreshToken(localResponse.refresh);
+      setIsLoggedIn(true);
     }
-  }, []);
+  };
+
+  const handleuseGetToken = useCallback(useGetToken, [
+    getDeviceToken,
+    setAccessToken,
+    setIsLoggedIn,
+    setRefreshToken,
+    useGoogleLogin,
+  ]);
 
   const handleToken = useCallback(async () => {
-    const getToken = async ({ token }) => {
-      const deviceToken = await getDeviceToken();
-      const tokenData = {
-        token: token,
-        deviceToken: deviceToken,
-      };
-      try {
-        const localResponse = await Api.googleLogin(tokenData);
-
-        if (localResponse) {
-          await AsyncStorage.setItem('accessToken', localResponse.access);
-          await AsyncStorage.setItem('refreshToken', localResponse.refresh);
-          accessTokenRef.current = localResponse.access;
-          setAccessToken(localResponse.access);
-          setIsLoggedIn(true);
-        }
-      } catch (e) {
-        Sentry.captureException(e);
-      }
-    };
-
     if (response?.type === 'success') {
       const token = response.authentication?.idToken;
       if (token) {
         // 여기서 토큰을 사용하여 추가 작업을 수행할 수 있습니다.
         // 예: 상태 업데이트, API 호출 등
         // 이때 로딩화면 출력
-        await getToken({ token });
+        await handleuseGetToken({ token });
         const user = await getUserInfo();
 
         // id, name 따로 저장하길래 한번에 해보았음
@@ -116,14 +133,7 @@ const Login = () => {
         router.replace('(tabs)');
       }
     }
-  }, [
-    response,
-    getDeviceToken,
-    setAccessToken,
-    setIsLoggedIn,
-    getUserInfo,
-    setUserId,
-  ]);
+  }, [response, getUserInfo, setUserId, handleuseGetToken]);
 
   useEffect(() => {
     handleToken();
@@ -135,7 +145,8 @@ const Login = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
-    getAndroidClientId();
+    handleGetAndroidClientId();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
