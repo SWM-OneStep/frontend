@@ -1,6 +1,6 @@
-import { env } from '@/constants/env';
+import env from '@/constants/env';
 
-const BASE_URL = env.BASE_URL;
+export const BASE_URL = env.BASE_URL;
 
 export const API_PATH = {
   categories: `${BASE_URL}/todos/category/`,

@@ -26,14 +26,16 @@ class Api {
       throw new Error('You can only create one instance!');
     }
 
-    this.init();
-
-    // Axios 인스턴스 생성 및 인터셉터 적용
-    this.axiosInstance = axios.create({
-      baseURL: BASE_URL, // API 기본 경로 설정
-      timeout: 10000, // 타임아웃 설정
+    this.init().then(() => {
+      this.axiosInstance = axios.create({
+        baseURL: BASE_URL, // API 기본 경로 설정
+        timeout: 10000, // 타임아웃 설정
+      });
+      this.setUpInstance();
     });
+  }
 
+  async setUpInstance() {
     this.axiosInstance.interceptors.response.use(
       response => {
         return response;
@@ -53,14 +55,15 @@ class Api {
           originalRequest._retry = true;
 
           try {
+            const refreshToken = await AsyncStorage.getItem('refreshToken');
             const responseData = await this.axiosInstance.post(API_PATH.renew, {
-              refresh: this.refreshToken,
+              data: {
+                refresh: refreshToken,
+              },
             });
             const newAccessToken = responseData.data.access;
             await AsyncStorage.setItem('accessToken', newAccessToken);
             this.accessToken = newAccessToken;
-
-            // 기존 요청에 새로운 토큰 적용
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
             return this.axiosInstance(originalRequest);
           } catch (e) {
@@ -86,12 +89,13 @@ class Api {
     try {
       const response = await this.axiosInstance.request({
         url,
-        ...options,
+        method: options.method,
         headers: {
-          ...options.headers,
+          ...options,
           'Content-Type': 'application/json',
           Authorization: `Bearer ${this.accessToken}`,
         },
+        data: options.data,
       });
       return response.data;
     } catch (e) {
@@ -202,6 +206,12 @@ class Api {
       .catch(error => {
         Sentry.captureException(error);
       });
+  }
+
+  getAndroidClientId() {
+    return this.request(API_PATH.android, {
+      method: 'GET',
+    });
   }
 }
 
