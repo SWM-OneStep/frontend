@@ -55,11 +55,8 @@ class Api {
           originalRequest._retry = true;
 
           try {
-            const refreshToken = await AsyncStorage.getItem('refreshToken');
             const responseData = await this.axiosInstance.post(API_PATH.renew, {
-              data: {
-                refresh: refreshToken,
-              },
+              refresh: this.refreshToken,
             });
             const newAccessToken = responseData.data.access;
             await AsyncStorage.setItem('accessToken', newAccessToken);
