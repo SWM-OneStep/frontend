@@ -1,5 +1,7 @@
 import { Api } from '@/utils/api';
+import useApi from '@/utils/useApi';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
 
 export const SUBTODO_QUERY_KEY = '/sub';
 
@@ -10,8 +12,10 @@ const addSubTodoFetcher = async ({ accessToken, todoData }) => {
 
 export const useSubTodoAddMutation = () => {
   const queryClient = useQueryClient();
+  const { useAddSubTodo } = useApi();
+  const handleUseAddSubTodo = useCallback(useAddSubTodo, [useAddSubTodo]);
   return useMutation({
-    mutationFn: addSubTodoFetcher,
+    mutationFn: () => handleUseAddSubTodo(),
     onSuccess: () => queryClient.invalidateQueries(SUBTODO_QUERY_KEY),
   });
 };

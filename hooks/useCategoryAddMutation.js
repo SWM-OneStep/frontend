@@ -1,9 +1,11 @@
-import { Api } from '@/utils/api';
+import Api from '@/utils/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+// eslint-disable-next-line import/namespace
 import { QUERY_KEY } from './useCategoriesQuery';
 
-const fetcher = async ({ accessToken, addCategoryData }) => {
-  const data = await Api.addCategory(accessToken, addCategoryData);
+const fetcher = ({ accessToken, addCategoryData }) => {
+  const { addCategory } = Api();
+  const data = addCategory(accessToken, addCategoryData);
   return data;
 };
 
