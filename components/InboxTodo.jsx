@@ -15,7 +15,6 @@ import { useContext, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import InboxSubTodo from './InboxSubTodo';
 
-import Api from '@/utils/api';
 import TodoModal from './TodoModal';
 
 const InboxTodo = ({ item, drag, isActive }) => {
@@ -32,7 +31,6 @@ const InboxTodo = ({ item, drag, isActive }) => {
   const { mutate: deleteInboxTodo } = useTodoDeleteMutation();
   const { mutate: addInboxSubTodo } = useSubTodoAddMutation();
   const { userId } = useContext(LoginContext);
-  const { useMetadata } = Api();
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -44,7 +42,7 @@ const InboxTodo = ({ item, drag, isActive }) => {
       todoId: item.id,
       content: content,
     };
-    updateInboxTodo(updatedData, useMetadata);
+    updateInboxTodo(updatedData);
   };
 
   const tmpOrder = () => {

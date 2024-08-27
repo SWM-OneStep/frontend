@@ -1,11 +1,12 @@
-import { default as Api } from '@/utils/api';
+import Api from '@/utils/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const SUBTODO_QUERY_KEY = '/sub';
 
-const addSubTodoFetcher = async ({ todoData, headerFunction }) => {
-  const { addSubTodo } = Api();
-  return addSubTodo(todoData, headerFunction);
+const api = Api.getInstance();
+
+const addSubTodoFetcher = async todoData => {
+  return api.addSubTodo(todoData);
 };
 
 export const useSubTodoAddMutation = () => {
@@ -16,9 +17,8 @@ export const useSubTodoAddMutation = () => {
   });
 };
 
-const updateSubTodoFetcher = async (updatedData, headerFunction) => {
-  const { updateSubTodo } = Api();
-  return updateSubTodo(updatedData, headerFunction);
+const updateSubTodoFetcher = async updatedData => {
+  return api.updateSubTodo(updatedData);
 };
 
 export const useSubTodoUpdateMutation = () => {
@@ -29,9 +29,8 @@ export const useSubTodoUpdateMutation = () => {
   });
 };
 
-const deleteSubTodoFetcher = async (subTodoId, headerFunction) => {
-  const { deleteSubTodo } = Api();
-  return deleteSubTodo(subTodoId, headerFunction);
+const deleteSubTodoFetcher = async subTodoId => {
+  return api.deleteSubTodo(subTodoId);
 };
 
 export const useSubTodoDeleteMutation = () => {

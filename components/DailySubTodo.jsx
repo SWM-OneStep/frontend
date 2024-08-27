@@ -4,7 +4,6 @@ import {
   SUBTODO_QUERY_KEY,
   useSubTodoUpdateMutation,
 } from '@/hooks/useSubTodoMutations';
-import Api from '@/utils/api';
 import {
   DAILYTODO_SUBTODOCOMPLETE_CLICK_EVENT,
   handleLogEvent,
@@ -18,11 +17,9 @@ const DailySubTodo = ({ item }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
-  const { accessToken } = useContext(LoginContext);
   const [modalVisible, setModalVisible] = useState(false);
   const { mutate: updateSubTodo } = useSubTodoUpdateMutation();
   const { userId } = useContext(LoginContext);
-  const { useMetadata } = Api();
 
   const handleCheck = () => {
     setCompleted(!completed);
@@ -30,7 +27,7 @@ const DailySubTodo = ({ item }) => {
       subtodoId: item.id,
       isCompleted: !item.isCompleted,
     };
-    updateSubTodo(updatedData, useMetadata);
+    updateSubTodo(updatedData);
   };
 
   const handleEdit = () => {
@@ -43,7 +40,7 @@ const DailySubTodo = ({ item }) => {
       subtodoId: item.id,
       content: content,
     };
-    updateSubTodo(updatedData, useMetadata);
+    updateSubTodo(updatedData);
   };
 
   const checkIcon = props => {

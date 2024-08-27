@@ -10,7 +10,6 @@ import {
   useTodoDeleteMutation,
   useTodoUpdateMutation,
 } from '@/hooks/useTodoMutations';
-import Api from '@/utils/api';
 import { convertGmtToKst } from '@/utils/convertTimezone';
 import {
   handleLogEvent,
@@ -59,11 +58,7 @@ const TodoModal = ({
   onEdit = () => {},
   onSubTodoCreate = () => {},
 }) => {
-  // const setSubTodoInputActivated = useModalStore(
-  //   state => state.setSubTodoInputActivated,
-  // );
   const setModalVisible = useModalStore(state => state.setModalVisible);
-  // const setSelectedTodo = useTodoStore(state => state.setSelectedTodo);
   const { selectedDate } = useContext(DateContext);
 
   const [calendarDate, setCalendarDate] = useState(selectedDate.toDate());
@@ -76,13 +71,13 @@ const TodoModal = ({
   const { mutate: updateSubTodoDate } = useSubTodoUpdateMutation();
   const { mutate: deleteTodo } = useTodoDeleteMutation();
   const { mutate: deleteSubTodo } = useSubTodoDeleteMutation();
-  const { useMetadata } = Api();
+  // const { useMetadata } = Api();
 
   const handleDelete = async item_id => {
     if (isTodo) {
-      deleteTodo(item_id, useMetadata);
+      deleteTodo(item_id);
     } else {
-      deleteSubTodo(item_id, useMetadata);
+      deleteSubTodo(item_id);
     }
     setVisible(false);
   };
@@ -107,7 +102,7 @@ const TodoModal = ({
         todo_id: item.id,
         category_id: selectedCategory,
       };
-      updateTodoDate(updatedTodo, useMetadata);
+      updateTodoDate(updatedTodo);
     } else {
       const updatedSubTodo = {
         date: kstDate,

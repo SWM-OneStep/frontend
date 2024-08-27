@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Sentry from '@sentry/react-native';
 import axios from 'axios';
 import { API_PATH } from './config';
 
@@ -32,6 +33,7 @@ class Api {
         Authorization: `Bearer ${this.accessToken}`,
       });
     } catch (e) {
+      Sentry.captureException(e);
       if (axios.isAxiosError(e)) {
         if (
           (e.response.status === 401 &&
@@ -153,6 +155,14 @@ class Api {
     return this.request(`${API_PATH.inbox}?user_id=${userId}`, {
       method: 'GET',
     });
+  }
+  recommendSubTodo(todoId, onSuccess) {
+    return axios
+      .get(`${API_PATH.recommend}?todo_id=${todoId}`)
+      .then(onSuccess)
+      .catch(error => {
+        Sentry.captureException(error);
+      });
   }
 }
 
