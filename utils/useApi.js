@@ -187,8 +187,14 @@ const useApi = () => {
   // verifyToken: token => {
   //   return handleRequest(() => axios.post(API_PATH.verify, { token }));
   // },
-  const useVerifyToken = token => {
-    return useHandleRequest(() => axios.post(API_PATH.verify, { token }));
+  const useVerifyToken = async (token, onSuccess) => {
+    return useHandleRequest(() => axios.post(API_PATH.verify, { token }))
+      .then(response => {
+        onSuccess(response);
+      })
+      .catch(err => {
+        Sentry.captureException(err);
+      });
   };
   /**
    *

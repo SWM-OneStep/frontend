@@ -1,18 +1,16 @@
-import Api from '@/utils/api';
+import useApi from '@/utils/useApi';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-// eslint-disable-next-line import/namespace
 import { QUERY_KEY } from './useCategoriesQuery';
 
-const fetcher = ({ accessToken, addCategoryData }) => {
-  const { addCategory } = Api();
-  const data = addCategory(accessToken, addCategoryData);
-  return data;
+const useFetcher = ({ accessToken, addCategoryData }) => {
+  const { useAddCategory } = useApi();
+  return useAddCategory(accessToken, addCategoryData);
 };
 
 const useCategoryAddMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: fetcher,
+    mutationFn: useFetcher,
     onSuccess: () => queryClient.invalidateQueries(QUERY_KEY),
   });
 };
