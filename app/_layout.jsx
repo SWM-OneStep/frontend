@@ -1,13 +1,13 @@
+import { env } from '@/constants/env';
 import LoginProvider from '@/contexts/LoginContext';
 import { default as theme } from '@/theme/theme.json';
 import * as eva from '@eva-design/eva';
+import * as Sentry from '@sentry/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import * as Sentry from '@sentry/react-native';
-import { env } from '@/constants/env';
 
 const SENTRY_MODE = env.SENTRY_MODE;
 

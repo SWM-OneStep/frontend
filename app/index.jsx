@@ -6,6 +6,7 @@ import {
 } from '@/utils/asyncStorageUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
+import * as Sentry from '@sentry/react-native';
 import { Button, Text } from '@ui-kitten/components';
 import * as Google from 'expo-auth-session/providers/google';
 import { router } from 'expo-router';
@@ -13,7 +14,6 @@ import { StatusBar } from 'expo-status-bar';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { GoogleIcon } from './../components/GoogleIcon';
-import * as Sentry from '@sentry/react-native';
 
 const imageSource = require('../assets/todo_logo.png');
 
