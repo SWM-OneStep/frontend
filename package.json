@@ -5,11 +5,17 @@
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
+    "android:local": "APP_MODE=local expo run:android",
+    "android:dev": "APP_MODE=development expo run:android",
+    "android:stage": "APP_MODE=staging expo run:android",
+    "android:prod": "APP_MODE=production expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "eslint .",
     "postinstall": "patch-package",
+    "start:local": "APP_MODE=local expo start",
     "start:dev": "APP_MODE=development expo start",
+    "start:stage": "APP_MODE=staging expo start",
     "start:prod": "APP_MODE=production expo start"
   },
   "dependencies": {

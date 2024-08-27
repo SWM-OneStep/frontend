@@ -1,7 +1,9 @@
 let Config = {
-  BASE_URL: 'http://10.0.2.2:8000',
-  SENTRY_MODE: 'development',
+  BASE_URL: '',
+  SENTRY_MODE: '',
 };
+
+let googleServiceJson = null; //default
 
 if (
   process.env.APP_MODE === 'production' ||
@@ -9,19 +11,35 @@ if (
 ) {
   Config.BASE_URL = 'https://stepby.one';
   Config.SENTRY_MODE = 'production';
+  googleServiceJson =
+    process.env.GOOGLE_SERVICES_PRODUCTION_JSON ||
+    './google-services.production.json';
 } else if (
-  process.env.APP_MODE === 'development' ||
-  process.env.EXPO_PUBLIC_APP_MODE === 'development'
+  process.env.APP_MODE === 'staging' ||
+  process.env.EXPO_PUBLIC_APP_MODE === 'staging'
 ) {
   Config.BASE_URL = 'https://dev.stepby.one';
+  Config.SENTRY_MODE = 'staging';
+  googleServiceJson =
+    process.env.GOOGLE_SERVICES_STAGING_JSON ||
+    './google-services.staging.json';
+} else if (process.env.APP_MODE === 'development') {
+  Config.BASE_URL = 'https://dev.stepby.one';
+  Config.SENTRY_MODE = 'development';
+} else if (process.env.APP_MODE === 'local') {
+  Config.BASE_URL = 'http://10.0.2.2:8000';
+  Config.SENTRY_MODE = 'development';
+} else {
+  throw new Error('Invalid APP_MODE');
 }
-module.exports = {
+
+const expoConfig = {
   expo: {
     name: 'onestep',
     slug: 'onestep',
-    version: '1.0.1',
+    version: '1.0.0',
     orientation: 'portrait',
-    icon: './assets/Group 3.png',
+    icon: './assets/icon.png',
     userInterfaceStyle: 'light',
     splash: {
       image: './assets/splash.png',
@@ -31,13 +49,11 @@ module.exports = {
     ios: {
       supportsTablet: true,
       bundleIdentifier: 'com.safezone.onestep',
+      googleServicesFile: './ios/GoogleService-Info.plist',
     },
     android: {
-      googleServicesFile:
-        process.env.GOOGLE_SERVICES_JSON ||
-        './android/app/google-services.json',
       adaptiveIcon: {
-        foregroundImage: './assets/Group 3.png',
+        foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff',
       },
       package: 'com.safezone.onestep',
@@ -73,3 +89,9 @@ module.exports = {
     },
   },
 };
+
+if (googleServiceJson) {
+  expoConfig.expo.android.googleServicesFile = googleServiceJson;
+}
+
+module.exports = expoConfig;
