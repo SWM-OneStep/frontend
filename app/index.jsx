@@ -98,7 +98,6 @@ const Login = () => {
         // 이때 로딩화면 출력
         await getToken({ token });
         const user = await Api.getUserInfo(accessTokenRef.current);
-        console.log(user);
         // id, name 따로 저장하길래 한번에 해보았음
         await AsyncStorage.setItem('userId', user.id.toString());
         await AsyncStorage.setItem('userName', user.username);
