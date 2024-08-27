@@ -6,6 +6,7 @@ import {
 } from '@/utils/asyncStorageUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
+import * as Sentry from '@sentry/react-native';
 import { Button, Text } from '@ui-kitten/components';
 import * as Google from 'expo-auth-session/providers/google';
 import { router } from 'expo-router';
@@ -31,10 +32,16 @@ const Login = () => {
   const handleLocalToken = async () => {
     const token = await getAccessTokenFromLocal();
     const user = await getUserInfoFromLocal();
-    api.verifyToken(token);
-    setAccessToken(token);
-    setUserId(user.userId);
-    router.replace('(tabs)');
+    if (token && user.userId) {
+      try {
+        api.verifyToken(token);
+        setAccessToken(token);
+        setUserId(user.userId);
+        router.replace('(tabs)');
+      } catch (e) {
+        Sentry.captureException(e);
+      }
+    }
   };
 
   let accessTokenRef = useRef(null);
@@ -79,6 +86,8 @@ const Login = () => {
       if (localResponse) {
         await AsyncStorage.setItem('accessToken', localResponse.access);
         await AsyncStorage.setItem('refreshToken', localResponse.refresh);
+        api.setAccessToken(localResponse.access);
+        api.setRefreshToken(localResponse.refresh);
         accessTokenRef.current = localResponse.access;
         setAccessToken(localResponse.access);
         setRefreshToken(localResponse.refresh);
