@@ -125,6 +125,15 @@ const DailyTodo = ({ item, drag, isActive }) => {
   };
 
   const settingIcon = props => {
+    const handleOnPress = () => {
+      handleLogEvent(DAILYTODO_MEATBALLMENU_CLICK_EVENT, {
+        time: new Date().toISOString(),
+        userId: userId,
+        todoId: item.id,
+      });
+      setModalVisible(true);
+    };
+
     return (
       <View
         style={{
@@ -145,16 +154,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
             />
           </TouchableOpacity>
         )}
-        <TouchableOpacity
-          onPress={() => {
-            handleLogEvent(DAILYTODO_MEATBALLMENU_CLICK_EVENT, {
-              time: new Date().toISOString(),
-              userId: userId,
-              todoId: item.id,
-            });
-            setModalVisible(true);
-          }}
-        >
+        <TouchableOpacity onPress={handleOnPress}>
           <Icon
             {...props}
             name="more-horizontal-outline"
