@@ -1,12 +1,8 @@
-import { LoginContext } from '@/contexts/LoginContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
 import axios from 'axios';
 import { router } from 'expo-router';
-import { useContext } from 'react';
 import { API_PATH } from './config';
-
-let recentAccessToken;
 
 AsyncStorage.getItem('accessToken').then(response => {
   recentAccessToken = response;
@@ -15,12 +11,17 @@ AsyncStorage.getItem('accessToken').then(response => {
 const TOKEN_INVALID_OR_EXPIRED_MESSAGE = 'Token is invalid or expired';
 const TOKEN_INVALID_TYPE_MESSAGE = 'Given token not valid for any token type';
 
+const retrieveRecentAccessToken = async () => {
+  return await AsyncStorage.getItem('accessToken');
+};
+
+let recentAccessToken = retrieveRecentAccessToken();
+
 const Api = () => {
   const useMetadata = () => {
-    const { accessToken } = useContext(LoginContext);
     let headers = {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${recentAccessToken}`,
     };
 
     return { headers };
@@ -32,7 +33,6 @@ const Api = () => {
       return response.data;
     } catch (err) {
       Sentry.captureException(err);
-      console.log('err', err);
       if (
         (err.response.status === 401 &&
           err.response.data.detail === TOKEN_INVALID_OR_EXPIRED_MESSAGE) ||
@@ -46,6 +46,7 @@ const Api = () => {
             access: accessToken,
           });
           await AsyncStorage.setItem('accessToken', responseData.data.access);
+          recentAccessToken = responseData.data.access;
 
           const secondRequest = await request(headerFunction());
           return secondRequest.data;

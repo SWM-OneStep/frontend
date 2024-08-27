@@ -15,7 +15,7 @@ import { useContext, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import InboxSubTodo from './InboxSubTodo';
 
-import Api from '@/utils/Api';
+import Api from '@/utils/api';
 import TodoModal from './TodoModal';
 
 const InboxTodo = ({ item, drag, isActive }) => {

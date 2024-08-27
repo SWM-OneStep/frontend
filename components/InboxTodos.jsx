@@ -3,7 +3,7 @@ import { LoginContext } from '@/contexts/LoginContext';
 import useTodoStore from '@/contexts/TodoStore';
 import useInboxTodoQuery from '@/hooks/useInboxTodoQuery';
 import { useTodoAddMutation } from '@/hooks/useTodoMutations';
-import Api from '@/utils/Api';
+import Api from '@/utils/api';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
   handleScroll,
