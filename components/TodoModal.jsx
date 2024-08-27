@@ -10,6 +10,7 @@ import {
   useTodoDeleteMutation,
   useTodoUpdateMutation,
 } from '@/hooks/useTodoMutations';
+import Api from '@/utils/Api';
 import { convertGmtToKst } from '@/utils/convertTimezone';
 import {
   handleLogEvent,
@@ -75,12 +76,13 @@ const TodoModal = ({
   const { mutate: updateSubTodoDate } = useSubTodoUpdateMutation();
   const { mutate: deleteTodo } = useTodoDeleteMutation();
   const { mutate: deleteSubTodo } = useSubTodoDeleteMutation();
+  const { useMetadata } = Api();
 
   const handleDelete = async item_id => {
     if (isTodo) {
-      deleteTodo({ accessToken: accessToken, todoId: item_id });
+      deleteTodo(item_id, useMetadata);
     } else {
-      deleteSubTodo({ accessToken: accessToken, subTodoId: item_id });
+      deleteSubTodo(item_id, useMetadata);
     }
     setVisible(false);
   };
@@ -105,10 +107,7 @@ const TodoModal = ({
         todo_id: item.id,
         category_id: selectedCategory,
       };
-      updateTodoDate({
-        accessToken: accessToken,
-        updatedData: updatedTodo,
-      });
+      updateTodoDate(updatedTodo, useMetadata);
     } else {
       const updatedSubTodo = {
         date: kstDate,

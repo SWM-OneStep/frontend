@@ -1,9 +1,9 @@
 import { LoginContext } from '@/contexts/LoginContext';
+import useApi from '@/utils/api';
 import {
   getAccessTokenFromLocal,
   getUserInfoFromLocal,
 } from '@/utils/asyncStorageUtils';
-import useApi from '@/utils/useApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import { Button, Text } from '@ui-kitten/components';
@@ -26,32 +26,28 @@ const Login = () => {
     setRefreshToken,
   } = useContext(LoginContext);
 
-  const { useVerifyToken, useGetUserInfo, useGoogleLogin, getAndroidClientId } =
-    useApi();
-  const useHandleLocalToken = async () => {
+  const handleLocalToken = async () => {
     const token = await getAccessTokenFromLocal();
     const user = await getUserInfoFromLocal();
-    useVerifyToken(token, () => {
-      setAccessToken(token);
-      setUserId(user.userId);
-      router.replace('(tabs)');
-    });
+    verifyToken(token, useMetadata);
+    setAccessToken(token);
+    setUserId(user.userId);
+    router.replace('(tabs)');
   };
+
+  const {
+    useMetadata,
+    verifyToken,
+    getUserInfo,
+    googleLogin,
+    getAndroidClientId,
+  } = useApi();
 
   let accessTokenRef = useRef(null);
   const config = {
     androidClientId,
   };
   const [request, response, promptAsync] = Google.useAuthRequest(config);
-
-  const handleGetAndroidClientId = async () => {
-    const apiResponse = await getAndroidClientId();
-    setAndroidClientId(apiResponse.androidClientId);
-  };
-
-  const handleLocalToken = async () => {
-    return useHandleLocalToken;
-  };
 
   useEffect(() => {
     handleLocalToken();
@@ -77,37 +73,33 @@ const Login = () => {
     }
   }, []);
 
-  const useHandleGetUserInfo = () => {
-    return useGetUserInfo(accessTokenRef.current);
-  };
+  const getToken = useCallback(
+    async ({ token }) => {
+      const deviceToken = await getDeviceToken();
+      const tokenData = {
+        token: token,
+        deviceToken: deviceToken,
+      };
+      const localResponse = await googleLogin(tokenData, useMetadata);
 
-  const getUserInfo = useCallback(useHandleGetUserInfo, [useHandleGetUserInfo]);
-
-  const useGetToken = async ({ token }) => {
-    const deviceToken = await getDeviceToken();
-    const tokenData = {
-      token: token,
-      deviceToken: deviceToken,
-    };
-    const localResponse = await useGoogleLogin(tokenData);
-
-    if (localResponse) {
-      await AsyncStorage.setItem('accessToken', localResponse.access);
-      await AsyncStorage.setItem('refreshToken', localResponse.refresh);
-      accessTokenRef.current = localResponse.access;
-      setAccessToken(localResponse.access);
-      setRefreshToken(localResponse.refresh);
-      setIsLoggedIn(true);
-    }
-  };
-
-  const handleuseGetToken = useCallback(useGetToken, [
-    getDeviceToken,
-    setAccessToken,
-    setIsLoggedIn,
-    setRefreshToken,
-    useGoogleLogin,
-  ]);
+      if (localResponse) {
+        await AsyncStorage.setItem('accessToken', localResponse.access);
+        await AsyncStorage.setItem('refreshToken', localResponse.refresh);
+        accessTokenRef.current = localResponse.access;
+        setAccessToken(localResponse.access);
+        setRefreshToken(localResponse.refresh);
+        setIsLoggedIn(true);
+      }
+    },
+    [
+      getDeviceToken,
+      googleLogin,
+      setAccessToken,
+      setIsLoggedIn,
+      setRefreshToken,
+      useMetadata,
+    ],
+  );
 
   const handleToken = useCallback(async () => {
     if (response?.type === 'success') {
@@ -116,8 +108,8 @@ const Login = () => {
         // 여기서 토큰을 사용하여 추가 작업을 수행할 수 있습니다.
         // 예: 상태 업데이트, API 호출 등
         // 이때 로딩화면 출력
-        await handleuseGetToken({ token });
-        const user = await getUserInfo();
+        await getToken({ token });
+        const user = await getUserInfo(useMetadata);
 
         // id, name 따로 저장하길래 한번에 해보았음
         await AsyncStorage.setItem('userId', user.id.toString());
@@ -127,7 +119,7 @@ const Login = () => {
         router.replace('(tabs)');
       }
     }
-  }, [response, getUserInfo, setUserId, handleuseGetToken]);
+  }, [response, getUserInfo, setUserId, getToken, useMetadata]);
 
   useEffect(() => {
     handleToken();
@@ -135,8 +127,7 @@ const Login = () => {
   }, [response]);
 
   useEffect(() => {
-    handleGetAndroidClientId();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    getAndroidClientId();
   }, []);
 
   return (

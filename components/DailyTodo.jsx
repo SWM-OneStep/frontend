@@ -9,20 +9,21 @@ import {
   handleLogEvent,
 } from '@/utils/logEvent';
 import {
+  Button,
   Icon,
   Input,
   List,
   ListItem,
   Text,
   useTheme,
-  Button,
 } from '@ui-kitten/components';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useContext, useState } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import DailySubTodo from './DailySubTodo';
 
-import TodoModal from './TodoModal';
+import Api from '@/utils/api';
 import SubTodoGenerateModal from './SubTodoGenerateModal';
+import TodoModal from './TodoModal';
 
 const DailyTodo = ({ item, drag, isActive }) => {
   const [content, setContent] = useState(item.content);
@@ -44,6 +45,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
     subTodoGenerateAlertModalVisible,
     setSubTodoGenerateAlertModalVisible,
   ] = useState(false);
+  const { useMetadata } = Api();
 
   const handleCheck = () => {
     setCompleted(!completed);
@@ -51,7 +53,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
       todoId: item.id,
       isCompleted: !item.isCompleted,
     };
-    updateTodo({ accessToken: accessToken, updatedData: updatedData });
+    updateTodo(updatedData, useMetadata);
   };
 
   const tmpOrder = (seed = 0) => {
@@ -66,7 +68,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
       todoId: item.id,
       content: content,
     };
-    updateTodo({ accessToken: accessToken, updatedData: updatedData });
+    updateTodo(updatedData, useMetadata);
   };
 
   const handleSubTodoCreate = () => {

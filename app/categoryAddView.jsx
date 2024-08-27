@@ -1,4 +1,6 @@
 import { LoginContext } from '@/contexts/LoginContext';
+import useCategoryAddMutation from '@/hooks/useCategoryAddMutation';
+import Api from '@/utils/api';
 import * as eva from '@eva-design/eva';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import {
@@ -11,12 +13,12 @@ import {
 import { useRouter } from 'expo-router';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { FlatList, SafeAreaView, TouchableOpacity, View } from 'react-native';
-import useCategoryAddMutation from '@/hooks/useCategoryAddMutation';
 
 const colors = ['#FF3D71', '#FF7E29', '#FFC233', '#4CAF50', '#00BCD4'];
 
 const CategoryAddView = () => {
   const router = useRouter();
+  const { useMetadata } = Api();
   const [categoryName, setCategoryName] = useState('');
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const bottomSheetRef = useRef(null);
@@ -50,7 +52,7 @@ const CategoryAddView = () => {
       color: selectedColor,
       order: tmpOrder(),
     };
-    addCategory({ accessToken, addCategoryData });
+    addCategory({ addCategoryData, useMetadata });
   };
 
   const renderColorItem = ({ item }) => (
