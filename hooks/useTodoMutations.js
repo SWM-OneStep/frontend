@@ -1,21 +1,17 @@
-import useApi from '@/utils/useApi';
+import { default as Api } from '@/utils/useApi';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCallback } from 'react';
 import { TODO_QUERY_KEY } from './useTodoQuery';
 
 // 생성 (Add Todo)
-const useAddTodoFetcher = async ({ accessToken, todoData }) => {
-  const { useAddTodo } = useApi();
-  return useAddTodo(accessToken, todoData);
+const addTodoFetcher = async ({ accessToken, todoData }) => {
+  const { addTodo } = Api();
+  return addTodo(accessToken, todoData);
 };
 
 export const useTodoAddMutation = () => {
   const queryClient = useQueryClient();
-  const handleUseAddTodoFetcher = useCallback(useAddTodoFetcher, [
-    useAddTodoFetcher,
-  ]);
   return useMutation({
-    mutationFn: handleUseAddTodoFetcher,
+    mutationFn: addTodoFetcher,
     onSuccess: () => {
       queryClient.invalidateQueries(TODO_QUERY_KEY);
     },
@@ -23,18 +19,15 @@ export const useTodoAddMutation = () => {
 };
 
 // 수정 (Update Todo)
-const useUpdateTodoFetcher = async ({ accessToken, updatedData }) => {
-  const { useUpdateTodo } = useApi();
-  return useUpdateTodo({ accessToken: accessToken, updateData: updatedData });
+const updateTodoFetcher = async ({ accessToken, updatedData }) => {
+  const { updateTodo } = Api();
+  return updateTodo({ accessToken: accessToken, updateData: updatedData });
 };
 
 export const useTodoUpdateMutation = () => {
   const queryClient = useQueryClient();
-  const handleUseUpdateSubTodoFetcher = useCallback(useUpdateTodoFetcher, [
-    useUpdateTodoFetcher,
-  ]);
   return useMutation({
-    mutationFn: handleUseUpdateSubTodoFetcher,
+    mutationFn: updateTodoFetcher,
     onSuccess: () => {
       queryClient.invalidateQueries(TODO_QUERY_KEY);
     },
@@ -42,18 +35,15 @@ export const useTodoUpdateMutation = () => {
 };
 
 // 삭제 (Delete Todo)
-const useDeleteTodoFetcher = async ({ accessToken, todoId }) => {
-  const { useDeleteTodo } = useApi();
-  return useDeleteTodo({ accessToken: accessToken, todoId: todoId });
+const deleteTodoFetcher = async ({ accessToken, todoId }) => {
+  const { deleteTodo } = Api();
+  return deleteTodo({ accessToken: accessToken, todoId: todoId });
 };
 
 export const useTodoDeleteMutation = () => {
   const queryClient = useQueryClient();
-  const handleUseDeleteTodoFetcher = useCallback(useDeleteTodoFetcher, [
-    useDeleteTodoFetcher,
-  ]);
   return useMutation({
-    mutationFn: handleUseDeleteTodoFetcher,
+    mutationFn: deleteTodoFetcher,
     onSuccess: () => queryClient.invalidateQueries(TODO_QUERY_KEY),
   });
 };

@@ -1,16 +1,16 @@
-import useApi from '@/utils/useApi';
+import Api from '@/utils/useApi';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEY } from './useCategoriesQuery';
 
-const useFetcher = ({ accessToken, addCategoryData }) => {
-  const { useAddCategory } = useApi();
-  return useAddCategory(accessToken, addCategoryData);
+const fetcher = ({ accessToken, addCategoryData }) => {
+  const { addCategory } = Api();
+  return addCategory(accessToken, addCategoryData);
 };
 
 const useCategoryAddMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: useFetcher,
+    mutationFn: fetcher,
     onSuccess: () => queryClient.invalidateQueries(QUERY_KEY),
   });
 };
