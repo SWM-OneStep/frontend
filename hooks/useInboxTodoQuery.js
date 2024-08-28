@@ -1,7 +1,6 @@
 // useCategoriesQuery.js
 import { Api } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
-import * as Sentry from '@sentry/react-native';
 
 export const INBOX_QUERY_KEY = '/inbox';
 
@@ -18,6 +17,20 @@ const useInboxTodoQuery = (accessToken, userId, onSuccess) => {
     // refetchIntervalInBackground: true,
     keepPreviousData: true,
     onSuccess: onSuccess,
+  });
+};
+
+export const useInboxTodoQueryByNotification = (
+  accessToken,
+  userId,
+  onSuccess,
+) => {
+  return useQuery({
+    queryKey: [INBOX_QUERY_KEY],
+    queryFn: () => fetcher(accessToken, userId),
+    keepPreviousData: true,
+    onSuccess: onSuccess,
+    enabled: false,
   });
 };
 
