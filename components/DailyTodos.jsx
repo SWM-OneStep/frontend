@@ -7,7 +7,10 @@ import {
   useTodoAddMutation,
   useTodoUpdateMutation,
 } from '@/hooks/useTodoMutations';
-import { default as useTodosQuery } from '@/hooks/useTodoQuery';
+import {
+  default as useTodosQuery,
+  useTodosQueryByNotification,
+} from '@/hooks/useTodoQuery';
 import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
@@ -18,6 +21,7 @@ import {
   TODAYVIEW_SCROLL_EVENT,
   TODAYVIEW_TEXTINPUT_SUBMIT_EVENT,
 } from '@/utils/logEvent';
+import messaging from '@react-native-firebase/messaging';
 import { Input } from '@ui-kitten/components';
 import { LexoRank } from 'lexorank';
 import { Fragment, useContext, useEffect, useState } from 'react';
@@ -44,6 +48,37 @@ const DailyTodos = () => {
     isSuccess: isTodosQuerySuccess,
   } = useTodosQuery(accessToken, userId);
   const currentTodos = useTodoStore(state => state.currentTodos);
+  const {
+    data: notificationData,
+    isSuccess: isNotificationSuccess,
+    refetch: notificationRefetch,
+  } = useTodosQueryByNotification(accessToken, userId);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      notificationRefetch();
+      if (isNotificationSuccess) {
+        useTodoStore.setState({ todos: notificationData });
+        let filteredTodos = notificationData.filter(
+          todo =>
+            todo.categoryId === selectedCategory &&
+            isTodoIncludedInTodayView(
+              todo.startDate,
+              todo.endDate,
+              selectedDate.format('YYYY-MM-DD'),
+            ),
+        );
+        useTodoStore.setState({ currentTodos: filteredTodos });
+      }
+    });
+    return unsubscribe;
+  }, [
+    notificationRefetch,
+    notificationData,
+    isNotificationSuccess,
+    selectedDate,
+    selectedCategory,
+  ]);
 
   useEffect(() => {
     if (isTodosQuerySuccess) {

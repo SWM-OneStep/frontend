@@ -17,6 +17,18 @@ const useTodosQuery = (accessToken, userId, onSuccess) => {
     refetchIntervalInBackground: true,
     keepPreviousData: true,
     onSuccess: onSuccess,
+    staleTime: 0,
+  });
+};
+
+export const useTodosQueryByNotification = (accessToken, userId, onSuccess) => {
+  return useQuery({
+    queryKey: [TODO_QUERY_KEY],
+    queryFn: () => fetcher(accessToken, userId),
+    onSuccess: onSuccess,
+    keepPreviousData: true,
+    staleTime: 0,
+    enabled: false,
   });
 };
 
