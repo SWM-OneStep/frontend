@@ -1,6 +1,8 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
 import { LoginContext } from '@/contexts/LoginContext';
-import useCategoriesQuery from '@/hooks/useCategoriesQuery';
+import useCategoriesQuery, {
+  useCategoriesQueryByNotification,
+} from '@/hooks/useCategoriesQuery';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
   handleScroll,
@@ -11,6 +13,7 @@ import {
   CATEGORY_SCROLL_EVENT,
   handleLogEvent,
 } from '@/utils/logEvent';
+import messaging from '@react-native-firebase/messaging';
 import { Button, Icon, Layout, Text } from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
@@ -28,6 +31,12 @@ const CategoryScroll = () => {
     userId,
   );
 
+  const {
+    data: notificationData,
+    isSuccess: isNotificationSuccess,
+    refetch: notificationRefetch,
+  } = useCategoriesQueryByNotification(accessToken, userId);
+
   useEffect(() => {
     if (isSuccess) {
       const sorted =
@@ -42,6 +51,20 @@ const CategoryScroll = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderedCategories]);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      notificationRefetch();
+      if (isNotificationSuccess) {
+        const sorted =
+          notificationData.length > 1
+            ? [...notificationData].sort((a, b) => a.id - b.id)
+            : notificationData;
+        setOrderedCategories(sorted);
+      }
+    });
+    return unsubscribe;
+  }, [notificationData, isNotificationSuccess, notificationRefetch]);
 
   if (isLoading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
