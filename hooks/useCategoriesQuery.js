@@ -20,4 +20,18 @@ const useCategoriesQuery = (accessToken, userId, onSuccess) => {
   });
 };
 
+export const useCategoriesQueryByNotification = (
+  accessToken,
+  userId,
+  onSuccess,
+) => {
+  return useQuery({
+    queryKey: [QUERY_KEY],
+    queryFn: () => fetcher(accessToken, userId),
+    keepPreviousData: true,
+    onSuccess: onSuccess,
+    enabled: false,
+  });
+};
+
 export default useCategoriesQuery;
