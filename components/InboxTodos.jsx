@@ -1,22 +1,25 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useTodoStore from '@/contexts/TodoStore';
-import useInboxTodoQuery from '@/hooks/useInboxTodoQuery';
+import useInboxTodoQuery, {
+  useInboxTodoQueryByNotification,
+} from '@/hooks/useInboxTodoQuery';
 import { useTodoAddMutation } from '@/hooks/useTodoMutations';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
   handleScroll,
 } from '@/utils/handleScroll';
 import { INBOXVIEW_SCROLL_EVENT } from '@/utils/logEvent';
+import messaging from '@react-native-firebase/messaging';
 import { Input } from '@ui-kitten/components';
 import { LexoRank } from 'lexorank';
 import { useContext, useEffect, useState } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import InboxTodo from './InboxTodo';
+import { StyleSheet, Text } from 'react-native';
 import DraggableFlatList, {
   ScaleDecorator,
 } from 'react-native-draggable-flatlist';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import InboxTodo from './InboxTodo';
 
 const InboxTodos = () => {
   const [input, setInput] = useState('');
@@ -35,6 +38,11 @@ const InboxTodos = () => {
   );
   const { mutate: addInboxTodo } = useTodoAddMutation();
   const { mutate: updateTodo } = useTodoAddMutation();
+  const {
+    data: notificationData,
+    isSuccess: isNotificationSuccess,
+    refetch: notificationRefetch,
+  } = useInboxTodoQueryByNotification(accessToken, userId);
   const renderTodo = ({ item, drag, isActive }) => {
     return (
       <ScaleDecorator>
@@ -83,6 +91,26 @@ const InboxTodos = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isInboxTodoQuerySuccess, inboxTodoData, selectedCategory]);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      notificationRefetch();
+      if (isNotificationSuccess) {
+        setInboxTodos(notificationData);
+        let filteredTodos = notificationData.filter(
+          todo => todo.categoryId === selectedCategory,
+        );
+        setInboxCurrentTodos(filteredTodos);
+      }
+    });
+    return unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    isNotificationSuccess,
+    notificationData,
+    notificationRefetch,
+    selectedCategory,
+  ]);
 
   if (isLoading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
