@@ -113,10 +113,10 @@ const Login = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response]);
 
-  // useEffect(() => {
-  //   handleLocalToken();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  useEffect(() => {
+    handleLocalToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     getAndroidClientId();
   }, []);

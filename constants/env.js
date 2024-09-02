@@ -27,5 +27,9 @@ export const getSentryConfig = () => {
           replaysOnErrorSampleRate: 1.0,
         },
       };
+    case 'development':
+      return {
+        tracesSampleRate: 0.1,
+      };
   }
 };

@@ -5,32 +5,37 @@ let Config = {
 
 let googleServiceJson = null; //default
 
-if (
-  process.env.APP_MODE === 'production' ||
-  process.env.EXPO_PUBLIC_APP_MODE === 'production'
-) {
-  Config.BASE_URL = 'https://stepby.one';
-  Config.SENTRY_MODE = 'production';
-  googleServiceJson =
-    process.env.GOOGLE_SERVICES_PRODUCTION_JSON ||
-    './google-services.production.json';
-} else if (
-  process.env.APP_MODE === 'staging' ||
-  process.env.EXPO_PUBLIC_APP_MODE === 'staging'
-) {
-  Config.BASE_URL = 'https://dev.stepby.one';
-  Config.SENTRY_MODE = 'staging';
-  googleServiceJson =
-    process.env.GOOGLE_SERVICES_STAGING_JSON ||
-    './google-services.staging.json';
-} else if (process.env.APP_MODE === 'development') {
-  Config.BASE_URL = 'https://dev.stepby.one';
-  Config.SENTRY_MODE = 'development';
-} else if (process.env.APP_MODE === 'local') {
-  Config.BASE_URL = 'http://10.0.2.2:8000';
-  Config.SENTRY_MODE = 'development';
-} else {
-  throw new Error('Invalid APP_MODE');
+switch (process.env.APP_MODE || process.env.EXPO_PUBLIC_APP_MODE) {
+  case 'production':
+    Config.BASE_URL = 'https://stepby.one';
+    Config.SENTRY_MODE = 'production';
+    googleServiceJson =
+      process.env.GOOGLE_SERVICES_PRODUCTION_JSON ||
+      './google-services.production.json';
+    break;
+
+  case 'staging':
+    Config.BASE_URL = 'https://dev.stepby.one';
+    Config.SENTRY_MODE = 'staging';
+    googleServiceJson =
+      process.env.GOOGLE_SERVICES_STAGING_JSON ||
+      './google-services.staging.json';
+    break;
+
+  case 'development':
+    Config.BASE_URL = 'https://dev.stepby.one';
+    Config.SENTRY_MODE = 'development';
+    googleServiceJson = './google-services.development.json';
+    break;
+
+  case 'local':
+    Config.BASE_URL = 'http://10.0.2.2:8000';
+    Config.SENTRY_MODE = 'development';
+    googleServiceJson = './google-services.development.json';
+    break;
+
+  default:
+    throw new Error('Invalid APP_MODE');
 }
 
 const expoConfig = {
