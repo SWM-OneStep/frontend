@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Modal, Card, Text, Button } from '@ui-kitten/components';
 import axios from 'axios';
 import { API_PATH } from '@/utils/config';
 import * as Sentry from '@sentry/react-native';
+import { LoginContext } from '@/contexts/LoginContext';
 
 const SubTodoGenerateModal = ({
   modalVisible,
@@ -11,10 +12,16 @@ const SubTodoGenerateModal = ({
   setGeneratedSubToDos,
   todoId,
 }) => {
+  const { accessToken } = useContext(LoginContext);
   const handleAddToDo = () => {
     // LLM API 호출 로직 추가
     axios
-      .get(`${API_PATH.recommend}?todo_id=${todoId}`)
+      .get(`${API_PATH.recommend}?todo_id=${todoId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
       .then(response => {
         setGeneratedSubToDos(response.data.children);
         setModalVisible(false);

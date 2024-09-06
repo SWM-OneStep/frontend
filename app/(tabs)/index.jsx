@@ -6,7 +6,7 @@ import DateProvider from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import { handleLogEvent, TODAYVIEW_VIEW_EVENT } from '@/utils/logEvent';
 import React, { useContext } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet, Platform, StatusBar } from 'react-native';
 
 const TodayView = () => {
   const { userId } = useContext(LoginContext);
@@ -30,5 +30,9 @@ const TodayView = () => {
 export default TodayView;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: 10, backgroundColor: 'white' },
+  container: {
+    flex: 1,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 10,
+    backgroundColor: 'white',
+  },
 });

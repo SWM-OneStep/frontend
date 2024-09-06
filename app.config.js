@@ -1,27 +1,48 @@
-const { version } = require('joi');
-
 let Config = {
-  BASE_URL: 'https://10.0.0.2:8000',
-  SENTRY_MODE: 'development',
+  BASE_URL: '',
+  SENTRY_MODE: '',
 };
 
-if (
-  process.env.APP_MODE === 'production' ||
-  process.env.EXPO_PUBLIC_APP_MODE === 'production'
-) {
-  Config.BASE_URL = 'https://stepby.one';
-  Config.SENTRY_MODE = 'production';
-} else if (
-  process.env.APP_MODE === 'development' ||
-  process.env.EXPO_PUBLIC_APP_MODE === 'development'
-) {
-  Config.BASE_URL = 'https://dev.stepby.one';
+let googleServiceJson = null; //default
+
+switch (process.env.APP_MODE || process.env.EXPO_PUBLIC_APP_MODE) {
+  case 'production':
+    Config.BASE_URL = 'https://stepby.one';
+    Config.SENTRY_MODE = 'production';
+    googleServiceJson =
+      process.env.GOOGLE_SERVICES_PRODUCTION_JSON ||
+      './google-services.production.json';
+    break;
+
+  case 'staging':
+    Config.BASE_URL = 'https://dev.stepby.one';
+    Config.SENTRY_MODE = 'staging';
+    googleServiceJson =
+      process.env.GOOGLE_SERVICES_STAGING_JSON ||
+      './google-services.staging.json';
+    break;
+
+  case 'development':
+    Config.BASE_URL = 'https://dev.stepby.one';
+    Config.SENTRY_MODE = 'development';
+    googleServiceJson = './google-services.development.json';
+    break;
+
+  case 'local':
+    Config.BASE_URL = 'http://10.0.2.2:8000';
+    Config.SENTRY_MODE = 'development';
+    googleServiceJson = './google-services.development.json';
+    break;
+
+  default:
+    throw new Error('Invalid APP_MODE');
 }
-module.exports = {
+
+const expoConfig = {
   expo: {
     name: 'onestep',
     slug: 'onestep',
-    version: '1.0.1',
+    version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'light',
@@ -33,11 +54,9 @@ module.exports = {
     ios: {
       supportsTablet: true,
       bundleIdentifier: 'com.safezone.onestep',
+      googleServicesFile: './ios/GoogleService-Info.plist',
     },
     android: {
-      googleServicesFile:
-        process.env.GOOGLE_SERVICES_JSON ||
-        './android/app/google-services.json',
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff',
@@ -75,3 +94,9 @@ module.exports = {
     },
   },
 };
+
+if (googleServiceJson) {
+  expoConfig.expo.android.googleServicesFile = googleServiceJson;
+}
+
+module.exports = expoConfig;
