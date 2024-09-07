@@ -39,3 +39,6 @@ yarn-error.*
 *.tsbuildinfo
 
 .env.local
+
+# custom
+google-services.json
