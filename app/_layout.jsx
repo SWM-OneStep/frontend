@@ -1,13 +1,15 @@
+import { env, getSentryConfig } from '@/constants/env';
 import LoginProvider from '@/contexts/LoginContext';
 import { default as theme } from '@/theme/theme.json';
 import * as eva from '@eva-design/eva';
+import messaging from '@react-native-firebase/messaging';
+import * as Sentry from '@sentry/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { Stack } from 'expo-router';
+import { AppRegistry, PermissionsAndroid } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import * as Sentry from '@sentry/react-native';
-import { env, getSentryConfig } from '@/constants/env';
 
 const SENTRY_MODE = env.SENTRY_MODE;
 
@@ -23,6 +25,10 @@ Sentry.init({
     }),
   ],
 });
+
+PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+
+messaging().setBackgroundMessageHandler(async remoteMessage => {});
 
 const queryClient = new QueryClient();
 
@@ -52,3 +58,5 @@ const RootLayout = () => {
 };
 
 export default Sentry.wrap(RootLayout);
+
+AppRegistry.registerComponent('_layout', () => RootLayout);

@@ -1,11 +1,6 @@
-import messaging from '@react-native-firebase/messaging';
 import { Tabs } from 'expo-router';
 import React from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
-messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log('Message handled in the background!', remoteMessage);
-});
 
 const todayIcon = ({ color, size }) => (
   <MaterialIcons name="today" color={color} size={size} />
