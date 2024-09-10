@@ -7,6 +7,7 @@ import { LoginContext } from '@/contexts/LoginContext';
 import { handleLogEvent, TODAYVIEW_VIEW_EVENT } from '@/utils/logEvent';
 import React, { useContext } from 'react';
 import { SafeAreaView, StyleSheet, Platform, StatusBar } from 'react-native';
+import MainHeader from '@/components/MainHeader';
 
 const TodayView = () => {
   const { userId } = useContext(LoginContext);
@@ -18,6 +19,7 @@ const TodayView = () => {
     <CategoryProvider>
       <DateProvider>
         <SafeAreaView style={styles.container}>
+          <MainHeader />
           <WeeklyCalendar />
           <CategoryScroll />
           <DailyTodos />
