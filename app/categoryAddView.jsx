@@ -11,7 +11,7 @@ import {
 import { useRouter } from 'expo-router';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { FlatList, SafeAreaView, TouchableOpacity, View } from 'react-native';
-import useCategoryAddMutation from '@/hooks/useCategoryMutation';
+import { useCategoryAddMutation } from '@/hooks/useCategoryMutation';
 
 const colors = ['#FF3D71', '#FF7E29', '#FFC233', '#4CAF50', '#00BCD4'];
 
