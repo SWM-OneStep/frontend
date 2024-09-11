@@ -1,35 +1,30 @@
-import React, { useContext } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Modal, Card, Text, Button } from '@ui-kitten/components';
 import axios from 'axios';
 import { API_PATH } from '@/utils/config';
 import * as Sentry from '@sentry/react-native';
 import { LoginContext } from '@/contexts/LoginContext';
+import { useCategoryDeleteMutation } from '@/hooks/useCategoryMutation';
+import { useRouter } from 'expo-router';
 
-const EditCategoryModal = ({
-  modalVisible,
-  setModalVisible,
-  setGeneratedSubToDos,
-  todoId,
-}) => {
-  const { accessToken } = useContext(LoginContext);
+const ConfirmDeleteModal = ({ modalVisible, setModalVisible, categoryId }) => {
+  const router = useRouter();
+
+  const { mutate: deleteCategory, isSuccess: isDeleteSuccess } =
+    useCategoryDeleteMutation();
+
   const handleAddToDo = () => {
-    // LLM API 호출 로직 추가
-    axios
-      .get(`${API_PATH.recommend}?todo_id=${todoId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then(response => {
-        setGeneratedSubToDos(response.data.children);
-        setModalVisible(false);
-      })
-      .catch(error => {
-        Sentry.captureException(error);
-      });
+    deleteCategory(categoryId);
   };
+
+  useEffect(() => {
+    if (isDeleteSuccess) {
+      setModalVisible(false);
+      router.back();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDeleteSuccess]);
 
   return (
     <Modal
@@ -39,8 +34,8 @@ const EditCategoryModal = ({
     >
       <Card disabled={true} style={styles.card}>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>하위 투두 생성</Text>
-          <Text style={styles.message}>하위 투두를 생성할까요?</Text>
+          <Text style={styles.title}> 카테고리 삭제하기 </Text>
+          <Text style={styles.message}>카테고리를 정말 삭제할까요?</Text>
         </View>
         <View style={styles.buttonContainer}>
           <Button
@@ -92,8 +87,8 @@ const styles = StyleSheet.create({
   },
   button: {
     minWidth: 100,
-    marginHorizontal: 10,
+    marginHorizontal: 8,
   },
 });
 
-export default EditCategoryModal;
+export default ConfirmDeleteModal;

@@ -1,18 +1,19 @@
 import React from 'react';
-import { Layout, Text, useTheme } from '@ui-kitten/components';
-import { StyleSheet, View, Image } from 'react-native';
+import { Layout, Text, Icon } from '@ui-kitten/components';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
-const Header = ({ title, logo }) => {
-  const theme = useTheme();
-
+const SubHeader = ({ title }) => {
   return (
     <Layout style={styles.container}>
-      <View style={styles.logoContainer}>
-        <Image source={logo} style={styles.logo} />
-      </View>
+      <TouchableOpacity style={styles.iconContainer}>
+        <Icon name="arrow-back" />
+      </TouchableOpacity>
       <Text category="h1" style={styles.title}>
         {title}
       </Text>
+      <TouchableOpacity style={styles.iconContainer}>
+        <Icon name="plus-outline" />
+      </TouchableOpacity>
     </Layout>
   );
 };
@@ -22,18 +23,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
     backgroundColor: '#ffffff',
+    paddingLeft: 20,
+    paddingRight: 20,
   },
-  logoContainer: {
-    width: 40,
-    height: 40,
-  },
-  logo: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
-    borderRadius: 9999,
+  iconContainer: {
+    width: 35,
+    height: 35,
   },
   title: {
     fontWeight: 'bold',
@@ -41,4 +37,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Header;
+export default SubHeader;

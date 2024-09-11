@@ -7,16 +7,11 @@ import {
   Icon,
   useTheme,
 } from '@ui-kitten/components';
+import { router } from 'expo-router';
 
 const HeaderMenu = () => {
-  const [selectedIndex, setSelectedIndex] = useState(null);
   const [visible, setVisible] = useState(false);
   const theme = useTheme();
-
-  const onItemSelect = useCallback(index => {
-    setSelectedIndex(index);
-    setVisible(false);
-  }, []);
 
   const toggleMenu = useCallback(() => {
     setVisible(true);
@@ -36,25 +31,23 @@ const HeaderMenu = () => {
   );
 
   return (
-    <Layout level="1">
+    <Layout>
       <OverflowMenu
         anchor={RightIcon}
         visible={visible}
-        selectedIndex={selectedIndex}
-        onSelect={onItemSelect}
         onBackdropPress={() => setVisible(false)}
       >
         <MenuItem
           title="카테고리 관리"
           onPress={() => {
-            console.log('카테고리 관리');
+            router.push('/categoryListView');
             setVisible(false); // 메뉴 항목 선택 후 메뉴를 닫습니다.
           }}
         />
         <MenuItem
           title="설정"
           onPress={() => {
-            console.log('설정');
+            router.push('/settingsView');
             setVisible(false); // 메뉴 항목 선택 후 메뉴를 닫습니다.
           }}
         />
