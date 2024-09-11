@@ -16,7 +16,8 @@ export const useCategoryAddMutation = () => {
 };
 
 const updateCategoryFetcher = async ({ accessToken, updatedData }) => {
-  const data = await Api.updateCategory(accessToken, updatedData);
+  const data = await Api.updateCategory({ accessToken, updatedData });
+
   return data;
 };
 

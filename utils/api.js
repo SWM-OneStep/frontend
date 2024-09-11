@@ -240,9 +240,14 @@ export const Api = {
     );
   },
 
-  updateCategory: ({ updatedData }) => {
+  updateCategory: ({ accessToken, updatedData }) => {
     return handleRequest(() =>
-      axios.patch(API_PATH.categories, updatedData, metadata()),
+      axios.request({
+        url: API_PATH.categories,
+        method: 'PATCH',
+        ...metadata(),
+        data: { ...updatedData },
+      }),
     );
   },
 

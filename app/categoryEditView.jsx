@@ -21,11 +21,7 @@ import {
   TouchableWithoutFeedback,
   TextInput,
 } from 'react-native';
-import {
-  useCategoryAddMutation,
-  useCategoryUpdateMutation,
-  useCategoryDeleteMutation,
-} from '@/hooks/useCategoryMutation';
+import { useCategoryUpdateMutation } from '@/hooks/useCategoryMutation';
 import { useLocalSearchParams } from 'expo-router';
 import ConfirmDeleteModal from '@/components/ConfirmDeleteModal';
 
@@ -40,42 +36,30 @@ const CategoryEditView = () => {
   const bottomSheetRef = useRef(null);
   const { userId, accessToken } = useContext(LoginContext);
   const [modalVisible, setModalVisible] = useState(false);
-
   const theme = useTheme();
 
-  const { mutate: addCategory, isSuccess } = useCategoryAddMutation();
   const { mutate: updateCategory, isSuccess: isUpdateSuccess } =
     useCategoryUpdateMutation();
-  const { mutate: deleteCategory, isSuccess: isDeleteSuccess } =
-    useCategoryDeleteMutation();
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isUpdateSuccess) {
       setCategoryName('');
       router.back();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccess]);
+  }, [isUpdateSuccess]);
 
   const openBottomSheet = () => {
     bottomSheetRef.current.snapToIndex(0);
   };
 
-  const tmpOrder = () => {
-    const now = new Date();
-    const milliseconds = now.getTime();
-    const unixTime = Math.floor(milliseconds / 1000);
-    return unixTime.toString();
-  };
-
-  const handleAddCategory = () => {
-    const addCategoryData = {
+  const handleUpdateCategory = () => {
+    const updatedData = {
       title: categoryName,
-      user_id: parseInt(userId, 10),
       color: selectedColor,
-      order: tmpOrder(),
+      category_id: params.id,
     };
-    addCategory({ accessToken, addCategoryData });
+    updateCategory({ accessToken, updatedData });
   };
 
   const renderColorItem = ({ item }) => (
@@ -164,7 +148,7 @@ const CategoryEditView = () => {
             >
               <Button
                 style={{ flex: 1, margin: 4 }}
-                onPress={() => handleAddCategory()}
+                onPress={() => handleUpdateCategory()}
               >
                 수정하기
               </Button>
