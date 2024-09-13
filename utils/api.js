@@ -239,6 +239,29 @@ export const Api = {
       () => axios.post(API_PATH.categories, categoryData, metadata()),
     );
   },
+
+  updateCategory: ({ accessToken, updatedData }) => {
+    return handleRequest(() =>
+      axios.request({
+        url: API_PATH.categories,
+        method: 'PATCH',
+        ...metadata(),
+        data: { ...updatedData },
+      }),
+    );
+  },
+
+  deleteCategory: ({ categoryId }) => {
+    return handleRequest(() =>
+      axios.request({
+        url: API_PATH.categories,
+        method: 'DELETE',
+        ...metadata(),
+        data: { category_id: categoryId },
+      }),
+    );
+  },
+
   /**
    * 서버에 서브투두를 추가합니다.
    *

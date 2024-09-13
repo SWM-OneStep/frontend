@@ -8,6 +8,9 @@ import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Sentry from '@sentry/react-native';
 import { env, getSentryConfig } from '@/constants/env';
+import HeaderMenu from '@/components/HeaderMenu';
+import HeaderIcon from '@/components/HeaderIcon';
+import CategoryAddIcon from '@/components/CategoryAddIcon';
 
 const SENTRY_MODE = env.SENTRY_MODE;
 
@@ -26,6 +29,13 @@ Sentry.init({
 
 const queryClient = new QueryClient();
 
+// 헤더 우측 컴포넌트
+const HeaderRight = () => <HeaderMenu />;
+
+// 헤더 좌측 컴포넌트
+const HeaderLeft = () => <HeaderIcon />;
+
+const NavigateToCategoryListView = () => <CategoryAddIcon />;
 const RootLayout = () => {
   return (
     <>
@@ -34,14 +44,42 @@ const RootLayout = () => {
           <IconRegistry icons={[EvaIconsPack]} />
           <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
             <GestureHandlerRootView>
-              <Stack>
+              <Stack screenOptions={{ headerShadowVisible: false }}>
                 <Stack.Screen name="index" options={{ headerShown: false }} />
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="(tabs)"
+                  options={{
+                    headerTitle: '',
+                    headerRight: HeaderRight,
+                    headerLeft: HeaderLeft,
+                  }}
+                />
                 <Stack.Screen
                   name="oauthredirect"
                   options={{ headerShown: false }}
                 />
-                <Stack.Screen name="categoryAddView" />
+                <Stack.Screen
+                  name="categoryAddView"
+                  options={{
+                    headerTitle: '카테고리 추가',
+                    headerTitleAlign: 'center',
+                  }}
+                />
+                <Stack.Screen
+                  name="categoryListView"
+                  options={{
+                    headerTitle: '카테고리 관리',
+                    headerTitleAlign: 'center',
+                    headerRight: NavigateToCategoryListView,
+                  }}
+                />
+                <Stack.Screen
+                  name="categoryEditView"
+                  options={{
+                    headerTitle: '카테고리 수정',
+                    headerTitleAlign: 'center',
+                  }}
+                />
               </Stack>
             </GestureHandlerRootView>
           </ApplicationProvider>
