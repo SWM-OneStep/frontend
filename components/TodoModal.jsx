@@ -27,7 +27,7 @@ import {
   Modal,
   Text,
 } from '@ui-kitten/components';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 const editIcon = props => {
@@ -73,7 +73,8 @@ const TodoModal = ({
 
   const { mutate: updateTodoDate } = useTodoUpdateMutation();
   const { mutate: updateSubTodoDate } = useSubTodoUpdateMutation();
-  const { mutate: deleteTodo } = useTodoDeleteMutation();
+  const { mutate: deleteTodo, isSuccess: isDeleteSuccess } =
+    useTodoDeleteMutation();
   const { mutate: deleteSubTodo } = useSubTodoDeleteMutation();
 
   const handleDelete = async item_id => {
@@ -82,7 +83,6 @@ const TodoModal = ({
     } else {
       deleteSubTodo({ accessToken: accessToken, subTodoId: item_id });
     }
-    setVisible(false);
   };
 
   // const handleSubtodoCreateInitialize = todo => {
@@ -121,6 +121,14 @@ const TodoModal = ({
     }
   };
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    if (isDeleteSuccess) {
+      setModalVisible(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDeleteSuccess]);
+
   return (
     <>
       <Modal
@@ -141,7 +149,7 @@ const TodoModal = ({
               <Button
                 accessoryLeft={editIcon}
                 status="basic"
-                style={styles.button}
+                style={[styles.button, styles.row_button]}
                 onPress={() => {
                   handleLogEvent(TODOMODAL_EDIT_CLICK_EVENT, {
                     time: new Date().toISOString(),
@@ -156,7 +164,7 @@ const TodoModal = ({
               <Button
                 accessoryLeft={deleteIcon}
                 status="basic"
-                style={styles.button}
+                style={[styles.button, styles.row_button]}
                 onPress={() => {
                   handleLogEvent(TODOMODAL_DELETE_CLICK_EVENT, {
                     time: new Date().toISOString(),
@@ -301,7 +309,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-around',
+  },
+  row_button: {
+    flex: 1,
   },
   button: {
     margin: 5,

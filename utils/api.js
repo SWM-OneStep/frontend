@@ -128,7 +128,7 @@ export const Api = {
       axios.request({
         url: API_PATH.todos,
         method: 'DELETE',
-        headers: metadata(),
+        ...metadata(),
         data: { todo_id: todoId },
       }),
     );
