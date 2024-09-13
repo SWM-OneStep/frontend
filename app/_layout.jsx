@@ -80,6 +80,13 @@ const RootLayout = () => {
                     headerTitleAlign: 'center',
                   }}
                 />
+                <Stack.Screen
+                  name="settingsView"
+                  options={{
+                    headerTitle: '설정',
+                    headerTitleAlign: 'center',
+                  }}
+                />
               </Stack>
             </GestureHandlerRootView>
           </ApplicationProvider>
