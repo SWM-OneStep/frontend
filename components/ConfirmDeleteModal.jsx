@@ -1,10 +1,6 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Modal, Card, Text, Button } from '@ui-kitten/components';
-import axios from 'axios';
-import { API_PATH } from '@/utils/config';
-import * as Sentry from '@sentry/react-native';
-import { LoginContext } from '@/contexts/LoginContext';
 import { useCategoryDeleteMutation } from '@/hooks/useCategoryMutation';
 import { useRouter } from 'expo-router';
 
