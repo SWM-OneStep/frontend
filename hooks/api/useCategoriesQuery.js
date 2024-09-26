@@ -1,11 +1,11 @@
 // useCategoriesQuery.js
-import { Api } from '@/utils/api';
+import { useApi } from './useApi';
 import { useQuery } from '@tanstack/react-query';
 
 export const QUERY_KEY = '/category';
 
 const fetcher = async (accessToken, userId) => {
-  const data = await Api.getCategory(accessToken, userId);
+  const data = await useApi.getCategory(accessToken, userId);
   return data;
 };
 

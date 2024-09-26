@@ -21,7 +21,7 @@ import {
   TouchableWithoutFeedback,
   TextInput,
 } from 'react-native';
-import { useCategoryUpdateMutation } from '@/hooks/useCategoryMutation';
+import { useCategoryUpdateMutation } from '@/hooks/api/useCategoryMutation';
 import { useLocalSearchParams } from 'expo-router';
 import ConfirmDeleteModal from '@/components/ConfirmDeleteModal';
 

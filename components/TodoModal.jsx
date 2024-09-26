@@ -5,11 +5,11 @@ import useModalStore from '@/contexts/ModalStore';
 import {
   useSubTodoDeleteMutation,
   useSubTodoUpdateMutation,
-} from '@/hooks/useSubTodoMutations';
+} from '@/hooks/api/useSubTodoMutations';
 import {
   useTodoDeleteMutation,
   useTodoUpdateMutation,
-} from '@/hooks/useTodoMutations';
+} from '@/hooks/api/useTodoMutations';
 import { convertGmtToKst } from '@/utils/convertTimezone';
 import {
   handleLogEvent,

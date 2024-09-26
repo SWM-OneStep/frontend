@@ -5,7 +5,7 @@ import axios from 'axios';
 import { API_PATH } from '@/utils/config';
 import * as Sentry from '@sentry/react-native';
 import { LoginContext } from '@/contexts/LoginContext';
-import { useCategoryDeleteMutation } from '@/hooks/useCategoryMutation';
+import { useCategoryDeleteMutation } from '@/hooks/api/useCategoryMutation';
 import { useRouter } from 'expo-router';
 
 const ConfirmDeleteModal = ({ modalVisible, setModalVisible, categoryId }) => {
