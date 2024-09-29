@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { router } from 'expo-router';
@@ -10,221 +10,172 @@ const TOKEN_INVALID_TYPE_MESSAGE = 'Given token not valid for any token type';
 
 export function useApi() {
   const [accessToken, setAccessToken] = useState(null);
-
   useEffect(() => {
     AsyncStorage.getItem('accessToken').then(token => {
       setAccessToken(token);
     });
   }, []);
 
-  const metadata = useCallback(() => {
+  const metadata = () => {
     return {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
       },
     };
-  }, [accessToken]);
+  };
 
-  const handleRequest = useCallback(
-    async request => {
-      try {
-        const response = await request();
-        return response.data;
-      } catch (err) {
-        if (
-          (err.response?.status === 401 &&
-            err.response?.data?.detail === TOKEN_INVALID_OR_EXPIRED_MESSAGE) ||
-          err.response?.data?.detail === TOKEN_INVALID_TYPE_MESSAGE
-        ) {
-          try {
-            const refreshToken = await AsyncStorage.getItem('refreshToken');
-            const responseData = await axios.post(API_PATH.renew, {
-              refresh: refreshToken,
-              access: accessToken,
-            });
-            await AsyncStorage.setItem('accessToken', responseData.data.access);
-            setAccessToken(responseData.data.access);
-            const secondRequest = await request();
-            return secondRequest.data;
-          } catch (refreshError) {
-            Sentry.captureException(refreshError);
+  const handleRequest = async request => {
+    try {
+      const response = await request();
+      return response.data;
+    } catch (err) {
+      if (
+        (err.response?.status === 401 &&
+          err.response?.data?.detail === TOKEN_INVALID_OR_EXPIRED_MESSAGE) ||
+        err.response?.data?.detail === TOKEN_INVALID_TYPE_MESSAGE
+      ) {
+        try {
+          const refreshToken = await AsyncStorage.getItem('refreshToken');
+          const responseData = await axios.post(API_PATH.renew, {
+            refresh: refreshToken,
+            access: accessToken,
+          });
+          await AsyncStorage.setItem('accessToken', responseData.data.access);
+          setAccessToken(responseData.data.access);
+          const secondRequest = await request();
+          return secondRequest.data;
+        } catch (refreshError) {
+          Sentry.captureException(refreshError);
 
-            if (refreshError.response?.status === 401) {
-              await AsyncStorage.multiRemove([
-                'accessToken',
-                'refreshToken',
-                'userId',
-              ]);
-              router.replace('');
-            } else {
-              throw refreshError;
-            }
+          if (refreshError.response?.status === 401) {
+            await AsyncStorage.multiRemove([
+              'accessToken',
+              'refreshToken',
+              'userId',
+            ]);
+            router.replace('');
+          } else {
+            throw refreshError;
           }
         }
-        Sentry.captureException(err);
-        throw err;
       }
-    },
-    [accessToken],
-  );
+      Sentry.captureException(err);
+      throw err;
+    }
+  };
 
-  const fetchTodos = useCallback(
-    userId => {
-      return handleRequest(() =>
-        axios.get(`${API_PATH.todos}?user_id=${userId}`, metadata()),
-      );
-    },
-    [handleRequest, metadata],
-  );
+  const fetchTodos = userId => {
+    return handleRequest(() =>
+      axios.get(`${API_PATH.todos}?user_id=${userId}`, metadata()),
+    );
+  };
 
-  const addTodo = useCallback(
-    todoData => {
-      return handleRequest(() =>
-        axios.post(API_PATH.todos, todoData, metadata()),
-      );
-    },
-    [handleRequest, metadata],
-  );
+  const addTodo = todoData => {
+    return handleRequest(() =>
+      axios.post(API_PATH.todos, todoData, metadata()),
+    );
+  };
 
-  const deleteTodo = useCallback(
-    ({ todoId }) => {
-      return handleRequest(() =>
-        axios.request({
-          url: API_PATH.todos,
-          method: 'DELETE',
-          ...metadata(),
-          data: { todo_id: todoId },
-        }),
-      );
-    },
-    [handleRequest, metadata],
-  );
+  const deleteTodo = ({ todoId }) => {
+    return handleRequest(() =>
+      axios.request({
+        url: API_PATH.todos,
+        method: 'DELETE',
+        ...metadata(),
+        data: { todo_id: todoId },
+      }),
+    );
+  };
 
-  const updateTodo = useCallback(
-    ({ updateData }) => {
-      return handleRequest(() =>
-        axios.patch(API_PATH.todos, updateData, metadata()),
-      );
-    },
-    [handleRequest, metadata],
-  );
+  const updateTodo = ({ updateData }) => {
+    return handleRequest(() =>
+      axios.patch(API_PATH.todos, updateData, metadata()),
+    );
+  };
 
-  const verifyToken = useCallback(
-    token => {
-      return handleRequest(() => axios.post(API_PATH.verify, { token }));
-    },
-    [handleRequest],
-  );
+  const verifyToken = token => {
+    return handleRequest(() => axios.post(API_PATH.verify, { token }));
+  };
 
-  const renewToken = useCallback(
-    refreshToken => {
-      return handleRequest(() =>
-        axios.post(API_PATH.renew, {
-          refresh: refreshToken,
-          access: accessToken,
-        }),
-      );
-    },
-    [handleRequest, accessToken],
-  );
+  const renewToken = refreshToken => {
+    return handleRequest(() =>
+      axios.post(API_PATH.renew, {
+        refresh: refreshToken,
+        access: accessToken,
+      }),
+    );
+  };
 
-  const googleLogin = useCallback(
-    tokenData => {
-      return handleRequest(() => axios.post(API_PATH.login, tokenData));
-    },
-    [handleRequest],
-  );
+  const googleLogin = tokenData => {
+    return handleRequest(() => axios.post(API_PATH.login, tokenData));
+  };
 
-  const getUserInfo = useCallback(() => {
+  const getUserInfo = () => {
     return handleRequest(() => axios.get(API_PATH.user, metadata()));
-  }, [handleRequest, metadata]);
+  };
 
-  const getCategory = useCallback(
-    userId => {
-      return handleRequest(() =>
-        axios.get(`${API_PATH.categories}?user_id=${userId}`, metadata()),
-      );
-    },
-    [handleRequest, metadata],
-  );
+  const getCategory = userId => {
+    return handleRequest(() =>
+      axios.get(`${API_PATH.categories}?user_id=${userId}`, metadata()),
+    );
+  };
 
-  const addCategory = useCallback(
-    categoryData => {
-      return handleRequest(() =>
-        axios.post(API_PATH.categories, categoryData, metadata()),
-      );
-    },
-    [handleRequest, metadata],
-  );
+  const addCategory = categoryData => {
+    return handleRequest(() =>
+      axios.post(API_PATH.categories, categoryData, metadata()),
+    );
+  };
 
-  const updateCategory = useCallback(
-    ({ updatedData }) => {
-      return handleRequest(() =>
-        axios.patch(API_PATH.categories, updatedData, metadata()),
-      );
-    },
-    [handleRequest, metadata],
-  );
+  const updateCategory = ({ updatedData }) => {
+    return handleRequest(() =>
+      axios.patch(API_PATH.categories, updatedData, metadata()),
+    );
+  };
 
-  const deleteCategory = useCallback(
-    ({ categoryId }) => {
-      return handleRequest(() =>
-        axios.request({
-          url: API_PATH.categories,
-          method: 'DELETE',
-          ...metadata(),
-          data: { category_id: categoryId },
-        }),
-      );
-    },
-    [handleRequest, metadata],
-  );
+  const deleteCategory = ({ categoryId }) => {
+    return handleRequest(() =>
+      axios.request({
+        url: API_PATH.categories,
+        method: 'DELETE',
+        ...metadata(),
+        data: { category_id: categoryId },
+      }),
+    );
+  };
 
-  const addSubTodo = useCallback(
-    subTodoData => {
-      return handleRequest(() =>
-        axios.post(API_PATH.subTodos, subTodoData, metadata()),
-      );
-    },
-    [handleRequest, metadata],
-  );
+  const addSubTodo = subTodoData => {
+    return handleRequest(() =>
+      axios.post(API_PATH.subTodos, subTodoData, metadata()),
+    );
+  };
 
-  const updateSubTodo = useCallback(
-    ({ updatedData }) => {
-      return handleRequest(() =>
-        axios.patch(API_PATH.subTodos, updatedData, metadata()),
-      );
-    },
-    [handleRequest, metadata],
-  );
+  const updateSubTodo = ({ updatedData }) => {
+    return handleRequest(() =>
+      axios.patch(API_PATH.subTodos, updatedData, metadata()),
+    );
+  };
 
-  const deleteSubTodo = useCallback(
-    ({ subTodoId }) => {
-      return handleRequest(() =>
-        axios.request({
-          url: API_PATH.subTodos,
-          method: 'DELETE',
-          ...metadata(),
-          data: { subtodoId: subTodoId },
-        }),
-      );
-    },
-    [handleRequest, metadata],
-  );
+  const deleteSubTodo = ({ subTodoId }) => {
+    return handleRequest(() =>
+      axios.request({
+        url: API_PATH.subTodos,
+        method: 'DELETE',
+        ...metadata(),
+        data: { subtodoId: subTodoId },
+      }),
+    );
+  };
 
-  const getInboxTodo = useCallback(
-    userId => {
-      return handleRequest(() =>
-        axios.get(`${API_PATH.inbox}?user_id=${userId}`, metadata()),
-      );
-    },
-    [handleRequest, metadata],
-  );
+  const getInboxTodo = userId => {
+    return handleRequest(() =>
+      axios.get(`${API_PATH.inbox}?user_id=${userId}`, metadata()),
+    );
+  };
 
-  const getAndroidClientId = useCallback(() => {
+  const getAndroidClientId = () => {
     return handleRequest(() => axios.get(API_PATH.android));
-  }, [handleRequest]);
+  };
 
   return {
     fetchTodos,
