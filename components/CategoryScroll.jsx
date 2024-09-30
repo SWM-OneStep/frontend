@@ -23,10 +23,7 @@ const CategoryScroll = () => {
   const [orderedCategories, setOrderedCategories] = useState([]);
   const { userId, accessToken } = useContext(LoginContext);
 
-  const { isLoading, error, data, isSuccess } = useCategoriesQuery(
-    accessToken,
-    userId,
-  );
+  const { isLoading, error, data, isSuccess } = useCategoriesQuery(userId);
 
   useEffect(() => {
     if (isSuccess) {
