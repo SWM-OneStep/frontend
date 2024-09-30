@@ -1,8 +1,7 @@
-import { useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function useStorage() {
-  const getItem = useCallback(async key => {
+  const getItem = async key => {
     try {
       const value = await AsyncStorage.getItem(key);
       return value;
@@ -10,31 +9,31 @@ export function useStorage() {
       console.error('Error reading value:', error);
       return null;
     }
-  }, []);
+  };
 
-  const setItem = useCallback(async (key, value) => {
+  const setItem = async (key, value) => {
     try {
       await AsyncStorage.setItem(key, value);
     } catch (error) {
       console.error('Error saving value:', error);
     }
-  }, []);
+  };
 
-  const removeItem = useCallback(async key => {
+  const removeItem = async key => {
     try {
       await AsyncStorage.removeItem(key);
     } catch (error) {
       console.error('Error removing value:', error);
     }
-  }, []);
+  };
 
-  const clear = useCallback(async () => {
+  const clear = async () => {
     try {
       await AsyncStorage.clear();
     } catch (error) {
       console.error('Error clearing storage:', error);
     }
-  }, []);
+  };
 
   return {
     getItem,
