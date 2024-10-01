@@ -10,10 +10,12 @@ AsyncStorage.getItem('accessToken').then(response => {
   recentAccessToken = response;
 });
 
-const metadata = accessToken => {
+const metadata = async accessToken => {
   let headers = null;
   if (recentAccessToken === null) {
-    AsyncStorage.getItem('accessToken').then(response => {
+    const response = await AsyncStorage.getItem('accessToken');
+
+    recentAccessToken = response;
   }
   if (accessToken) {
     headers = {
@@ -26,7 +28,6 @@ const metadata = accessToken => {
       Authorization: `Bearer ${recentAccessToken}`,
     };
   }
-
   return { headers };
 };
 
@@ -78,9 +79,10 @@ export const Api = {
    * 서버로부터 사용자의 todo를 받아온다.
    *
    */
-  fetchTodos: (accessToken, userId) => {
+  fetchTodos: async userId => {
+    const header = await metadata();
     return handleRequest(() =>
-      axios.get(`${API_PATH.todos}?user_id=${userId}`, metadata()),
+      axios.get(`${API_PATH.todos}?user_id=${userId}`, header),
     );
   },
   /**
@@ -202,9 +204,10 @@ export const Api = {
     return getUserInfoData;
   },
 
-  getCategory: (accessToken, userId) => {
+  getCategory: async userId => {
+    const header = await metadata();
     return handleRequest(() =>
-      axios.get(`${API_PATH.categories}?user_id=${userId}`, metadata()),
+      axios.get(`${API_PATH.categories}?user_id=${userId}`, header),
     );
   },
 
