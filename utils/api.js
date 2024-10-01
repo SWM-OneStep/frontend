@@ -14,8 +14,6 @@ const metadata = accessToken => {
   let headers = null;
   if (recentAccessToken === null) {
     AsyncStorage.getItem('accessToken').then(response => {
-      recentAccessToken = response;
-    });
   }
   if (accessToken) {
     headers = {

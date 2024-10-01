@@ -1,7 +1,6 @@
-import { useCallback, useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import * as Google from 'expo-auth-session/providers/google';
 import * as Sentry from '@sentry/react-native';
-import { useApi } from '../api/useApi';
 import { Api } from '@/utils/api';
 import { useStorage } from './useStorage';
 import { useDeviceToken } from './useDeviceToken';
