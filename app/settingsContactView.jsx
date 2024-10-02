@@ -21,7 +21,7 @@ const settingsContactView = () => {
         <SafeAreaView style={styles.container}>
           <Layout style={styles.layout} level="1">
             <Text style={styles.text}>
-              <Text style={styles.link} onClick={handleGoogleFormPress}>
+              <Text style={styles.link} onPress={() => handleGoogleFormPress()}>
                 구글 폼
               </Text>
               으로 문의해 주세요.
