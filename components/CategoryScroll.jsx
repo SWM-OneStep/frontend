@@ -1,6 +1,6 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
 import { LoginContext } from '@/contexts/LoginContext';
-import useCategoriesQuery from '@/hooks/useCategoriesQuery';
+import useCategoriesQuery from '@/hooks/api/useCategoriesQuery';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
   handleScroll,
@@ -23,10 +23,7 @@ const CategoryScroll = () => {
   const [orderedCategories, setOrderedCategories] = useState([]);
   const { userId, accessToken } = useContext(LoginContext);
 
-  const { isLoading, error, data, isSuccess } = useCategoriesQuery(
-    accessToken,
-    userId,
-  );
+  const { isLoading, error, data, isSuccess } = useCategoriesQuery(userId);
 
   useEffect(() => {
     if (isSuccess) {

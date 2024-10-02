@@ -1,8 +1,8 @@
 import { CategoryContext } from '@/contexts/CategoryContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useTodoStore from '@/contexts/TodoStore';
-import useInboxTodoQuery from '@/hooks/useInboxTodoQuery';
-import { useTodoAddMutation } from '@/hooks/useTodoMutations';
+import useInboxTodoQuery from '@/hooks/api/useInboxTodoQuery';
+import { useTodoAddMutation } from '@/hooks/api/useTodoMutations';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
   handleScroll,

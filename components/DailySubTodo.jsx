@@ -3,7 +3,7 @@ import { LoginContext } from '@/contexts/LoginContext';
 import {
   SUBTODO_QUERY_KEY,
   useSubTodoUpdateMutation,
-} from '@/hooks/useSubTodoMutations';
+} from '@/hooks/api/useSubTodoMutations';
 import {
   DAILYTODO_SUBTODOCOMPLETE_CLICK_EVENT,
   handleLogEvent,

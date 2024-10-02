@@ -6,8 +6,8 @@ import useTodoStore from '@/contexts/TodoStore';
 import {
   useTodoAddMutation,
   useTodoUpdateMutation,
-} from '@/hooks/useTodoMutations';
-import { default as useTodosQuery } from '@/hooks/useTodoQuery';
+} from '@/hooks/api/useTodoMutations';
+import { default as useTodosQuery } from '@/hooks/api/useTodoQuery';
 import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,

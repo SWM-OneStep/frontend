@@ -62,7 +62,7 @@ const expoConfig = {
         backgroundColor: '#ffffff',
       },
       package: 'com.safezone.onestep',
-      versionCode: 1,
+      versionCode: 4,
     },
     web: {
       favicon: './assets/favicon.png',
@@ -79,6 +79,7 @@ const expoConfig = {
       'expo-router',
       '@react-native-firebase/app',
       '@react-native-firebase/crashlytics',
+      'expo-build-properties',
       [
         '@sentry/react-native/expo',
         {

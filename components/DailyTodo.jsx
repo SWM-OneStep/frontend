@@ -1,7 +1,7 @@
 import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
-import { useSubTodoAddMutation } from '@/hooks/useSubTodoMutations';
-import { useTodoUpdateMutation } from '@/hooks/useTodoMutations';
+import { useSubTodoAddMutation } from '@/hooks/api/useSubTodoMutations';
+import { useTodoUpdateMutation } from '@/hooks/api/useTodoMutations';
 import {
   DAILYTODO_LIST_CLICK_EVENT,
   DAILYTODO_MEATBALLMENU_CLICK_EVENT,
