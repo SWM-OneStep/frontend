@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useTodoAddMutation } from '@/hooks/api/useTodoMutations';
-import useTodoStore from '@/contexts/TodoStore';
 import { LexoRank } from 'lexorank';
-
+import useTodosQuery from '../api/useTodoQuery';
 const useCreateTodo = (userId, accessToken, selectedCategory, selectedDate) => {
   const [input, setInput] = useState('');
   const { mutate: addTodo } = useTodoAddMutation();
-  const todos = useTodoStore.getState().todos;
+  const { data: todos } = useTodosQuery(userId);
   //TODO: react query와 zustand를 합쳐서 todo 상태관리를 하도록 수정해야 함
   const handleSubmit = () => {
     const newTodoData = {
