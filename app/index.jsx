@@ -1,12 +1,16 @@
-import { Image, StyleSheet, View } from 'react-native';
-import { Button, Text } from '@ui-kitten/components';
-import { StatusBar } from 'expo-status-bar';
 import { GoogleIcon } from '@/components/GoogleIcon';
 import useGoogleAuth from '@/hooks/auth/useGoogleAuth';
+import '@/locales/index';
+import { Button, Text } from '@ui-kitten/components';
+import { StatusBar } from 'expo-status-bar';
+import { useTranslation } from 'react-i18next';
+import { Image, StyleSheet, View } from 'react-native';
 
 const imageSource = require('../assets/todo_logo.png');
 
 const Login = () => {
+  const { t, i18n } = useTranslation();
+
   const { signInWithGoogle } = useGoogleAuth();
 
   return (
@@ -18,7 +22,7 @@ const Login = () => {
       <View style={styles.buttonContainer}>
         <Text category="h2">OneStep</Text>
         <Button accessoryLeft={GoogleIcon} onPress={() => signInWithGoogle()}>
-          Sign in with Google
+          {t('views.index.signIn')}
         </Button>
       </View>
     </View>

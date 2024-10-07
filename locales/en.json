@@ -1,0 +1,29 @@
+{
+  "views": {
+    "index": {
+      "signIn": "Sign in with Google"
+    },
+    "_layout": {
+      "addCategory": "Add Category",
+      "manageCategory": "Manage Category",
+      "editCategory": "Edit Category",
+      "settings": "Settings",
+      "contact": "Contact"
+    },
+    "tabs/_layout": {
+      "today": "Today",
+      "inbox": "Inbox"
+    },
+    "settingsView": {
+      "account": "Account",
+      "language": "Language",
+      "contact": "Contact"
+    }
+  },
+  "components": {
+    "headerMenu": {
+      "manageCategory": "Manage Category",
+      "settings": "Settings"
+    }
+  }
+}

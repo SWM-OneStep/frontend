@@ -3,6 +3,7 @@ import HeaderIcon from '@/components/HeaderIcon';
 import HeaderMenu from '@/components/HeaderMenu';
 import { env, getSentryConfig } from '@/constants/env';
 import LoginProvider from '@/contexts/LoginContext';
+import '@/locales/index';
 import { default as theme } from '@/theme/theme.json';
 import * as eva from '@eva-design/eva';
 import * as Sentry from '@sentry/react-native';
@@ -10,6 +11,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { Stack } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const SENTRY_MODE = env.SENTRY_MODE;
@@ -37,6 +39,8 @@ const HeaderLeft = () => <HeaderIcon />;
 
 const NavigateToCategoryListView = () => <CategoryAddIcon />;
 const RootLayout = () => {
+  const { t, i18n } = useTranslation();
+
   return (
     <>
       <QueryClientProvider client={queryClient}>
@@ -61,14 +65,14 @@ const RootLayout = () => {
                 <Stack.Screen
                   name="categoryAddView"
                   options={{
-                    headerTitle: '카테고리 추가',
+                    headerTitle: t('views._layout.addCategory'),
                     headerTitleAlign: 'center',
                   }}
                 />
                 <Stack.Screen
                   name="categoryListView"
                   options={{
-                    headerTitle: '카테고리 관리',
+                    headerTitle: t('views._layout.manageCategory'),
                     headerTitleAlign: 'center',
                     headerRight: NavigateToCategoryListView,
                   }}
@@ -76,21 +80,21 @@ const RootLayout = () => {
                 <Stack.Screen
                   name="categoryEditView"
                   options={{
-                    headerTitle: '카테고리 수정',
+                    headerTitle: t('views._layout.editCategory'),
                     headerTitleAlign: 'center',
                   }}
                 />
                 <Stack.Screen
                   name="settingsView"
                   options={{
-                    headerTitle: '설정',
+                    headerTitle: t('views._layout.settings'),
                     headerTitleAlign: 'center',
                   }}
                 />
                 <Stack.Screen
                   name="settingsContactView"
                   options={{
-                    headerTitle: '문의',
+                    headerTitle: t('views._layout.contact'),
                     headerTitleAlign: 'center',
                   }}
                 />

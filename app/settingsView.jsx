@@ -1,4 +1,5 @@
 import { LoginContext } from '@/contexts/LoginContext';
+import '@/locales/index';
 import * as eva from '@eva-design/eva';
 import {
   ApplicationProvider,
@@ -11,6 +12,7 @@ import {
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { useRouter } from 'expo-router';
 import React, { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet } from 'react-native';
 
 const HomeIcon = props => <Icon {...props} name="star" />;
@@ -27,19 +29,21 @@ const renderItem = ({ item }) => (
 );
 
 const SettingsView = () => {
+  const { t, i18n } = useTranslation();
+
   const data = [
     {
-      title: '내 정보',
+      title: t('views.settingsView.account'),
       id: 1,
       handlePress: () => {},
     },
     {
-      title: '언어 변경',
+      title: t('views.settingsView.language'),
       id: 2,
       handlePress: () => {},
     },
     {
-      title: '문의',
+      title: t('views.settingsView.contact'),
       id: 3,
       handlePress: () => {
         router.push('/settingsContactView');

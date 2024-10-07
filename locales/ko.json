@@ -1,0 +1,29 @@
+{
+  "views": {
+    "index": {
+      "signIn": "구글 로그인"
+    },
+    "_layout": {
+      "addCategory": "Add Category",
+      "manageCategory": "Manage Category",
+      "editCategory": "Edit Category",
+      "settings": "Settings",
+      "contact": "Contact"
+    },
+    "tabs/_layout": {
+      "today": "투데이",
+      "inbox": "인박스"
+    },
+    "settingsView": {
+      "account": "계정",
+      "language": "언어",
+      "contact": "문의"
+    }
+  },
+  "components": {
+    "headerMenu": {
+      "manageCategory": "카테고리 관리",
+      "settings": "설정"
+    }
+  }
+}
