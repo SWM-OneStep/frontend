@@ -18,6 +18,10 @@
       "account": "계정",
       "language": "언어",
       "contact": "문의"
+    },
+    "settingsLanguageView": {
+      "korean": "한국어",
+      "english": "영어"
     }
   },
   "components": {

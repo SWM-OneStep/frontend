@@ -40,7 +40,9 @@ const SettingsView = () => {
     {
       title: t('views.settingsView.language'),
       id: 2,
-      handlePress: () => {},
+      handlePress: () => {
+        router.push('/settingsLanguageView');
+      },
     },
     {
       title: t('views.settingsView.contact'),
