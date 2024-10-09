@@ -98,6 +98,13 @@ const RootLayout = () => {
                     headerTitleAlign: 'center',
                   }}
                 />
+                <Stack.Screen
+                  name="settingsLanguageView"
+                  options={{
+                    headerTitle: t('views.settingsView.language'),
+                    headerTitleAlign: 'center',
+                  }}
+                />
               </Stack>
             </GestureHandlerRootView>
           </ApplicationProvider>

@@ -15,7 +15,9 @@ import { SafeAreaView, StyleSheet } from 'react-native';
 
 const SettingsLanguageView = () => {
   const { t, i18n } = useTranslation();
-  const [selectedIndex, setSelectedIndex] = useState(new IndexPath(setIndex()));
+  const [selectedIndex, setSelectedIndex] = useState(
+    new IndexPath(i18n.language === 'ko' ? 0 : 1),
+  );
 
   const handleKoreanPress = () => {
     i18n.changeLanguage('ko');
@@ -23,14 +25,6 @@ const SettingsLanguageView = () => {
 
   const handleEnglishPress = () => {
     i18n.changeLanguage('en');
-  };
-
-  const setIndex = () => {
-    if (i18n.language === 'ko') {
-      return 0;
-    } else {
-      return 1;
-    }
   };
 
   return (
