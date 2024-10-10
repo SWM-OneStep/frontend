@@ -5,6 +5,7 @@ import {
   useTodoDeleteMutation,
   useTodoUpdateMutation,
 } from '@/hooks/api/useTodoMutations';
+import '@/locales/index';
 import {
   handleLogEvent,
   INBOXTODO_LIST_CLICK_EVENT,
@@ -12,9 +13,9 @@ import {
 } from '@/utils/logEvent';
 import { Icon, Input, List, ListItem, useTheme } from '@ui-kitten/components';
 import { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import InboxSubTodo from './InboxSubTodo';
-
 import TodoModal from './TodoModal';
 
 const InboxTodo = ({ item, drag, isActive }) => {
@@ -31,6 +32,7 @@ const InboxTodo = ({ item, drag, isActive }) => {
   const { mutate: deleteInboxTodo } = useTodoDeleteMutation();
   const { mutate: addInboxSubTodo } = useSubTodoAddMutation();
   const { userId } = useContext(LoginContext);
+  const { t, i18n } = useTranslation();
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -150,7 +152,7 @@ const InboxTodo = ({ item, drag, isActive }) => {
         ListFooterComponent={
           subTodoInputActivated ? (
             <Input
-              placeholder="새로운 할 일을 입력해주세요"
+              placeholder={t('components.dailyTodos.writeTodo')}
               style={styles.input}
               value={subTodoInput}
               onChangeText={nextInput => {

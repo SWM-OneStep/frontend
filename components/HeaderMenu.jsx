@@ -1,17 +1,20 @@
-import React, { useState, useCallback } from 'react';
-import { TouchableOpacity } from 'react-native';
+import '@/locales/index';
 import {
+  Icon,
   Layout,
   MenuItem,
   OverflowMenu,
-  Icon,
   useTheme,
 } from '@ui-kitten/components';
 import { router } from 'expo-router';
+import React, { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { TouchableOpacity } from 'react-native';
 
 const HeaderMenu = () => {
   const [visible, setVisible] = useState(false);
   const theme = useTheme();
+  const { t, i18n } = useTranslation();
 
   const toggleMenu = useCallback(() => {
     setVisible(true);
@@ -38,14 +41,14 @@ const HeaderMenu = () => {
         onBackdropPress={() => setVisible(false)}
       >
         <MenuItem
-          title="카테고리 관리"
+          title={t('components.headerMenu.manageCategory')}
           onPress={() => {
             router.push('/categoryListView');
             setVisible(false); // 메뉴 항목 선택 후 메뉴를 닫습니다.
           }}
         />
         <MenuItem
-          title="설정"
+          title={t('components.headerMenu.settings')}
           onPress={() => {
             router.push('/settingsView');
             setVisible(false); // 메뉴 항목 선택 후 메뉴를 닫습니다.

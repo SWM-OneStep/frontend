@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Sentry from '@sentry/react-native';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { API_PATH } from './config';
-import * as Sentry from '@sentry/react-native';
 
 let recentAccessToken = null;
 
