@@ -28,6 +28,9 @@
     "headerMenu": {
       "manageCategory": "Manage Category",
       "settings": "Settings"
+    },
+    "dailyTodos": {
+      "writeTodo": "Write a new todo"
     }
   }
 }

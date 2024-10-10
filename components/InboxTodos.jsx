@@ -3,6 +3,7 @@ import { LoginContext } from '@/contexts/LoginContext';
 import useTodoStore from '@/contexts/TodoStore';
 import useInboxTodoQuery from '@/hooks/api/useInboxTodoQuery';
 import { useTodoAddMutation } from '@/hooks/api/useTodoMutations';
+import '@/locales/index';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
   handleScroll,
@@ -11,12 +12,13 @@ import { INBOXVIEW_SCROLL_EVENT } from '@/utils/logEvent';
 import { Input } from '@ui-kitten/components';
 import { LexoRank } from 'lexorank';
 import { useContext, useEffect, useState } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import InboxTodo from './InboxTodo';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, Text } from 'react-native';
 import DraggableFlatList, {
   ScaleDecorator,
 } from 'react-native-draggable-flatlist';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import InboxTodo from './InboxTodo';
 
 const InboxTodos = () => {
   const [input, setInput] = useState('');
@@ -35,6 +37,7 @@ const InboxTodos = () => {
   );
   const { mutate: addInboxTodo } = useTodoAddMutation();
   const { mutate: updateTodo } = useTodoAddMutation();
+  const { t, i18n } = useTranslation();
   const renderTodo = ({ item, drag, isActive }) => {
     return (
       <ScaleDecorator>
@@ -99,7 +102,7 @@ const InboxTodos = () => {
         scrollEventThrottle={DEFAULT_SCROLL_EVENT_THROTTLE}
       />
       <Input
-        placeholder="새로운 할 일을 입력해주세요"
+        placeholder={t('components.dailyTodos.writeTodo')}
         value={input}
         onChangeText={nextInput => {
           setInput(nextInput);

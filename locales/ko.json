@@ -28,6 +28,9 @@
     "headerMenu": {
       "manageCategory": "카테고리 관리",
       "settings": "설정"
+    },
+    "dailyTodos": {
+      "writeTodo": "새로운 할 일을 입력해주세요"
     }
   }
 }
