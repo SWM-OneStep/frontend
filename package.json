@@ -88,6 +88,7 @@
     "@testing-library/react-native": "^12.7.2",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "babel-plugin-module-resolver": "^5.0.2",
+    "detox": "^20.27.2",
     "eslint": "^8.57.0",
     "eslint-config-expo": "^7.0.0",
     "eslint-config-prettier": "^9.1.0",

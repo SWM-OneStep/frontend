@@ -6,10 +6,6 @@ import * as Sentry from '@sentry/react-native';
 
 let recentAccessToken = null;
 
-AsyncStorage.getItem('accessToken').then(response => {
-  recentAccessToken = response;
-});
-
 const metadata = async accessToken => {
   let headers = null;
   if (recentAccessToken === null) {
@@ -101,10 +97,10 @@ export const Api = {
    * @returns {Promise<Object>} 새로 추가된 할 일 객체를 반환하는 프로미스.
    * @throws {Error} 요청이 실패할 경우 에러를 던집니다.
    */
-  addTodo: (accessToken, todoData) => {
-    return handleRequest(() =>
-      axios.post(API_PATH.todos, todoData, metadata()),
-    );
+  addTodo: async (accessToken, todoData) => {
+    const header = await metadata();
+
+    return handleRequest(() => axios.post(API_PATH.todos, todoData, header));
   },
   /**
    * 이 함수는 todo를 삭제하는 함수입니다.
