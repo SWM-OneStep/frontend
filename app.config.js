@@ -71,6 +71,7 @@ const expoConfig = {
       eas: {
         projectId: '63f6bbd9-1594-44b3-b161-0e0051413ef0',
       },
+      storybookEnabled: process.env.STORYBOOK_ENABLED,
       ...Config,
     },
     scheme: 'onestep',

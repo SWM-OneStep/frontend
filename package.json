@@ -17,7 +17,9 @@
     "start:local": "APP_MODE=development npx expo prebuild --platform android --clean && APP_MODE=local expo start",
     "start:dev": "APP_MODE=development npx expo prebuild --platform android --clean && APP_MODE=development expo start",
     "start:stage": "APP_MODE=development npx expo prebuild --platform android --clean && APP_MODE=staging expo start",
-    "start:prod": "APP_MODE=development npx expo prebuild --platform android --clean && APP_MODE=production expo start"
+    "start:prod": "APP_MODE=development npx expo prebuild --platform android --clean && APP_MODE=production expo start",
+    "storybook-generate": "sb-rn-get-stories",
+    "storybook": "APP_MODE=development STORYBOOK_ENABLED='true' expo start"
   },
   "jest": {
     "preset": "jest-expo",
@@ -43,7 +45,7 @@
     "@tanstack/react-query-devtools": "^5.51.15",
     "@ui-kitten/components": "^5.3.1",
     "@ui-kitten/eva-icons": "^5.3.1",
-    "axios": "^1.7.2",
+    "axios": "^1.7.7",
     "date-fns": "^3.6.0",
     "expo": "~51.0.14",
     "expo-auth-session": "~5.5.2",
@@ -84,12 +86,20 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/plugin-proposal-decorators": "^7.24.7",
+    "@babel/plugin-transform-class-static-block": "^7.25.8",
     "@eslint/js": "^9.6.0",
+    "@react-native-community/datetimepicker": "^8.2.0",
     "@react-native-community/eslint-config": "^3.2.0",
+    "@react-native-community/slider": "^4.5.3",
+    "@storybook/addon-ondevice-actions": "^8.3.6",
+    "@storybook/addon-ondevice-controls": "^8.3.6",
+    "@storybook/core": "^8.3.5",
+    "@storybook/react-native": "^8.3.6",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.0.1",
     "@testing-library/react-native": "^12.7.2",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "babel-loader": "^8.4.1",
     "babel-plugin-module-resolver": "^5.0.2",
     "detox": "^20.27.2",
     "eslint": "^8.57.0",
@@ -105,6 +115,9 @@
     "patch-package": "^8.0.0",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^3.3.2"
+  },
+  "overrides": {
+    "react-native-svg": "15.7.1"
   },
   "private": true
 }
