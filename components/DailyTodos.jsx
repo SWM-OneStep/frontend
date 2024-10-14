@@ -18,6 +18,7 @@ import {
 } from '@/utils/logEvent';
 import { Input } from '@ui-kitten/components';
 import { Fragment, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Text, View } from 'react-native';
 import DraggableFlatList, {
   ScaleDecorator,
@@ -26,10 +27,11 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
 
 const DailyTodos = () => {
-  const { userId, accessToken } = useContext(LoginContext);
+  const { userId } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
   const { selectedDate } = useContext(DateContext);
   const { isLoading, error, data: todosData } = useTodosQuery(userId);
+  const { t, i18n } = useTranslation();
 
   const currentTodos = useFilteredTodos(
     todosData,
@@ -42,7 +44,6 @@ const DailyTodos = () => {
 
   const { input, setInput, handleSubmit } = useCreateTodo(
     userId,
-    accessToken,
     selectedCategory,
     selectedDate,
   );
@@ -87,7 +88,7 @@ const DailyTodos = () => {
         <KeyboardAccessoryView alwaysVisible androidAdjustResize>
           <View>
             <Input
-              placeholder="새로운 할 일을 입력해주세요"
+              placeholder={t('components.dailyTodos.writeTodo')}
               value={input}
               onChangeText={setInput}
               onSubmitEditing={handleInputSubmit}

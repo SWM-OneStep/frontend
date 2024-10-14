@@ -22,14 +22,14 @@ import InboxTodo from './InboxTodo';
 
 const InboxTodos = () => {
   const [input, setInput] = useState('');
-  const { userId, accessToken } = useContext(LoginContext);
+  const { userId } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
   const {
     isLoading,
     error,
     data: inboxTodoData,
     isSuccess: isInboxTodoQuerySuccess,
-  } = useInboxTodoQuery(accessToken, userId);
+  } = useInboxTodoQuery(userId);
   const setInboxTodos = useTodoStore(state => state.setInboxTodos);
   const inboxCurrentTodos = useTodoStore(state => state.inboxCurrentTodos);
   const setInboxCurrentTodos = useTodoStore(
@@ -54,7 +54,6 @@ const InboxTodos = () => {
       };
     });
     updateTodo({
-      accessToken: accessToken,
       updatedData: updatedData,
     });
   };
@@ -72,7 +71,7 @@ const InboxTodos = () => {
           : LexoRank.middle().toString(),
     };
 
-    addInboxTodo({ accessToken, todoData: newTodoData });
+    addInboxTodo({ todoData: newTodoData });
     setInput('');
   };
 
