@@ -1,7 +1,6 @@
-import { LoginContext } from '@/contexts/LoginContext';
 import { useSubTodoUpdateMutation } from '@/hooks/api/useSubTodoMutations';
 import { Icon, Input, ListItem } from '@ui-kitten/components';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import { useTheme } from 'react-native-elements';
 import TodoModal from './TodoModal';
@@ -10,7 +9,6 @@ const InboxSubTodo = ({ item }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
-  const { accessToken } = useContext(LoginContext);
   const [modalVisible, setModalVisible] = useState(false);
   const { mutate: updateInboxSubTodo } = useSubTodoUpdateMutation();
 
@@ -24,7 +22,7 @@ const InboxSubTodo = ({ item }) => {
       subtodoId: item.id,
       content: content,
     };
-    updateInboxSubTodo({ accessToken: accessToken, updatedData: updatedData });
+    updateInboxSubTodo({ updatedData: updatedData });
   };
 
   const outlineIcon = props => {
