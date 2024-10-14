@@ -45,6 +45,12 @@
     },
     "dailyTodos": {
       "writeTodo": "새로운 할 일을 입력해주세요"
+    },
+    "confirmDeleteModal": {
+      "deleteCategory": "카테고리 삭제하기",
+      "confirmDeleteCategory": "카테고리를 정말 삭제할까요?",
+      "yes": "예",
+      "no": "아니오"
     }
   }
 }

@@ -45,6 +45,12 @@
     },
     "dailyTodos": {
       "writeTodo": "Write a new todo"
+    },
+    "confirmDeleteModal": {
+      "deleteCategory": "Delete Category",
+      "confirmDeleteCategory": "Are you sure you want to delete the category?",
+      "yes": "Yes",
+      "no": "No"
     }
   }
 }

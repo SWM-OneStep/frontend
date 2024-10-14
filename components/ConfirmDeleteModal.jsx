@@ -1,12 +1,10 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Modal, Card, Text, Button } from '@ui-kitten/components';
-import axios from 'axios';
-import { API_PATH } from '@/utils/config';
-import * as Sentry from '@sentry/react-native';
-import { LoginContext } from '@/contexts/LoginContext';
 import { useCategoryDeleteMutation } from '@/hooks/api/useCategoryMutation';
+import '@/locales/index';
+import { Button, Card, Modal, Text } from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
 
 const ConfirmDeleteModal = ({ modalVisible, setModalVisible, categoryId }) => {
   const router = useRouter();
@@ -17,6 +15,8 @@ const ConfirmDeleteModal = ({ modalVisible, setModalVisible, categoryId }) => {
   const handleAddToDo = () => {
     deleteCategory(categoryId);
   };
+
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     if (isDeleteSuccess) {
@@ -34,8 +34,12 @@ const ConfirmDeleteModal = ({ modalVisible, setModalVisible, categoryId }) => {
     >
       <Card disabled={true} style={styles.card}>
         <View style={styles.textContainer}>
-          <Text style={styles.title}> 카테고리 삭제하기 </Text>
-          <Text style={styles.message}>카테고리를 정말 삭제할까요?</Text>
+          <Text style={styles.title}>
+            {t('components.confirmDeleteModal.deleteCategory')}
+          </Text>
+          <Text style={styles.message}>
+            {t('components.confirmDeleteModal.confirmDeleteCategory')}
+          </Text>
         </View>
         <View style={styles.buttonContainer}>
           <Button
@@ -44,14 +48,14 @@ const ConfirmDeleteModal = ({ modalVisible, setModalVisible, categoryId }) => {
               handleAddToDo();
             }}
           >
-            예
+            {t('components.confirmDeleteModal.yes')}
           </Button>
           <Button
             style={styles.button}
             status="basic"
             onPress={() => setModalVisible(false)}
           >
-            아니오
+            {t('components.confirmDeleteModal.no')}
           </Button>
         </View>
       </Card>
