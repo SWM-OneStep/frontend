@@ -97,7 +97,7 @@ export const Api = {
    * @returns {Promise<Object>} 새로 추가된 할 일 객체를 반환하는 프로미스.
    * @throws {Error} 요청이 실패할 경우 에러를 던집니다.
    */
-  addTodo: async (accessToken, todoData) => {
+  addTodo: async todoData => {
     const header = await metadata();
 
     return handleRequest(() => axios.post(API_PATH.todos, todoData, header));
@@ -193,7 +193,7 @@ export const Api = {
     return handleRequest(() => axios.post(API_PATH.login, tokenData));
   },
 
-  getUserInfo: async accessToken => {
+  getUserInfo: async () => {
     const header = await metadata();
     const getUserInfoData = handleRequest(() =>
       axios.get(API_PATH.user, header),

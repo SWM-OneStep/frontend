@@ -29,7 +29,7 @@ const renderItem = ({ item, handlePress }) => (
 
 const CategoryListView = () => {
   const [orderedCategories, setOrderedCategories] = useState([]);
-  const { userId, accessToken } = useContext(LoginContext);
+  const { userId } = useContext(LoginContext);
   const router = useRouter();
   const { isLoading, error, data, isSuccess } = useCategoriesQuery(userId);
   useEffect(() => {
