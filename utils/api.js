@@ -307,13 +307,12 @@ export const Api = {
    * }
    */
   deleteSubTodo: async ({ subTodoId }) => {
-    const header = await metadata();
-
+    const headers = await metadata();
     return handleRequest(() =>
       axios.request({
         url: API_PATH.subTodos,
         method: 'DELETE',
-        headers: header,
+        ...headers,
         data: { subtodoId: subTodoId },
       }),
     );
