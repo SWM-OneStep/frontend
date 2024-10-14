@@ -22,6 +22,12 @@
     "settingsLanguageView": {
       "korean": "한국어",
       "english": "영어"
+    },
+    "categoryAddView": {
+      "label": "카테고리 입력",
+      "placeholder": "카테고리를 입력해주세요",
+      "color": "색상",
+      "close": "닫기"
     }
   },
   "components": {

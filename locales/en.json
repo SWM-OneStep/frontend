@@ -22,6 +22,12 @@
     "settingsLanguageView": {
       "korean": "Korean",
       "english": "English"
+    },
+    "categoryAddView": {
+      "label": "category input",
+      "placeholder": "Write a category",
+      "color": "color",
+      "close": "close"
     }
   },
   "components": {
