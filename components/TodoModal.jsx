@@ -211,7 +211,7 @@ const TodoModal = ({
                 <Text>날짜 바꾸기</Text>
               </Button>
             </View>
-            <View>
+            {/* <View>
               <Button
                 accessoryLeft={inboxIcon}
                 status="basic"
@@ -226,7 +226,7 @@ const TodoModal = ({
               >
                 <Text>인박스에 넣기</Text>
               </Button>
-            </View>
+            </View> */}
           </View>
         </Card>
       </Modal>
