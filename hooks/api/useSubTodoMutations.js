@@ -3,8 +3,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const SUBTODO_QUERY_KEY = '/sub';
 
-const addSubTodoFetcher = async ({ accessToken, todoData }) => {
-  const data = await Api.addSubTodo(accessToken, todoData);
+const addSubTodoFetcher = async ({ todoData }) => {
+  const data = await Api.addSubTodo(todoData);
   return data;
 };
 
@@ -16,9 +16,8 @@ export const useSubTodoAddMutation = () => {
   });
 };
 
-const updateSubTodoFetcher = async ({ accessToken, updatedData }) => {
+const updateSubTodoFetcher = async ({ updatedData }) => {
   const data = await Api.updateSubTodo({
-    accessToken: accessToken,
     updatedData: updatedData,
   });
   return data;
@@ -32,9 +31,8 @@ export const useSubTodoUpdateMutation = () => {
   });
 };
 
-const deleteSubTodoFetcher = async ({ accessToken, subTodoId }) => {
+const deleteSubTodoFetcher = async ({ subTodoId }) => {
   const data = await Api.deleteSubTodo({
-    accessToken: accessToken,
     subTodoId: subTodoId,
   });
   return data;

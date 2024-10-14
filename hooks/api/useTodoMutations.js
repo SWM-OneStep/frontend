@@ -19,9 +19,8 @@ export const useTodoAddMutation = () => {
 };
 
 // 수정 (Update Todo)
-const updateTodoFetcher = async ({ accessToken, updatedData }) => {
+const updateTodoFetcher = async ({ updatedData }) => {
   const data = await Api.updateTodo({
-    accessToken: accessToken,
     updateData: updatedData,
   });
   return data;
@@ -38,8 +37,8 @@ export const useTodoUpdateMutation = () => {
 };
 
 // 삭제 (Delete Todo)
-const deleteTodoFetcher = async ({ accessToken, todoId }) => {
-  const data = await Api.deleteTodo({ accessToken, todoId });
+const deleteTodoFetcher = async ({ todoId }) => {
+  const data = await Api.deleteTodo({ todoId });
   return data;
 };
 
