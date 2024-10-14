@@ -28,6 +28,14 @@
       "placeholder": "카테고리를 입력해주세요",
       "color": "색상",
       "close": "닫기"
+    },
+    "categoryEditView": {
+      "category": "카테고리",
+      "inputCategory": "카테고리를 입력해주세요",
+      "color": "색상",
+      "edit": "수정하기",
+      "delete": "삭제하기",
+      "close": "닫기"
     }
   },
   "components": {

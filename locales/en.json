@@ -26,8 +26,16 @@
     "categoryAddView": {
       "label": "category input",
       "placeholder": "Write a category",
+      "color": "Color",
+      "close": "Close"
+    },
+    "categoryEditView": {
+      "category": "category",
+      "inputCategory": "Write a category",
       "color": "color",
-      "close": "close"
+      "edit": "Edit",
+      "delete": "Delete",
+      "close": "Close"
     }
   },
   "components": {
