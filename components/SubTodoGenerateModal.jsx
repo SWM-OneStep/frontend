@@ -1,10 +1,12 @@
-import React, { useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Modal, Card, Text, Button } from '@ui-kitten/components';
-import axios from 'axios';
+import { LoginContext } from '@/contexts/LoginContext';
+import '@/locales/index';
 import { API_PATH } from '@/utils/config';
 import * as Sentry from '@sentry/react-native';
-import { LoginContext } from '@/contexts/LoginContext';
+import { Button, Card, Modal, Text } from '@ui-kitten/components';
+import axios from 'axios';
+import React, { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
 
 const SubTodoGenerateModal = ({
   modalVisible,
@@ -13,6 +15,7 @@ const SubTodoGenerateModal = ({
   todoId,
 }) => {
   const { accessToken } = useContext(LoginContext);
+  const { t, i18n } = useTranslation();
   const handleAddToDo = () => {
     // LLM API 호출 로직 추가
     axios
@@ -39,8 +42,12 @@ const SubTodoGenerateModal = ({
     >
       <Card disabled={true} style={styles.card}>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>하위 투두 생성</Text>
-          <Text style={styles.message}>하위 투두를 생성할까요?</Text>
+          <Text style={styles.title}>
+            {t('components.subTodoGenerateModal.createSubTodo')}
+          </Text>
+          <Text style={styles.message}>
+            {t('components.subTodoGenerateModal.askCreateSubTodo')}
+          </Text>
         </View>
         <View style={styles.buttonContainer}>
           <Button
@@ -49,14 +56,14 @@ const SubTodoGenerateModal = ({
               handleAddToDo();
             }}
           >
-            예
+            {t('components.subTodoGenerateModal.yes')}
           </Button>
           <Button
             style={styles.button}
             status="basic"
             onPress={() => setModalVisible(false)}
           >
-            아니오
+            {t('components.subTodoGenerateModal.no')}
           </Button>
         </View>
       </Card>

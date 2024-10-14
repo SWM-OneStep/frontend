@@ -51,6 +51,23 @@
       "confirmDeleteCategory": "Are you sure you want to delete the category?",
       "yes": "Yes",
       "no": "No"
+    },
+    "dailyTodo": {
+      "apply": "Apply"
+    },
+    "subTodoGenerateModal": {
+      "createSubTodo": "Create SubTodo",
+      "askCreateSubTodo": "Would you like to create a subtodo?",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "todoModal": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "createSubTodo": "Create SubTodo",
+      "changeDate": "Change Date",
+      "putInbox": "Put Inbox",
+      "confirm": "Confirm"
     }
   }
 }

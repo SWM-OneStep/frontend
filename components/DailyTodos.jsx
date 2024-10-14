@@ -7,6 +7,7 @@ import useTodosQuery from '@/hooks/api/useTodoQuery';
 import useCreateTodo from '@/hooks/todo/useCreateTodo';
 import useFilteredTodos from '@/hooks/todo/useFilteredTodo';
 import useHandleDrag from '@/hooks/todo/useHandleDrag';
+import '@/locales/index';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
   handleScroll,
@@ -18,6 +19,7 @@ import {
 } from '@/utils/logEvent';
 import { Input } from '@ui-kitten/components';
 import { Fragment, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Text, View } from 'react-native';
 import DraggableFlatList, {
   ScaleDecorator,
@@ -46,6 +48,7 @@ const DailyTodos = () => {
     selectedCategory,
     selectedDate,
   );
+  const { t, i18n } = useTranslation();
 
   const renderTodo = ({ item, drag, isActive }) => {
     return (
@@ -87,7 +90,7 @@ const DailyTodos = () => {
         <KeyboardAccessoryView alwaysVisible androidAdjustResize>
           <View>
             <Input
-              placeholder="새로운 할 일을 입력해주세요"
+              placeholder={t('components.dailyTodos.writeTodo')}
               value={input}
               onChangeText={setInput}
               onSubmitEditing={handleInputSubmit}

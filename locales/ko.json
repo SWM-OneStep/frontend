@@ -51,6 +51,23 @@
       "confirmDeleteCategory": "카테고리를 정말 삭제할까요?",
       "yes": "예",
       "no": "아니오"
+    },
+    "dailyTodo": {
+      "apply": "반영하기"
+    },
+    "subTodoGenerateModal": {
+      "createSubTodo": "하위 투두 생성",
+      "askCreateSubTodo": "하위 투두를 생성할까요?",
+      "yes": "예",
+      "no": "아니오"
+    },
+    "todoModal": {
+      "edit": "수정하기",
+      "delete": "삭제하기",
+      "createSubTodo": "하위 투두 생성하기",
+      "changeDate": "날짜 바꾸기",
+      "putInbox": "인박스에 넣기",
+      "confirm": "확인"
     }
   }
 }

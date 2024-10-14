@@ -10,6 +10,7 @@ import {
   useTodoDeleteMutation,
   useTodoUpdateMutation,
 } from '@/hooks/api/useTodoMutations';
+import '@/locales/index';
 import { convertGmtToKst } from '@/utils/convertTimezone';
 import {
   handleLogEvent,
@@ -27,7 +28,8 @@ import {
   Modal,
   Text,
 } from '@ui-kitten/components';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 const editIcon = props => {
@@ -76,6 +78,7 @@ const TodoModal = ({
   const { mutate: deleteTodo, isSuccess: isDeleteSuccess } =
     useTodoDeleteMutation();
   const { mutate: deleteSubTodo } = useSubTodoDeleteMutation();
+  const { t, i18n } = useTranslation();
 
   const handleDelete = async item_id => {
     if (isTodo) {
@@ -159,7 +162,7 @@ const TodoModal = ({
                   onEdit();
                 }}
               >
-                <Text>수정하기</Text>
+                <Text>{t('components.todoModal.edit')}</Text>
               </Button>
               <Button
                 accessoryLeft={deleteIcon}
@@ -174,7 +177,7 @@ const TodoModal = ({
                   handleDelete(item.id);
                 }}
               >
-                <Text>삭제하기</Text>
+                <Text>{t('components.todoModal.delete')}</Text>
               </Button>
             </View>
             {isTodo ? (
@@ -192,7 +195,7 @@ const TodoModal = ({
                     onSubTodoCreate();
                   }}
                 >
-                  <Text>하위 투두 생성하기</Text>
+                  <Text>{t('components.todoModal.createSubTodo')}</Text>
                 </Button>
               </View>
             ) : null}
@@ -211,7 +214,7 @@ const TodoModal = ({
                   setCalendarModalVisible(true);
                 }}
               >
-                <Text>날짜 바꾸기</Text>
+                <Text>{t('components.todoModal.changeDate')}</Text>
               </Button>
             </View>
             <View>
@@ -227,7 +230,7 @@ const TodoModal = ({
                   });
                 }}
               >
-                <Text>인박스에 넣기</Text>
+                <Text>{t('components.todoModal.putInbox')}</Text>
               </Button>
             </View>
           </View>
@@ -256,7 +259,7 @@ const TodoModal = ({
             setCalendarModalVisible(false);
           }}
         >
-          <Text>확인</Text>
+          <Text>{t('components.todoModal.confirm')}</Text>
         </Button>
       </Modal>
     </>
