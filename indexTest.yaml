@@ -1,0 +1,12 @@
+appId: com.safezone.onestep
+---
+# 앱을 실행
+- launchApp
+
+# 로그인 버튼을 찾고 클릭
+- tapOn:
+    text: 'Sign in with Google'
+
+# Google 로그인 폼이 나타나는지 확인
+- assertVisible:
+    text: 'onestep'
