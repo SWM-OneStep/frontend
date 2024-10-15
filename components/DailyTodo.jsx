@@ -1,7 +1,7 @@
 import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
-import { useSubTodoAddMutation } from '@/hooks/useSubTodoMutations';
-import { useTodoUpdateMutation } from '@/hooks/useTodoMutations';
+import { useSubTodoAddMutation } from '@/hooks/api/useSubTodoMutations';
+import { useTodoUpdateMutation } from '@/hooks/api/useTodoMutations';
 import {
   DAILYTODO_LIST_CLICK_EVENT,
   DAILYTODO_MEATBALLMENU_CLICK_EVENT,
@@ -9,20 +9,22 @@ import {
   handleLogEvent,
 } from '@/utils/logEvent';
 import {
+  Button,
   Icon,
   Input,
   List,
   ListItem,
   Text,
   useTheme,
-  Button,
 } from '@ui-kitten/components';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import DailySubTodo from './DailySubTodo';
 
-import TodoModal from './TodoModal';
+import '@/locales/index';
 import SubTodoGenerateModal from './SubTodoGenerateModal';
+import TodoModal from './TodoModal';
 
 const DailyTodo = ({ item, drag, isActive }) => {
   const [content, setContent] = useState(item.content);
@@ -44,6 +46,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
     subTodoGenerateAlertModalVisible,
     setSubTodoGenerateAlertModalVisible,
   ] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const handleCheck = () => {
     setCompleted(!completed);
@@ -209,13 +212,15 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const handleSubtodoSubmit = () => {
     if (subTodoInput !== '') {
       const modifiedDate = selectedDate.format('YYYY-MM-DD');
-      const subTodoData = {
-        todo: item.id,
-        content: subTodoInput,
-        date: modifiedDate,
-        isCompleted: false,
-        order: tmpOrder(),
-      };
+      const subTodoData = [
+        {
+          todo: item.id,
+          content: subTodoInput,
+          date: modifiedDate,
+          isCompleted: false,
+          order: tmpOrder(),
+        },
+      ];
       addSubTodo({ accessToken: accessToken, todoData: subTodoData });
       setSubtodoInput('');
       setSubTodoInputActivated(false);
@@ -261,7 +266,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
         ListFooterComponent={
           subTodoInputActivated ? (
             <Input
-              placeholder="새로운 할 일을 입력해주세요"
+              placeholder={t('components.dailyTodos.writeTodo')}
               style={styles.input}
               value={subTodoInput}
               onChangeText={nextInput => {

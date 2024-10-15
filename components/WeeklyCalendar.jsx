@@ -1,6 +1,7 @@
 import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import useTodoStore from '@/contexts/TodoStore';
+import '@/locales/index';
 import { convertGmtToKst } from '@/utils/convertTimezone';
 import { isTodoIncludedInTodayView } from '@/utils/dateUtils';
 import {
@@ -12,6 +13,7 @@ import { Icon, Layout, Text, useTheme } from '@ui-kitten/components';
 import moment from 'moment';
 import 'moment/locale/ko';
 import React, { useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { TouchableOpacity } from 'react-native';
 
 const WeeklyCalendar = () => {
@@ -28,6 +30,7 @@ const WeeklyCalendar = () => {
     return r;
   };
   const [weekDates, setwWeekDates] = useState(getWeekDates(currentDate));
+  const { t, i18n } = useTranslation();
 
   const navigateWeek = direction => {
     setcurrentDate(prevDate =>
@@ -47,6 +50,34 @@ const WeeklyCalendar = () => {
 
   const handleDateSelect = date => {
     setSelectedDate(date);
+  };
+
+  const convertMonthAndYear = date => {
+    if (i18n.language === 'ko') {
+      return date.format('yyyy년 MM월');
+    } else if (i18n.language === 'en') {
+      const month = date.toString().split(' ')[1];
+      const year = date.toString().split(' ')[3];
+      return `${month} ${year}`;
+    }
+  };
+
+  const convertDictionary = {
+    월: 'Mon',
+    화: 'Tue',
+    수: 'Wed',
+    목: 'Thu',
+    금: 'Fri',
+    토: 'Sat',
+    일: 'Sun',
+  };
+
+  const convertWeekDates = date => {
+    if (i18n.language === 'ko') {
+      return date.format('ddd');
+    } else if (i18n.language === 'en') {
+      return convertDictionary[date.format('ddd')];
+    }
   };
 
   return (
@@ -76,10 +107,11 @@ const WeeklyCalendar = () => {
             style={{ width: 24, height: 24 }}
           />
         </TouchableOpacity>
-        <Text category="h6">{selectedDate.format('yyyy년 MM월')}</Text>
+        <Text category="h6">{convertMonthAndYear(selectedDate)}</Text>
         <TouchableOpacity
           onPress={() => {
             navigateWeek('next');
+
             handleLogEvent(WEEKLYCALENDAR_NAVIGATEWEEK_CLICK_EVENT, {
               time: new Date().toISOString(),
               userId: userId,
@@ -124,7 +156,7 @@ const WeeklyCalendar = () => {
                   : theme['text-basic-color'],
               }}
             >
-              {date.format('ddd')}
+              {convertWeekDates(date)}
             </Text>
             <Text
               category="h6"

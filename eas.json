@@ -3,39 +3,23 @@
     "version": ">= 10.0.2"
   },
   "build": {
-    "development": {
-      "developmentClient": true,
+    "staging": {
       "distribution": "internal",
-      "channel": "development"
-    },
-    "preview": {
-      "extends": "production",
-      "distribution": "internal",
+      "channel": "staging",
       "android": {
+        "applicationArchivePath": "android/app/build/outputs/apk/release/app-release.apk",
         "buildType": "apk"
       },
-      "channel": "preview",
       "env": {
-        "EXPO_PUBLIC_APP_MODE": "development"
+        "EXPO_PUBLIC_APP_MODE": "staging"
       }
-    },
-    "preview2": {
-      "android": {
-        "gradleCommand": ":app:assembleRelease"
-      },
-      "channel": "preview2"
-    },
-    "preview3": {
-      "developmentClient": true,
-      "channel": "preview3"
-    },
-    "preview4": {
-      "distribution": "internal",
-      "channel": "preview4"
     },
     "production": {
       "channel": "production",
-      "node": "20.15.0"
+      "node": "20.15.0",
+      "env": {
+        "EXPO_PUBLIC_APP_MODE": "production"
+      }
     }
   },
   "submit": {

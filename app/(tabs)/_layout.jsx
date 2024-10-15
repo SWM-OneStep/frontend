@@ -1,5 +1,7 @@
+import '@/locales/index';
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const todayIcon = ({ color, size }) => (
@@ -11,6 +13,7 @@ const inboxIcon = ({ color, size }) => (
 );
 
 const TabLayout = () => {
+  const { t, i18n } = useTranslation();
   return (
     <Tabs
       screenOptions={{
@@ -20,7 +23,7 @@ const TabLayout = () => {
       <Tabs.Screen
         name="index"
         options={{
-          title: '투데이',
+          title: t('views.tabs/_layout.today'),
           tabBarIcon: todayIcon,
           headerShown: false,
         }}
@@ -28,7 +31,7 @@ const TabLayout = () => {
       <Tabs.Screen
         name="inboxView"
         options={{
-          title: '인박스',
+          title: t('views.tabs/_layout.inbox'),
           tabBarIcon: inboxIcon,
           headerShown: false,
         }}

@@ -30,5 +30,8 @@ const TodayView = () => {
 export default TodayView;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: 10, backgroundColor: 'white' },
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
 });
