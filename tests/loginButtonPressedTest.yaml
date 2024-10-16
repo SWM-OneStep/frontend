@@ -10,3 +10,14 @@ appId: com.safezone.onestep
 # Google 로그인 폼이 나타나는지 확인
 - assertVisible:
     text: 'onestep'
+
+# 로그인 폼이 나타나면 구글 계정 클릭
+- tapOn:
+    text: '.*gmail.com'
+#
+- tapOn:
+    text: '계속'
+
+- assertVisible:
+    text: 'Today'
+    waitUntilVisible: true

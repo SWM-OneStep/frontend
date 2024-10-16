@@ -1,0 +1,5 @@
+appId: com.safezone.onestep
+---
+# 대시보드 화면에서 특정 요소 확인
+- assertVisible:
+    text: 'Dashboard Title'

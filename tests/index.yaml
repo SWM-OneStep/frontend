@@ -1,0 +1,9 @@
+appId: com.safezone.onestep
+---
+# 로그인 플로우 실행
+- runFlow:
+    file: 'loginButtonPressedTest.yaml'
+
+# 대시보드 플로우 실행
+- runFlow:
+    file: 'mainViewAppearTest.yaml'
