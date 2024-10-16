@@ -1,29 +1,30 @@
+import ConfirmDeleteModal from '@/components/ConfirmDeleteModal';
 import { LoginContext } from '@/contexts/LoginContext';
+import { useCategoryUpdateMutation } from '@/hooks/api/useCategoryMutation';
+import '@/locales/index';
 import * as eva from '@eva-design/eva';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import {
   ApplicationProvider,
   Button,
+  Divider,
   Layout,
   Text,
-  Divider,
   useTheme,
 } from '@ui-kitten/components';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   FlatList,
-  SafeAreaView,
-  TouchableOpacity,
-  View,
-  StyleSheet,
   Keyboard,
-  TouchableWithoutFeedback,
+  SafeAreaView,
+  StyleSheet,
   TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
-import { useCategoryUpdateMutation } from '@/hooks/api/useCategoryMutation';
-import { useLocalSearchParams } from 'expo-router';
-import ConfirmDeleteModal from '@/components/ConfirmDeleteModal';
 
 const colors = ['#FF3D71', '#FF7E29', '#FFC233', '#4CAF50', '#00BCD4'];
 
@@ -37,6 +38,7 @@ const CategoryEditView = () => {
   const { userId, accessToken } = useContext(LoginContext);
   const [modalVisible, setModalVisible] = useState(false);
   const theme = useTheme();
+  const { t, i18n } = useTranslation();
 
   const { mutate: updateCategory, isSuccess: isUpdateSuccess } =
     useCategoryUpdateMutation();
@@ -101,11 +103,11 @@ const CategoryEditView = () => {
         >
           <Layout style={styles.layout}>
             <Text category="label" style={styles.headerText}>
-              카테고리
+              {t('views.categoryEditView.category')}
             </Text>
             {isEditing ? (
               <TextInput
-                placeholder="카테고리를 입력해주세요"
+                placeholder={t('views.categoryEditView.inputCategory')}
                 value={categoryName}
                 onChangeText={setCategoryName}
                 style={styles.input}
@@ -125,7 +127,7 @@ const CategoryEditView = () => {
                 category="label"
                 style={{ fontSize: 20, paddingBottom: 8, flex: 1 }}
               >
-                색상
+                {t('views.categoryEditView.color')}
               </Text>
               <View
                 style={{
@@ -150,7 +152,7 @@ const CategoryEditView = () => {
                 style={{ flex: 1, margin: 4 }}
                 onPress={() => handleUpdateCategory()}
               >
-                수정하기
+                {t('views.categoryEditView.edit')}
               </Button>
               <Button
                 style={{
@@ -161,7 +163,7 @@ const CategoryEditView = () => {
                 }}
                 onPress={() => setModalVisible(true)}
               >
-                삭제하기
+                {t('views.categoryEditView.delete')}
               </Button>
             </View>
             <BottomSheet
@@ -180,7 +182,7 @@ const CategoryEditView = () => {
                   }}
                 >
                   <Text category="h6" style={{ marginBottom: 16 }}>
-                    색상
+                    {t('views.categoryEditView.color')}
                   </Text>
                   <FlatList
                     data={colors}
@@ -192,7 +194,7 @@ const CategoryEditView = () => {
                     onPress={() => bottomSheetRef.current.close()}
                     style={{ marginTop: 16 }}
                   >
-                    닫기
+                    {t('views.categoryEditView.close')}
                   </Button>
                 </View>
               </BottomSheetView>

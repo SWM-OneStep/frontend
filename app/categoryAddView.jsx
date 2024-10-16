@@ -1,4 +1,6 @@
 import { LoginContext } from '@/contexts/LoginContext';
+import { useCategoryAddMutation } from '@/hooks/api/useCategoryMutation';
+import '@/locales/index';
 import * as eva from '@eva-design/eva';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import {
@@ -10,8 +12,8 @@ import {
 } from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
 import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FlatList, SafeAreaView, TouchableOpacity, View } from 'react-native';
-import { useCategoryAddMutation } from '@/hooks/api/useCategoryMutation';
 
 const colors = ['#FF3D71', '#FF7E29', '#FFC233', '#4CAF50', '#00BCD4'];
 
@@ -20,7 +22,9 @@ const CategoryAddView = () => {
   const [categoryName, setCategoryName] = useState('');
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const bottomSheetRef = useRef(null);
+
   const { userId } = useContext(LoginContext);
+  const { t, i18n } = useTranslation();
 
   const { mutate: addCategory, isSuccess } = useCategoryAddMutation();
 
@@ -74,8 +78,8 @@ const CategoryAddView = () => {
       <SafeAreaView style={{ flex: 1 }}>
         <Layout style={{ flex: 1, padding: 16 }}>
           <Input
-            label="카테고리 입력"
-            placeholder="카테고리를 입력해주세요"
+            label={t('views.categoryAddView.label')}
+            placeholder={t('views.categoryAddView.placeholder')}
             value={categoryName}
             onChangeText={setCategoryName}
             style={{ marginBottom: 16 }}
@@ -89,7 +93,7 @@ const CategoryAddView = () => {
             onPress={() => openBottomSheet()}
           >
             <Text category="label" style={{ flex: 1 }}>
-              색상
+              {t('views.categoryAddView.color')}
             </Text>
             <View
               style={{
@@ -119,7 +123,7 @@ const CategoryAddView = () => {
                 }}
               >
                 <Text category="h6" style={{ marginBottom: 16 }}>
-                  색상
+                  {t('views.categoryAddView.color')}
                 </Text>
                 <FlatList
                   data={colors}
@@ -131,7 +135,7 @@ const CategoryAddView = () => {
                   onPress={() => bottomSheetRef.current.close()}
                   style={{ marginTop: 16 }}
                 >
-                  닫기
+                  {t('views.categoryAddView.close')}
                 </Button>
               </View>
             </BottomSheetView>

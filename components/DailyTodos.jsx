@@ -7,6 +7,7 @@ import useTodosQuery from '@/hooks/api/useTodoQuery';
 import useCreateTodo from '@/hooks/todo/useCreateTodo';
 import useFilteredTodos from '@/hooks/todo/useFilteredTodo';
 import useHandleDrag from '@/hooks/todo/useHandleDrag';
+import '@/locales/index';
 import {
   DEFAULT_SCROLL_EVENT_THROTTLE,
   handleScroll,
@@ -47,6 +48,7 @@ const DailyTodos = () => {
     selectedCategory,
     selectedDate,
   );
+  const { t, i18n } = useTranslation();
 
   const renderTodo = ({ item, drag, isActive }) => {
     return (

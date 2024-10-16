@@ -284,7 +284,9 @@ const DailyTodo = ({ item, drag, isActive }) => {
             renderItem={renderGeneratedTodo}
             contentContainerStyle={{ marginLeft: 40, paddingLeft: 40 }}
           />
-          <Button onPress={handleApplySelection}>반영하기</Button>
+          <Button onPress={handleApplySelection}>
+            {t('components.dailyTodo.apply')}
+          </Button>
         </>
       )}
       <TodoModal
