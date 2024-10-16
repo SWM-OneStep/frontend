@@ -3,7 +3,8 @@ let Config = {
   SENTRY_MODE: '',
 };
 
-let googleServiceJson = null; //default
+let googleServiceJson = null;
+let googleServicePlist = null;
 
 switch (process.env.APP_MODE || process.env.EXPO_PUBLIC_APP_MODE) {
   case 'production':
@@ -12,6 +13,9 @@ switch (process.env.APP_MODE || process.env.EXPO_PUBLIC_APP_MODE) {
     googleServiceJson =
       process.env.GOOGLE_SERVICES_PRODUCTION_JSON ||
       './google-services.production.json';
+    googleServicePlist =
+      process.env.GOOGLE_SERVICES_PRODUCTION_PLIST ||
+      './GoogleService-Info.production.plist';
     break;
 
   case 'staging':
@@ -20,22 +24,28 @@ switch (process.env.APP_MODE || process.env.EXPO_PUBLIC_APP_MODE) {
     googleServiceJson =
       process.env.GOOGLE_SERVICES_STAGING_JSON ||
       './google-services.staging.json';
+    googleServicePlist =
+      process.env.GOOGLE_SERVICES_STAGING_PLIST ||
+      './GoogleService-Info.staging.plist';
     break;
 
   case 'development':
     Config.BASE_URL = 'https://dev.stepby.one';
     Config.SENTRY_MODE = 'development';
     googleServiceJson = './google-services.development.json';
+    googleServicePlist = './GoogleService-Info.development.plist';
     break;
 
   case 'local':
     Config.BASE_URL = 'http://10.0.2.2:8000';
     Config.SENTRY_MODE = 'development';
     googleServiceJson = './google-services.development.json';
+    googleServicePlist = './GoogleService-Info.development.plist';
+
+    //TODO: 생각해보니 local이나 dev일 때는 굳이 로깅할 필요도 없고 firebase 설정할 필요가 있나
     break;
 
   default:
-    throw new Error('Invalid APP_MODE');
 }
 
 const expoConfig = {
@@ -54,7 +64,6 @@ const expoConfig = {
     ios: {
       supportsTablet: true,
       bundleIdentifier: 'com.safezone.onestep',
-      googleServicesFile: './ios/GoogleService-Info.plist',
     },
     android: {
       adaptiveIcon: {
@@ -76,11 +85,20 @@ const expoConfig = {
     },
     scheme: 'onestep',
     owner: 'byungchanko',
+    //TODO: pdofile 수정 플러그인 추가
     plugins: [
       'expo-router',
       '@react-native-firebase/app',
       '@react-native-firebase/crashlytics',
       'expo-build-properties',
+      [
+        'expo-build-properties',
+        {
+          ios: {
+            useFrameworks: 'static',
+          },
+        },
+      ],
       [
         '@sentry/react-native/expo',
         {
@@ -99,6 +117,9 @@ const expoConfig = {
 
 if (googleServiceJson) {
   expoConfig.expo.android.googleServicesFile = googleServiceJson;
+}
+if (googleServicePlist) {
+  expoConfig.expo.ios.googleServicesFile = googleServicePlist;
 }
 
 module.exports = expoConfig;
