@@ -97,7 +97,7 @@ export const Api = {
    * @returns {Promise<Object>} 새로 추가된 할 일 객체를 반환하는 프로미스.
    * @throws {Error} 요청이 실패할 경우 에러를 던집니다.
    */
-  addTodo: async (accessToken, todoData) => {
+  addTodo: async todoData => {
     const header = await metadata();
 
     return handleRequest(() => axios.post(API_PATH.todos, todoData, header));
@@ -119,12 +119,13 @@ export const Api = {
    * @property {string} order - 삭제된 할 일의 순서.
    * @property {boolean} isCompleted - 삭제된 할 일의 완료 여부.
    */
-  deleteTodo: ({ accessToken, todoId }) => {
+  deleteTodo: async ({ todoId }) => {
+    const header = await metadata();
     return handleRequest(() =>
       axios.request({
         url: API_PATH.todos,
         method: 'DELETE',
-        ...metadata(),
+        ...header,
         data: { todo_id: todoId },
       }),
     );
@@ -153,10 +154,10 @@ export const Api = {
    * @property {string} order - 업데이트된 할 일의 순서.
    * @property {boolean} isCompleted - 업데이트된 할 일의 완료 여부.
    */
-  updateTodo: ({ accessToken, updateData }) => {
-    return handleRequest(() =>
-      axios.patch(API_PATH.todos, updateData, metadata()),
-    );
+  updateTodo: async ({ updateData }) => {
+    const header = await metadata();
+
+    return handleRequest(() => axios.patch(API_PATH.todos, updateData, header));
   },
   /**
    * 서버에 토큰을 검증 요청을 보냅니다.
@@ -192,8 +193,8 @@ export const Api = {
     return handleRequest(() => axios.post(API_PATH.login, tokenData));
   },
 
-  getUserInfo: async accessToken => {
-    const header = await metadata(accessToken);
+  getUserInfo: async () => {
+    const header = await metadata();
     const getUserInfoData = handleRequest(() =>
       axios.get(API_PATH.user, header),
     );
@@ -219,7 +220,9 @@ export const Api = {
    *   order: 일단 프론트에서 보내기 //int
    * }
    */
-  addCategory: (accessToken, categoryData) => {
+  addCategory: async categoryData => {
+    const header = await metadata();
+
     return handleRequest(
       // () =>
       //   fetch(API_PATH.categories, {
@@ -233,27 +236,30 @@ export const Api = {
       //   url: API_PATH.categories,
       //   data: JSON.stringify(categoryData),
       // }),
-      () => axios.post(API_PATH.categories, categoryData, metadata()),
+      () => axios.post(API_PATH.categories, categoryData, header),
     );
   },
 
-  updateCategory: ({ accessToken, updatedData }) => {
+  updateCategory: async ({ updatedData }) => {
+    const header = await metadata();
+
     return handleRequest(() =>
       axios.request({
         url: API_PATH.categories,
         method: 'PATCH',
-        ...metadata(),
+        ...header,
         data: { ...updatedData },
       }),
     );
   },
 
-  deleteCategory: ({ categoryId }) => {
+  deleteCategory: async ({ categoryId }) => {
+    const header = await metadata();
     return handleRequest(() =>
       axios.request({
         url: API_PATH.categories,
         method: 'DELETE',
-        ...metadata(),
+        ...header,
         data: { category_id: categoryId },
       }),
     );
@@ -268,9 +274,11 @@ export const Api = {
    *   category_id: categoryId,
    * }
    */
-  addSubTodo: (accessToken, subTodoData) => {
+  addSubTodo: async subTodoData => {
+    const header = await metadata();
+
     return handleRequest(() =>
-      axios.post(API_PATH.subTodos, subTodoData, metadata()),
+      axios.post(API_PATH.subTodos, subTodoData, header),
     );
   },
   /**
@@ -282,9 +290,11 @@ export const Api = {
    *   sub_id: subTodoId,
    * }
    */
-  updateSubTodo: ({ accessToken, updatedData }) => {
+  updateSubTodo: async ({ updatedData }) => {
+    const header = await metadata();
+
     return handleRequest(() =>
-      axios.patch(API_PATH.subTodos, updatedData, metadata()),
+      axios.patch(API_PATH.subTodos, updatedData, header),
     );
   },
   /**
@@ -296,12 +306,13 @@ export const Api = {
    *   sub_id: subTodoId,
    * }
    */
-  deleteSubTodo: ({ accessToken, subTodoId }) => {
+  deleteSubTodo: async ({ subTodoId }) => {
+    const headers = await metadata();
     return handleRequest(() =>
       axios.request({
         url: API_PATH.subTodos,
         method: 'DELETE',
-        headers: metadata(),
+        ...headers,
         data: { subtodoId: subTodoId },
       }),
     );
@@ -315,9 +326,10 @@ export const Api = {
    *   category_id: categoryId,
    * }
    */
-  getInboxTodo: (accessToken, userId) => {
+  getInboxTodo: async userId => {
+    const header = await metadata();
     return handleRequest(() =>
-      axios.get(`${API_PATH.inbox}?user_id=${userId}`, metadata()),
+      axios.get(`${API_PATH.inbox}?user_id=${userId}`, header),
     );
   },
   getAndroidClientId: () => {

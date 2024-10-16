@@ -59,7 +59,7 @@ const CategoryEditView = () => {
       color: selectedColor,
       category_id: params.id,
     };
-    updateCategory({ accessToken, updatedData });
+    updateCategory({ updatedData });
   };
 
   const renderColorItem = ({ item }) => (

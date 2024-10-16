@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTodoAddMutation } from '@/hooks/api/useTodoMutations';
 import { LexoRank } from 'lexorank';
 import useTodosQuery from '../api/useTodoQuery';
-const useCreateTodo = (userId, accessToken, selectedCategory, selectedDate) => {
+const useCreateTodo = (userId, selectedCategory, selectedDate) => {
   const [input, setInput] = useState('');
   const { mutate: addTodo } = useTodoAddMutation();
   const { data: todos } = useTodosQuery(userId);
@@ -22,7 +22,7 @@ const useCreateTodo = (userId, accessToken, selectedCategory, selectedDate) => {
           : LexoRank.middle().toString(),
     };
 
-    addTodo({ accessToken, todoData: newTodoData });
+    addTodo({ todoData: newTodoData });
     setInput('');
   };
 

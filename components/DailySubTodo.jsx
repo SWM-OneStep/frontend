@@ -17,7 +17,6 @@ const DailySubTodo = ({ item }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(item.content);
   const theme = useTheme();
-  const { accessToken } = useContext(LoginContext);
   const [modalVisible, setModalVisible] = useState(false);
   const { mutate: updateSubTodo } = useSubTodoUpdateMutation();
   const { userId } = useContext(LoginContext);
@@ -28,7 +27,7 @@ const DailySubTodo = ({ item }) => {
       subtodoId: item.id,
       isCompleted: !item.isCompleted,
     };
-    updateSubTodo({ accessToken: accessToken, updatedData: updatedData });
+    updateSubTodo({ updatedData: updatedData });
   };
 
   const handleEdit = () => {
@@ -41,7 +40,7 @@ const DailySubTodo = ({ item }) => {
       subtodoId: item.id,
       content: content,
     };
-    updateSubTodo({ accessToken: accessToken, updatedData: updatedData });
+    updateSubTodo({ updatedData: updatedData });
   };
 
   const checkIcon = props => {
