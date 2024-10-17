@@ -21,7 +21,7 @@ const CategoryScroll = () => {
 
   const { selectedCategory, setSelectedCategory } = useContext(CategoryContext);
   const [orderedCategories, setOrderedCategories] = useState([]);
-  const { userId, accessToken } = useContext(LoginContext);
+  const { userId } = useContext(LoginContext);
 
   const { isLoading, error, data, isSuccess } = useCategoriesQuery(userId);
 

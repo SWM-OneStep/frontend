@@ -69,7 +69,6 @@ const TodoModal = ({
 
   const [calendarDate, setCalendarDate] = useState(selectedDate.toDate());
   const [calendarModalVisible, setCalendarModalVisible] = useState(false);
-  const { accessToken } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
   const { userId } = useContext(LoginContext);
 
@@ -82,9 +81,9 @@ const TodoModal = ({
 
   const handleDelete = async item_id => {
     if (isTodo) {
-      deleteTodo({ accessToken: accessToken, todoId: item_id });
+      deleteTodo({ todoId: item_id });
     } else {
-      deleteSubTodo({ accessToken: accessToken, subTodoId: item_id });
+      deleteSubTodo({ subTodoId: item_id });
     }
   };
 
@@ -109,7 +108,6 @@ const TodoModal = ({
         category_id: selectedCategory,
       };
       updateTodoDate({
-        accessToken: accessToken,
         updatedData: updatedTodo,
       });
     } else {
@@ -118,7 +116,6 @@ const TodoModal = ({
         subtodoId: item.id,
       };
       updateSubTodoDate({
-        accessToken: accessToken,
         updatedData: updatedSubTodo,
       });
     }
@@ -217,7 +214,7 @@ const TodoModal = ({
                 <Text>{t('components.todoModal.changeDate')}</Text>
               </Button>
             </View>
-            <View>
+            {/* <View>
               <Button
                 accessoryLeft={inboxIcon}
                 status="basic"
@@ -232,7 +229,7 @@ const TodoModal = ({
               >
                 <Text>{t('components.todoModal.putInbox')}</Text>
               </Button>
-            </View>
+            </View> */}
           </View>
         </Card>
       </Modal>

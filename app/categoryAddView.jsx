@@ -22,7 +22,8 @@ const CategoryAddView = () => {
   const [categoryName, setCategoryName] = useState('');
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const bottomSheetRef = useRef(null);
-  const { userId, accessToken } = useContext(LoginContext);
+
+  const { userId } = useContext(LoginContext);
   const { t, i18n } = useTranslation();
 
   const { mutate: addCategory, isSuccess } = useCategoryAddMutation();
@@ -53,7 +54,7 @@ const CategoryAddView = () => {
       color: selectedColor,
       order: tmpOrder(),
     };
-    addCategory({ accessToken, addCategoryData });
+    addCategory({ addCategoryData });
   };
 
   const renderColorItem = ({ item }) => (

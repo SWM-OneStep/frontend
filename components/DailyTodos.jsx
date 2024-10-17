@@ -28,10 +28,11 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
 
 const DailyTodos = () => {
-  const { userId, accessToken } = useContext(LoginContext);
+  const { userId } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
   const { selectedDate } = useContext(DateContext);
   const { isLoading, error, data: todosData } = useTodosQuery(userId);
+  const { t, i18n } = useTranslation();
 
   const currentTodos = useFilteredTodos(
     todosData,
@@ -44,7 +45,6 @@ const DailyTodos = () => {
 
   const { input, setInput, handleSubmit } = useCreateTodo(
     userId,
-    accessToken,
     selectedCategory,
     selectedDate,
   );

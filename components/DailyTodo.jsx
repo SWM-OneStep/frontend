@@ -33,7 +33,6 @@ const DailyTodo = ({ item, drag, isActive }) => {
   const [completed, setCompleted] = useState(item.isCompleted);
   const [isEditing, setIsEditing] = useState(false);
   const [subTodoInput, setSubtodoInput] = useState('');
-  const { accessToken } = useContext(LoginContext);
   const [subTodoInputActivated, setSubTodoInputActivated] = useState(false);
   const [generatedSubTodos, setGeneratedSubTodos] = useState([]);
   const [subTodoCandidatesIndexes, setSubTodoCandidatesIndexes] = useState([]);
@@ -54,7 +53,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
       todoId: item.id,
       isCompleted: !item.isCompleted,
     };
-    updateTodo({ accessToken: accessToken, updatedData: updatedData });
+    updateTodo({ updatedData: updatedData });
   };
 
   const tmpOrder = (seed = 0) => {
@@ -69,7 +68,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
       todoId: item.id,
       content: content,
     };
-    updateTodo({ accessToken: accessToken, updatedData: updatedData });
+    updateTodo({ updatedData: updatedData });
   };
 
   const handleSubTodoCreate = () => {
@@ -84,7 +83,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
       todo: generatedSubTodos[index].todo,
       order: tmpOrder(index),
     }));
-    addSubTodo({ accessToken: accessToken, todoData: newSubTodos });
+    addSubTodo({ todoData: newSubTodos });
     setGeneratedSubTodos([]);
     setSubTodoCandidatesIndexes([]);
   };
@@ -221,7 +220,7 @@ const DailyTodo = ({ item, drag, isActive }) => {
           order: tmpOrder(),
         },
       ];
-      addSubTodo({ accessToken: accessToken, todoData: subTodoData });
+      addSubTodo({ todoData: subTodoData });
       setSubtodoInput('');
       setSubTodoInputActivated(false);
     }

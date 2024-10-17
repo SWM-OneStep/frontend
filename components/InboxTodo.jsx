@@ -24,7 +24,6 @@ const InboxTodo = ({ item, drag, isActive }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [subTodoInput, setSubTodoInput] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  const { accessToken } = useContext(LoginContext);
   const [subTodoInputActivated, setSubTodoInputActivated] = useState(false);
   const { mutate: addInboxTodo, isSuccess: addInboxTodoIsSuccess } =
     useTodoAddMutation();
@@ -44,7 +43,7 @@ const InboxTodo = ({ item, drag, isActive }) => {
       todoId: item.id,
       content: content,
     };
-    updateInboxTodo({ accessToken: accessToken, updatedData: updatedData });
+    updateInboxTodo({ updatedData: updatedData });
   };
 
   const tmpOrder = () => {
@@ -63,7 +62,7 @@ const InboxTodo = ({ item, drag, isActive }) => {
         isCompleted: false,
         order: tmpOrder(),
       };
-      addInboxSubTodo({ accessToken: accessToken, todoData: subTodoData });
+      addInboxSubTodo({ todoData: subTodoData });
       setSubTodoInput('');
       setSubTodoInputActivated(false);
     }
