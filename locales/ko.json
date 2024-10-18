@@ -1,7 +1,8 @@
 {
   "views": {
     "index": {
-      "signIn": "구글 로그인"
+      "googleSignIn": "구글 로그인",
+      "appleSignIn": "애플 로그인"
     },
     "_layout": {
       "addCategory": "Add Category",

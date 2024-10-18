@@ -1,7 +1,8 @@
 {
   "views": {
     "index": {
-      "signIn": "Sign in with Google"
+      "googleSignIn": "Sign in with Google",
+      "appleSignIn": "Sign in with Apple"
     },
     "_layout": {
       "addCategory": "Add Category",

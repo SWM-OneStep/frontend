@@ -9,6 +9,7 @@ import { useStorage } from './useStorage';
 
 const useGoogleAuth = () => {
   const [androidClientId, setAndroidClientId] = useState('');
+  const [iosClientId, setIosClientId] = useState('');
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId,
@@ -27,6 +28,11 @@ const useGoogleAuth = () => {
     if (androidClientId === '') {
     } else {
       await promptAsync();
+    }
+  };
+
+  const signInWithApple = async () => {
+    if (iosClientId === '') {
     }
   };
 
@@ -56,7 +62,7 @@ const useGoogleAuth = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response]);
 
-  return { signInWithGoogle };
+  return { signInWithGoogle, signInWithApple };
 };
 
 const useToken = () => {

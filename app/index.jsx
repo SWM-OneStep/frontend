@@ -1,3 +1,4 @@
+import { AppleIcon } from '@/components/AppleIcon';
 import { GoogleIcon } from '@/components/GoogleIcon';
 import useGoogleAuth from '@/hooks/auth/useGoogleAuth';
 import '@/locales/index';
@@ -11,7 +12,7 @@ const imageSource = require('../assets/todo_logo.png');
 const Login = () => {
   const { t, i18n } = useTranslation();
 
-  const { signInWithGoogle } = useGoogleAuth();
+  const { signInWithGoogle, signInWithApple } = useGoogleAuth();
 
   return (
     <View style={styles.container}>
@@ -19,11 +20,26 @@ const Login = () => {
       <View style={styles.iconContainer}>
         <Image source={imageSource} style={styles.icon} />
       </View>
-      <View style={styles.buttonContainer}>
-        <Text category="h2">OneStep</Text>
-        <Button accessoryLeft={GoogleIcon} onPress={() => signInWithGoogle()}>
-          {t('views.index.signIn')}
-        </Button>
+      <View style={styles.buttonAndTextContainer}>
+        <View style={styles.textContainer}>
+          <Text category="h2">OneStep</Text>
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button
+            style={styles.button}
+            accessoryLeft={GoogleIcon}
+            onPress={() => signInWithGoogle()}
+          >
+            {t('views.index.googleSignIn')}
+          </Button>
+          <Button
+            style={styles.button}
+            accessoryLeft={AppleIcon}
+            onPress={() => signInWithApple()}
+          >
+            {t('views.index.appleSignIn')}
+          </Button>
+        </View>
       </View>
     </View>
   );
@@ -50,10 +66,17 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center',
   },
-  buttonContainer: {
+  buttonAndTextContainer: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
+  },
+  buttonContainer: {
+    marginTop: 40,
+    justifyContent: 'center',
+  },
+  textContainer: {
+    marginBottom: 40,
   },
   text: {
     flex: 1,
@@ -61,9 +84,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    margin: 5,
   },
 });
 

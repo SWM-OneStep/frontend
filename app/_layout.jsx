@@ -1,3 +1,4 @@
+import { AntDesignIconsPack } from '@/antdesign-icons';
 import CategoryAddIcon from '@/components/CategoryAddIcon';
 import HeaderIcon from '@/components/HeaderIcon';
 import HeaderMenu from '@/components/HeaderMenu';
@@ -45,7 +46,7 @@ const RootLayout = () => {
     <>
       <QueryClientProvider client={queryClient}>
         <LoginProvider>
-          <IconRegistry icons={[EvaIconsPack]} />
+          <IconRegistry icons={[EvaIconsPack, AntDesignIconsPack]} />
           <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
             <GestureHandlerRootView>
               <Stack screenOptions={{ headerShadowVisible: false }}>

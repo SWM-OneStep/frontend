@@ -48,7 +48,6 @@ const DailyTodos = () => {
     selectedCategory,
     selectedDate,
   );
-  const { t, i18n } = useTranslation();
 
   const renderTodo = ({ item, drag, isActive }) => {
     return (
