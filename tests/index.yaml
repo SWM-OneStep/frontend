@@ -2,8 +2,21 @@ appId: com.safezone.onestep
 ---
 # 로그인 플로우 실행
 - runFlow:
-    file: 'loginButtonPressedTest.yaml'
+    file: 'unittests/loginButtonPressedTest.yaml'
 
-# 대시보드 플로우 실행
+# 투두 통합 테스트
 - runFlow:
-    file: 'mainViewAppearTest.yaml'
+    file: 'unittests/todoCreateTest.yaml'
+    env:
+      TODO_NAME: 'todoexample001'
+
+- runFlow:
+    file: 'unittests/todoUpdateTest.yaml'
+    env:
+      TODO_ORIGINAL_NAME: 'todoexample001'
+      TODO_NEW_NAME: 'todoexample002'
+
+- runFlow:
+    file: 'unittests/todoDeleteTest.yaml'
+    env:
+      TODO_NAME: 'todoexample002'

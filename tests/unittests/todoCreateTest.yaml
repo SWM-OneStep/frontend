@@ -1,0 +1,12 @@
+appId: com.safezone.onestep
+---
+# 앱을 실행
+- tapOn:
+    text: '새로운 할 일을 입력해주세요|Write a new todo'
+
+- inputText: ${TODO_NAME}
+
+- pressKey: Enter
+
+- assertVisible:
+    text: ${TODO_NAME}

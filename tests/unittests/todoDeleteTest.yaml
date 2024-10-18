@@ -1,0 +1,11 @@
+appId: com.safezone.onestep
+---
+# 앱을 실행
+- tapOn:
+    text: ${TODO_NAME}
+
+- tapOn:
+    text: '삭제하기|Delete'
+
+- assertNotVisible:
+    text: ${TODO_NAME}

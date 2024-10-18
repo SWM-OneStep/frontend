@@ -21,3 +21,7 @@ appId: com.safezone.onestep
 - assertVisible:
     text: 'Today|투데이'
     waitUntilVisible: true
+
+- assertVisible:
+    text: '새로운 할 일을 입력해주세요|Write a new todo'
+    waitUntilVisible: true

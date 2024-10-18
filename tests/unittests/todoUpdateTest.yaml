@@ -1,0 +1,18 @@
+appId: com.safezone.onestep
+---
+# 앱을 실행
+- tapOn:
+    text: ${TODO_ORIGINAL_NAME}
+
+- tapOn:
+    text: '수정하기|Edit'
+
+- inputText: ${TODO_NEW_NAME}
+
+- pressKey: Enter
+
+- assertVisible:
+    text: ${TODO_NEW_NAME}
+
+- assertNotVisible:
+    text: ${TODO_ORIGINAL_NAME}
