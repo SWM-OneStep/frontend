@@ -33,3 +33,7 @@ export const getSentryConfig = () => {
       };
   }
 };
+
+export const getStoryBookConfig = () => {
+  return Constants.expoConfig.extra.storybookEnabled;
+};

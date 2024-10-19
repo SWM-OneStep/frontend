@@ -1,7 +1,7 @@
 import CategoryAddIcon from '@/components/CategoryAddIcon';
 import HeaderIcon from '@/components/HeaderIcon';
 import HeaderMenu from '@/components/HeaderMenu';
-import { env, getSentryConfig } from '@/constants/env';
+import { env, getSentryConfig, getStoryBookConfig } from '@/constants/env';
 import LoginProvider from '@/contexts/LoginContext';
 import '@/locales/index';
 import { default as theme } from '@/theme/theme.json';
@@ -114,4 +114,9 @@ const RootLayout = () => {
   );
 };
 
-export default Sentry.wrap(RootLayout);
+let AppEntryPoint = Sentry.wrap(RootLayout);
+
+if (getStoryBookConfig() === 'true') {
+  AppEntryPoint = require('@/.storybook').default;
+}
+export default AppEntryPoint;

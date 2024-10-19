@@ -1,4 +1,3 @@
-import DailyTodo from '@/components/DailyTodo';
 import { CategoryContext } from '@/contexts/CategoryContext';
 import { DateContext } from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
@@ -26,13 +25,14 @@ import DraggableFlatList, {
 } from 'react-native-draggable-flatlist';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardAccessoryView } from 'react-native-keyboard-accessory';
+import DailyTodo from './dailyTodo/DailyTodo';
 
 const DailyTodos = () => {
   const { userId } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
   const { selectedDate } = useContext(DateContext);
   const { isLoading, error, data: todosData } = useTodosQuery(userId);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const currentTodos = useFilteredTodos(
     todosData,
@@ -48,7 +48,6 @@ const DailyTodos = () => {
     selectedCategory,
     selectedDate,
   );
-  const { t, i18n } = useTranslation();
 
   const renderTodo = ({ item, drag, isActive }) => {
     return (
