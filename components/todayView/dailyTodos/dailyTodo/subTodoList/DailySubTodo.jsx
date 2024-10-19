@@ -1,9 +1,6 @@
 import TodoModal from '@/components/TodoModal';
 import { LoginContext } from '@/contexts/LoginContext';
-import {
-  SUBTODO_QUERY_KEY,
-  useSubTodoUpdateMutation,
-} from '@/hooks/api/useSubTodoMutations';
+import { useSubTodoUpdateMutation } from '@/hooks/api/useSubTodoMutations';
 import {
   DAILYTODO_SUBTODOCOMPLETE_CLICK_EVENT,
   handleLogEvent,
