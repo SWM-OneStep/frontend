@@ -1,4 +1,5 @@
 import CategoryAddIcon from '@/components/CategoryAddIcon';
+import FunnelScreen from '@/app/FunnelScreen';
 import HeaderIcon from '@/components/HeaderIcon';
 import HeaderMenu from '@/components/HeaderMenu';
 import { env, getSentryConfig, getStoryBookConfig } from '@/constants/env';
@@ -13,6 +14,8 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import firebase from '@react-native-firebase/app';
+import FunnelProvider from '@/contexts/FunnelContext';
 
 const SENTRY_MODE = env.SENTRY_MODE;
 
@@ -28,6 +31,11 @@ Sentry.init({
     }),
   ],
 });
+
+// Firebase 초기화
+if (!firebase.apps.length) {
+  firebase.initializeApp();
+}
 
 const queryClient = new QueryClient();
 
@@ -45,69 +53,75 @@ const RootLayout = () => {
     <>
       <QueryClientProvider client={queryClient}>
         <LoginProvider>
-          <IconRegistry icons={[EvaIconsPack]} />
-          <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
-            <GestureHandlerRootView>
-              <Stack screenOptions={{ headerShadowVisible: false }}>
-                <Stack.Screen name="index" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="(tabs)"
-                  options={{
-                    headerTitle: '',
-                    headerRight: HeaderRight,
-                    headerLeft: HeaderLeft,
-                  }}
-                />
-                <Stack.Screen
-                  name="oauthredirect"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="categoryAddView"
-                  options={{
-                    headerTitle: t('views._layout.addCategory'),
-                    headerTitleAlign: 'center',
-                  }}
-                />
-                <Stack.Screen
-                  name="categoryListView"
-                  options={{
-                    headerTitle: t('views._layout.manageCategory'),
-                    headerTitleAlign: 'center',
-                    headerRight: NavigateToCategoryListView,
-                  }}
-                />
-                <Stack.Screen
-                  name="categoryEditView"
-                  options={{
-                    headerTitle: t('views._layout.editCategory'),
-                    headerTitleAlign: 'center',
-                  }}
-                />
-                <Stack.Screen
-                  name="settingsView"
-                  options={{
-                    headerTitle: t('views._layout.settings'),
-                    headerTitleAlign: 'center',
-                  }}
-                />
-                <Stack.Screen
-                  name="settingsContactView"
-                  options={{
-                    headerTitle: t('views._layout.contact'),
-                    headerTitleAlign: 'center',
-                  }}
-                />
-                <Stack.Screen
-                  name="settingsLanguageView"
-                  options={{
-                    headerTitle: t('views.settingsView.language'),
-                    headerTitleAlign: 'center',
-                  }}
-                />
-              </Stack>
-            </GestureHandlerRootView>
-          </ApplicationProvider>
+          <FunnelProvider>
+            <IconRegistry icons={[EvaIconsPack]} />
+            <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
+              <GestureHandlerRootView>
+                <Stack screenOptions={{ headerShadowVisible: false }}>
+                  <Stack.Screen name="index" options={{ headerShown: false }} />
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{
+                      headerTitle: '',
+                      headerRight: HeaderRight,
+                      headerLeft: HeaderLeft,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="oauthredirect"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="categoryAddView"
+                    options={{
+                      headerTitle: t('views._layout.addCategory'),
+                      headerTitleAlign: 'center',
+                    }}
+                  />
+                  <Stack.Screen
+                    name="categoryListView"
+                    options={{
+                      headerTitle: t('views._layout.manageCategory'),
+                      headerTitleAlign: 'center',
+                      headerRight: NavigateToCategoryListView,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="categoryEditView"
+                    options={{
+                      headerTitle: t('views._layout.editCategory'),
+                      headerTitleAlign: 'center',
+                    }}
+                  />
+                  <Stack.Screen
+                    name="settingsView"
+                    options={{
+                      headerTitle: t('views._layout.settings'),
+                      headerTitleAlign: 'center',
+                    }}
+                  />
+                  <Stack.Screen
+                    name="settingsContactView"
+                    options={{
+                      headerTitle: t('views._layout.contact'),
+                      headerTitleAlign: 'center',
+                    }}
+                  />
+                  <Stack.Screen
+                    name="settingsLanguageView"
+                    options={{
+                      headerTitle: t('views.settingsView.language'),
+                      headerTitleAlign: 'center',
+                    }}
+                  />
+                  <Stack.Screen
+                    name="FunnelScreen"
+                    options={{ headerShown: false }}
+                  />
+                </Stack>
+              </GestureHandlerRootView>
+            </ApplicationProvider>
+          </FunnelProvider>
         </LoginProvider>
       </QueryClientProvider>
     </>

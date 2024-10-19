@@ -4,20 +4,22 @@ import * as Sentry from '@sentry/react-native';
 import * as Google from 'expo-auth-session/providers/google';
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
-import { useDeviceToken } from './useDeviceToken';
 import { useStorage } from './useStorage';
+import messaging from '@react-native-firebase/messaging';
+import { FunnelContext } from '@/contexts/FunnelContext';
 
 const useGoogleAuth = () => {
   const [androidClientId, setAndroidClientId] = useState('');
-
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId,
+    iosClientId:
+      '156298722864-7h8lqrihc4inoh20t409kqe73djmtmu0.apps.googleusercontent.com',
   });
   const router = useRouter();
   const { handleLocalToken, handleGoogleLoginToken } = useToken();
 
   const { setIsLoggedIn, setUserId, setAccessToken } = useContext(LoginContext);
-
+  const { FunnelDone } = useContext(FunnelContext);
   const getAndroidClientId = async () => {
     const androidClientIdResponse = await Api.getAndroidClientId();
     setAndroidClientId(androidClientIdResponse.androidClientId);
@@ -50,18 +52,24 @@ const useGoogleAuth = () => {
     if (response?.type === 'success') {
       const token = response.authentication?.idToken;
       if (token) {
-        handleLogin(token);
+        router.push('/FunnelScreen');
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response]);
 
-  return { signInWithGoogle };
+  useEffect(() => {
+    if (FunnelDone) {
+      handleLogin(response.authentication?.idToken);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [FunnelDone]);
+
+  return { signInWithGoogle, handleLogin };
 };
 
 const useToken = () => {
   const storage = useStorage();
-  const { deviceToken } = useDeviceToken();
 
   const handleLocalToken = async () => {
     try {
@@ -80,6 +88,8 @@ const useToken = () => {
 
   const handleGoogleLoginToken = async token => {
     try {
+      const deviceToken = await messaging().getToken();
+      await storage.setItem('deviceToken', deviceToken);
       const loginResponse = await Api.googleLogin({ token, deviceToken });
       await storage.setItem('accessToken', loginResponse.access);
       await storage.setItem('refreshToken', loginResponse.refresh);
@@ -90,6 +100,7 @@ const useToken = () => {
       return { accessToken: loginResponse.access, userId: user.id };
     } catch (err) {
       Sentry.captureException(err);
+      console.log(err);
       return null;
     }
   };
