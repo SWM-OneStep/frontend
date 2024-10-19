@@ -4,12 +4,19 @@ import { Input, List } from '@ui-kitten/components';
 import DailySubTodo from './DailySubTodo';
 import { useTranslation } from 'react-i18next';
 import useSubTodoList from './useSubTodoList';
+import { Todo } from '../../../../../types/todo';
+
+interface SubTodoListProps {
+  item: Todo;
+  subTodoInputActivated: boolean;
+  setSubTodoInputActivated: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 const renderSubTodo = ({ item, index }) => {
   return <DailySubTodo item={item} key={index} />;
 };
 
-const SubTodoList = ({
+const SubTodoList: React.FC<SubTodoListProps> = ({
   item,
   subTodoInputActivated,
   setSubTodoInputActivated,
