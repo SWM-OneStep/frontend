@@ -35,13 +35,22 @@ const SettingsView = () => {
     {
       title: t('views.settingsView.account'),
       id: 1,
-      handlePress: () => {},
+      handlePress: () => {
+        router.push('/settingsAccountView');
+      },
     },
     {
       title: t('views.settingsView.language'),
       id: 2,
       handlePress: () => {
         router.push('/settingsLanguageView');
+      },
+    },
+    {
+      title: t('views.settingsView.contact'),
+      id: 3,
+      handlePress: () => {
+        router.push('/settingsContactView');
       },
     },
     {
