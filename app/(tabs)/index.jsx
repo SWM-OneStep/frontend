@@ -1,5 +1,4 @@
 import CategoryScroll from '@/components/CategoryScroll';
-import DailyTodos from '@/components/DailyTodos';
 import WeeklyCalendar from '@/components/WeeklyCalendar';
 import CategoryProvider from '@/contexts/CategoryContext';
 import DateProvider from '@/contexts/DateContext';
@@ -7,6 +6,7 @@ import { LoginContext } from '@/contexts/LoginContext';
 import { handleLogEvent, TODAYVIEW_VIEW_EVENT } from '@/utils/logEvent';
 import React, { useContext } from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
+import DailyTodos from '../../components/todayView/dailyTodos/DailyTodos';
 
 const TodayView = () => {
   const { userId } = useContext(LoginContext);
