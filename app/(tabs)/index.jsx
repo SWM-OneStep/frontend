@@ -4,9 +4,12 @@ import CategoryProvider from '@/contexts/CategoryContext';
 import DateProvider from '@/contexts/DateContext';
 import { LoginContext } from '@/contexts/LoginContext';
 import { handleLogEvent, TODAYVIEW_VIEW_EVENT } from '@/utils/logEvent';
-import React, { useContext } from 'react';
+import React, { Suspense, useContext } from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import DailyTodos from '../../components/todayView/dailyTodos/DailyTodos';
+import ErrorFallback from '../../components/common/molecules/ErrorFallback';
+import LoadingIndicator from '../../components/common/molecules/LoadingIndicator';
+import { ErrorBoundary } from 'react-error-boundary';
 
 const TodayView = () => {
   const { userId } = useContext(LoginContext);
@@ -19,8 +22,16 @@ const TodayView = () => {
       <DateProvider>
         <SafeAreaView style={styles.container}>
           <WeeklyCalendar />
-          <CategoryScroll />
-          <DailyTodos />
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <Suspense fallback={<LoadingIndicator />}>
+              <CategoryScroll />
+            </Suspense>
+          </ErrorBoundary>
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <Suspense fallback={<LoadingIndicator />}>
+              <DailyTodos />
+            </Suspense>
+          </ErrorBoundary>
         </SafeAreaView>
       </DateProvider>
     </CategoryProvider>

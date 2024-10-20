@@ -29,7 +29,14 @@ Sentry.init({
   ],
 });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      suspense: true,
+      useErrorBoundary: true,
+    },
+  },
+});
 
 // 헤더 우측 컴포넌트
 const HeaderRight = () => <HeaderMenu />;

@@ -23,7 +23,7 @@ const CategoryScroll = () => {
   const [orderedCategories, setOrderedCategories] = useState([]);
   const { userId } = useContext(LoginContext);
 
-  const { isLoading, error, data, isSuccess } = useCategoriesQuery(userId);
+  const { data, isSuccess } = useCategoriesQuery(userId);
 
   useEffect(() => {
     if (isSuccess) {
@@ -40,16 +40,11 @@ const CategoryScroll = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderedCategories]);
 
-  if (isLoading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
-
   const handlePress = index => {
     setSelectedCategory(index);
   };
   const starIcon = props => <Icon {...props} name="star" />;
-  if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
+
   return (
     <Layout>
       <ScrollView

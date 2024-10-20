@@ -19,7 +19,7 @@ import {
 import { Input } from '@ui-kitten/components';
 import { Fragment, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Text, View } from 'react-native';
+import { KeyboardAvoidingView, View } from 'react-native';
 import DraggableFlatList, {
   ScaleDecorator,
 } from 'react-native-draggable-flatlist';
@@ -31,7 +31,7 @@ const DailyTodos = () => {
   const { userId } = useContext(LoginContext);
   const { selectedCategory } = useContext(CategoryContext);
   const { selectedDate } = useContext(DateContext);
-  const { isLoading, error, data: todosData } = useTodosQuery(userId);
+  const { data: todosData } = useTodosQuery(userId);
   const { t } = useTranslation();
 
   const currentTodos = useFilteredTodos(
@@ -64,9 +64,6 @@ const DailyTodos = () => {
     });
     handleSubmit();
   };
-
-  if (isLoading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
