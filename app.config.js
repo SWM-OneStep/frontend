@@ -40,6 +40,7 @@ switch (process.env.APP_MODE || process.env.EXPO_PUBLIC_APP_MODE) {
 
 const expoConfig = {
   expo: {
+    jsEngine: 'jsc',
     name: 'onestep',
     slug: 'onestep',
     version: '1.0.0',
