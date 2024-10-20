@@ -23,6 +23,9 @@ web-build/
 # Metro
 .metro-health-check*
 
+# google service config files
+*.plist
+
 # debug
 npm-debug.*
 yarn-debug.*
