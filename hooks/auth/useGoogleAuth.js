@@ -6,25 +6,36 @@ import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import { useDeviceToken } from './useDeviceToken';
 import { useStorage } from './useStorage';
+import { Platform } from 'react-native';
 
 const useGoogleAuth = () => {
-  const [androidClientId, setAndroidClientId] = useState('');
+  const googleLoginPlatform =
+    Platform.OS === 'android' ? 'androidClientId' : 'iosClientId';
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId,
+  const [googleLoginClientId, setgoogleLoginClientId] = useState({
+    [googleLoginPlatform]: '',
   });
+
+  const [request, response, promptAsync] =
+    Google.useAuthRequest(googleLoginClientId);
   const router = useRouter();
+
   const { handleLocalToken, handleGoogleLoginToken } = useToken();
 
   const { setIsLoggedIn, setUserId, setAccessToken } = useContext(LoginContext);
 
-  const getAndroidClientId = async () => {
-    const androidClientIdResponse = await Api.getAndroidClientId();
-    setAndroidClientId(androidClientIdResponse.androidClientId);
+  const getClientId = async () => {
+    let googleLoginClientIdResponse;
+    if (Platform.OS === 'android') {
+      googleLoginClientIdResponse = await Api.getAndroidClientId();
+    } else {
+      googleLoginClientIdResponse = await Api.getIosClientId();
+    }
+    setgoogleLoginClientId(googleLoginClientIdResponse);
   };
 
   const signInWithGoogle = async () => {
-    if (androidClientId === '') {
+    if (Object.values(googleLoginClientId)[0] === '') {
     } else {
       await promptAsync();
     }
@@ -41,7 +52,7 @@ const useGoogleAuth = () => {
   };
 
   useEffect(() => {
-    getAndroidClientId();
+    getClientId();
     handleLocalToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

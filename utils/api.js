@@ -335,4 +335,7 @@ export const Api = {
   getAndroidClientId: () => {
     return handleRequest(() => axios.get(API_PATH.android));
   },
+  getIosClientId: () => {
+    return handleRequest(() => axios.get(API_PATH.ios));
+  },
 };
