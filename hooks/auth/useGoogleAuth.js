@@ -75,6 +75,11 @@ const useGoogleAuth = () => {
 const useToken = () => {
   const storage = useStorage();
 
+  const googleLoginPlatformType = {
+    android: 0,
+    ios: 1,
+  };
+
   const handleLocalToken = async () => {
     try {
       const token = await storage.getItem('accessToken');
@@ -94,7 +99,11 @@ const useToken = () => {
     try {
       const deviceToken = await messaging().getToken();
       await storage.setItem('deviceToken', deviceToken);
-      const loginResponse = await Api.googleLogin({ token, deviceToken });
+      const loginResponse = await Api.googleLogin({
+        token,
+        deviceToken,
+        deviceType: googleLoginPlatformType[Platform.OS],
+      });
       await storage.setItem('accessToken', loginResponse.access);
       await storage.setItem('refreshToken', loginResponse.refresh);
       const user = await Api.getUserInfo();
