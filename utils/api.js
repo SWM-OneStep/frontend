@@ -99,7 +99,6 @@ export const Api = {
    */
   addTodo: async todoData => {
     const header = await metadata();
-
     return handleRequest(() => axios.post(API_PATH.todos, todoData, header));
   },
   /**

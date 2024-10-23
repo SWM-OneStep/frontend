@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import tmpOrderGenerator from '../../../../../utils/tmpOrderGenerator';
 import { useSubTodoAddMutation } from '../../../../../hooks/api/useSubTodoMutations';
 import { useTheme } from '@ui-kitten/components';
 
@@ -15,8 +14,7 @@ const useGeneratedSubTodoList = ({
     const newSubTodos = subTodoCandidatesIndexes.map(index => ({
       content: generatedSubTodos[index].content,
       date: generatedSubTodos[index].date,
-      todo: generatedSubTodos[index].todo,
-      order: tmpOrderGenerator(index),
+      todoId: generatedSubTodos[index].todo,
     }));
     addSubTodo({ todoData: newSubTodos });
     setGeneratedSubTodos([]);

@@ -9,11 +9,7 @@ const useFilteredTodos = (todos, selectedCategory, selectedDate) => {
       const filtered = todos.filter(
         todo =>
           todo.categoryId === selectedCategory &&
-          isTodoIncludedInTodayView(
-            todo.startDate,
-            todo.endDate,
-            selectedDate.format('YYYY-MM-DD'),
-          ),
+          todo.date === selectedDate.format('YYYY-MM-DD'),
       );
       setFilteredTodos(filtered);
     }
