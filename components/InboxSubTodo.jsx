@@ -19,7 +19,7 @@ const InboxSubTodo = ({ item }) => {
 
   const handleInboxSubTodoUpdate = () => {
     const updatedData = {
-      subtodoId: item.id,
+      todoId: item.id,
       content: content,
     };
     updateInboxSubTodo({ updatedData: updatedData });

@@ -2,7 +2,6 @@ import { LoginContext } from '@/contexts/LoginContext';
 import { useSubTodoAddMutation } from '@/hooks/api/useSubTodoMutations';
 import {
   useTodoAddMutation,
-  useTodoDeleteMutation,
   useTodoUpdateMutation,
 } from '@/hooks/api/useTodoMutations';
 import '@/locales/index';
@@ -25,10 +24,7 @@ const InboxTodo = ({ item, drag, isActive }) => {
   const [subTodoInput, setSubTodoInput] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [subTodoInputActivated, setSubTodoInputActivated] = useState(false);
-  const { mutate: addInboxTodo, isSuccess: addInboxTodoIsSuccess } =
-    useTodoAddMutation();
   const { mutate: updateInboxTodo } = useTodoUpdateMutation();
-  const { mutate: deleteInboxTodo } = useTodoDeleteMutation();
   const { mutate: addInboxSubTodo } = useSubTodoAddMutation();
   const { userId } = useContext(LoginContext);
   const { t, i18n } = useTranslation();
@@ -46,21 +42,11 @@ const InboxTodo = ({ item, drag, isActive }) => {
     updateInboxTodo({ updatedData: updatedData });
   };
 
-  const tmpOrder = () => {
-    const now = new Date();
-    const milliseconds = now.getTime();
-    const unixTime = Math.floor(milliseconds / 1000);
-    return unixTime.toString();
-  };
-
   const handleSubtodoSubmit = () => {
     if (subTodoInput !== '') {
       const subTodoData = {
-        todo: item.id,
+        todoId: item.id,
         content: subTodoInput,
-        date: null,
-        isCompleted: false,
-        order: tmpOrder(),
       };
       addInboxSubTodo({ todoData: subTodoData });
       setSubTodoInput('');

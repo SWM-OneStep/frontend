@@ -19,7 +19,6 @@ import DraggableFlatList, {
 } from 'react-native-draggable-flatlist';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import InboxTodo from './InboxTodo';
-import useTodosQuery from '@/hooks/api/useTodoQuery';
 
 const InboxTodos = () => {
   const [input, setInput] = useState('');
@@ -31,7 +30,6 @@ const InboxTodos = () => {
     data: inboxTodoData,
     isSuccess: isInboxTodoQuerySuccess,
   } = useInboxTodoQuery(userId);
-  const { data: allTodos } = useTodosQuery(userId);
   const setInboxTodos = useTodoStore(state => state.setInboxTodos);
   const inboxCurrentTodos = useTodoStore(state => state.inboxCurrentTodos);
   const setInboxCurrentTodos = useTodoStore(
@@ -62,15 +60,8 @@ const InboxTodos = () => {
   //TODO: order 순서 생각해보니까 이제 서버에서 하잖아? 일단 전체 투두에서 계속 마지막으로 붙이는 식으로 구현
   const handleSubmit = async () => {
     const newTodoData = {
-      userId: parseInt(userId, 10),
       content: input,
       categoryId: selectedCategory,
-      order:
-        allTodos.length > 0
-          ? LexoRank.parse(allTodos[allTodos.length - 1].order)
-              .genNext()
-              .toString()
-          : LexoRank.middle().toString(),
     };
 
     addInboxTodo({ todoData: newTodoData });
