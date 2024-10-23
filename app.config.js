@@ -110,6 +110,7 @@ const expoConfig = {
           organization: 'ec5b082086ad',
         },
       ],
+      './plugins/withStaticFrameworks',
     ],
     runtimeVersion: '1.0.0',
     updates: {
