@@ -6,20 +6,18 @@ import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import { useStorage } from './useStorage';
 import messaging from '@react-native-firebase/messaging';
-import { FunnelContext } from '@/contexts/FunnelContext';
 
 const useGoogleAuth = () => {
   const [androidClientId, setAndroidClientId] = useState('');
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId,
-    iosClientId:
-      '156298722864-7h8lqrihc4inoh20t409kqe73djmtmu0.apps.googleusercontent.com',
+    iosClientId: '',
   });
   const router = useRouter();
   const { handleLocalToken, handleGoogleLoginToken } = useToken();
 
   const { setIsLoggedIn, setUserId, setAccessToken } = useContext(LoginContext);
-  const { FunnelDone } = useContext(FunnelContext);
+
   const getAndroidClientId = async () => {
     const androidClientIdResponse = await Api.getAndroidClientId();
     setAndroidClientId(androidClientIdResponse.androidClientId);
@@ -45,25 +43,20 @@ const useGoogleAuth = () => {
   useEffect(() => {
     getAndroidClientId();
     handleLocalToken();
+    (async () => {
+      await messaging().requestPermission();
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   useEffect(() => {
     if (response?.type === 'success') {
       const token = response.authentication?.idToken;
       if (token) {
-        router.push('/FunnelScreen');
+        handleLogin(token);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response]);
-
-  useEffect(() => {
-    if (FunnelDone) {
-      handleLogin(response.authentication?.idToken);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [FunnelDone]);
 
   return { signInWithGoogle, handleLogin };
 };
@@ -100,7 +93,6 @@ const useToken = () => {
       return { accessToken: loginResponse.access, userId: user.id };
     } catch (err) {
       Sentry.captureException(err);
-      console.log(err);
       return null;
     }
   };

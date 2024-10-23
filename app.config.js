@@ -64,6 +64,9 @@ const expoConfig = {
     ios: {
       supportsTablet: true,
       bundleIdentifier: 'com.safezone.onestep',
+      entitlements: {
+        'aps-environment': 'production',
+      },
     },
     android: {
       adaptiveIcon: {
