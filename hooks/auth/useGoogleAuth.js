@@ -4,9 +4,9 @@ import * as Sentry from '@sentry/react-native';
 import * as Google from 'expo-auth-session/providers/google';
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
-import { useDeviceToken } from './useDeviceToken';
 import { useStorage } from './useStorage';
 import { Platform } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
 
 const useGoogleAuth = () => {
   const googleLoginPlatform =
@@ -54,9 +54,11 @@ const useGoogleAuth = () => {
   useEffect(() => {
     getClientId();
     handleLocalToken();
+    (async () => {
+      await messaging().requestPermission();
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   useEffect(() => {
     if (response?.type === 'success') {
       const token = response.authentication?.idToken;
@@ -67,12 +69,11 @@ const useGoogleAuth = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response]);
 
-  return { signInWithGoogle };
+  return { signInWithGoogle, handleLogin };
 };
 
 const useToken = () => {
   const storage = useStorage();
-  const { deviceToken } = useDeviceToken();
 
   const handleLocalToken = async () => {
     try {
@@ -91,6 +92,8 @@ const useToken = () => {
 
   const handleGoogleLoginToken = async token => {
     try {
+      const deviceToken = await messaging().getToken();
+      await storage.setItem('deviceToken', deviceToken);
       const loginResponse = await Api.googleLogin({ token, deviceToken });
       await storage.setItem('accessToken', loginResponse.access);
       await storage.setItem('refreshToken', loginResponse.refresh);
