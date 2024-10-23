@@ -64,6 +64,7 @@ const expoConfig = {
     ios: {
       supportsTablet: true,
       bundleIdentifier: 'com.safezone.onestep',
+      usesAppleSignIn: true,
     },
     android: {
       adaptiveIcon: {

@@ -1,9 +1,12 @@
 import { LoginContext } from '@/contexts/LoginContext';
 import { Api } from '@/utils/api';
+import { appleAuthAndroid } from '@invertase/react-native-apple-authentication';
 import * as Sentry from '@sentry/react-native';
 import * as Google from 'expo-auth-session/providers/google';
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
+import 'react-native-get-random-values';
+import { v4 as uuid } from 'uuid';
 import { useDeviceToken } from './useDeviceToken';
 import { useStorage } from './useStorage';
 
@@ -13,6 +16,7 @@ const useGoogleAuth = () => {
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId,
+    iosClientId: '',
   });
   const router = useRouter();
   const { handleLocalToken, handleGoogleLoginToken } = useToken();
@@ -33,7 +37,42 @@ const useGoogleAuth = () => {
 
   const signInWithApple = async () => {
     if (iosClientId === '') {
+    } else {
     }
+  };
+
+  const onAppleButtonPress = async () => {
+    // Generate secure, random values for state and nonce
+    const rawNonce = uuid();
+    const state = uuid();
+
+    // Configure the request
+    appleAuthAndroid.configure({
+      // The Service ID you registered with Apple
+      clientId: 'com.example.client-android',
+
+      // Return URL added to your Apple dev console. We intercept this redirect, but it must still match
+      // the URL you provided to Apple. It can be an empty route on your backend as it's never called.
+      redirectUri: 'https://example.com/auth/callback',
+
+      // The type of response requested - code, id_token, or both.
+      responseType: appleAuthAndroid.ResponseType.ALL,
+
+      // The amount of user information requested from Apple.
+      scope: appleAuthAndroid.Scope.ALL,
+
+      // Random nonce value that will be SHA256 hashed before sending to Apple.
+      nonce: rawNonce,
+
+      // Unique state value used to prevent CSRF attacks. A UUID will be generated if nothing is provided.
+      state,
+    });
+
+    // Open the browser window for user sign in
+    const appleLoginResponse = await appleAuthAndroid.signIn();
+
+    // Send the authorization code to your backend for verification
+    console.log('appleLoginResponse', appleLoginResponse);
   };
 
   const handleLogin = async token => {
