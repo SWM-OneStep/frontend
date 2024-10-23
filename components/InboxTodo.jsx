@@ -24,7 +24,6 @@ const InboxTodo = ({ item, drag, isActive }) => {
   const [subTodoInput, setSubTodoInput] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [subTodoInputActivated, setSubTodoInputActivated] = useState(false);
-  useTodoAddMutation();
   const { mutate: updateInboxTodo } = useTodoUpdateMutation();
   const { mutate: addInboxSubTodo } = useSubTodoAddMutation();
   const { userId } = useContext(LoginContext);
