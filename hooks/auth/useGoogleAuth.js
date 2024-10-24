@@ -102,7 +102,7 @@ const useToken = () => {
       const loginResponse = await Api.googleLogin({
         token,
         deviceToken,
-        deviceType: googleLoginPlatformType[Platform.OS],
+        type: googleLoginPlatformType[Platform.OS],
       });
       await storage.setItem('accessToken', loginResponse.access);
       await storage.setItem('refreshToken', loginResponse.refresh);

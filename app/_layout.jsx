@@ -1,5 +1,4 @@
 import CategoryAddIcon from '@/components/CategoryAddIcon';
-import FunnelScreen from '@/app/FunnelScreen';
 import HeaderIcon from '@/components/HeaderIcon';
 import HeaderMenu from '@/components/HeaderMenu';
 import { env, getSentryConfig, getStoryBookConfig } from '@/constants/env';
