@@ -49,6 +49,7 @@ switch (process.env.APP_MODE || process.env.EXPO_PUBLIC_APP_MODE) {
 }
 
 const expoConfig = {
+  entryPoint: './app/_layout.jsx',
   expo: {
     name: 'onestep',
     slug: 'onestep',
